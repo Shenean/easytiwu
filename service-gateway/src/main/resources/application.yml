@@ -1,0 +1,51 @@
+server:
+  port: 8080   # Gateway端口
+
+spring:
+  application:
+    name: service-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: service-upload
+          uri: http://localhost:8081   # 上传服务
+          predicates:
+            - Path=/api/upload/**
+          filters:
+            - StripPrefix=1
+
+        - id: service-bank
+          uri: http://localhost:8082   # 银行服务
+          predicates:
+            - Path=/api/bank/**
+          filters:
+            - StripPrefix=1
+            
+        - id: service-content
+          uri: http://localhost:8083   # 内容服务
+          predicates:
+            - Path=/api/content/**
+          filters:
+            - StripPrefix=1
+
+      # 全局跨域配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            
+      # 默认过滤器
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+            
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG

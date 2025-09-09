@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: service-upload
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8081
+
+llm:
+  service:
+    url: http://localhost:8082/api/llm/process
+
+logging:
+  level:
+    com.easytiwu.serviceupload: DEBUG
