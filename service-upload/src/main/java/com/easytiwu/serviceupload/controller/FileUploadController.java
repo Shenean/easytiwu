@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,16 +18,21 @@ import org.springframework.web.bind.annotation.*;
  * @author sheny
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("")
 public class FileUploadController {
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    @Autowired
-    private FileParsingService fileParsingService;
-    @Autowired
-    private LargeModelService largeModelService;
-    @Autowired
-    private DataImportService dataImportService;
+    private final FileParsingService fileParsingService;
+    private final LargeModelService largeModelService;
+    private final DataImportService dataImportService;
+
+    public FileUploadController(FileParsingService fileParsingService,
+                                LargeModelService largeModelService,
+                                DataImportService dataImportService) {
+        this.fileParsingService = fileParsingService;
+        this.largeModelService = largeModelService;
+        this.dataImportService = dataImportService;
+    }
 
     /**
      * Endpoint to upload a question bank file along with metadata.

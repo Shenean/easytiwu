@@ -9,6 +9,7 @@ import com.alibaba.dashscope.exception.ApiException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +25,12 @@ public class LargeModelService {
     // Circuit breaker name
     private static final String QWEN_CB = "qwenService";
 
-    // Prepare common parts of the Generation API (e.g., base URL and model)
     private final Generation generationClient;
+    
+    @Value("${llm.dashscope.api-key}")
+    private String dashscopeApiKey;
 
     public LargeModelService() {
-        String baseUrl = "https://dashscope-intl.aliyuncs.com/api/v1";
         this.generationClient = new Generation();
     }
 
@@ -43,10 +45,14 @@ public class LargeModelService {
         Message userMsg   = Message.builder().role(Role.USER.getValue()).content(textContent).build();
         // Build parameters for generation
         GenerationParam param = GenerationParam.builder()
-                .apiKey(System.getenv("DASHSCOPE_API_KEY"))
+                .apiKey(dashscopeApiKey)
                 .model("qwen-plus")
                 .messages(Arrays.asList(systemMsg, userMsg))
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
+                .temperature(0.1f)
+                .topP(0.8)
+                .maxTokens(2000)
+                .seed(12345)
                 .build();
         // Call the model API
         logger.info("Calling Qwen model API with DashScope...");
@@ -55,6 +61,13 @@ public class LargeModelService {
         String output = result.getOutput().getChoices().get(0).getMessage().getContent();
         // Log and return the JSON output
         logger.debug("LLM raw output: {}", output);
+        
+        // 简单校验是否包含 JSON 结构
+        if (!output.trim().startsWith("{") || !output.contains("\"questions\"")) {
+            logger.warn("LLM output does not seem to be valid JSON: {}", output);
+            throw new RuntimeException("Invalid JSON format from LLM");
+        }
+        
         return output;
     }
 
@@ -62,7 +75,7 @@ public class LargeModelService {
      * Fallback method for circuit breaker – returns an empty questions JSON if the LLM call fails.
      */
     private String fallbackQuestionsJson(String textContent, Throwable ex) {
-        logger.error("Qwen API call failed or timed out, entering fallback. Error: {}", ex.getMessage());
+        logger.error("Qwen API call failed or timed out, entering fallback. Error: {}", ex.getMessage(), ex);
         // Return a minimal JSON structure indicating failure (could also throw a custom exception)
         return "{\"questions\":[]}";
     }

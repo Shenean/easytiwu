@@ -9,14 +9,16 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/easytiwu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-    password: root
+    password: 123456
 
 server:
   port: 8081
 
 llm:
   service:
-    url: http://localhost:8082/api/llm/process
+    url: https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
+  dashscope:
+    api-key: sk-282b5b70ba484626baa755e617b3e7d4
 
 logging:
   level:
