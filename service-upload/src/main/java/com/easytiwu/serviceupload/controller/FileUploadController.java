@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
-
 /**
  * @author sheny
  */
@@ -34,9 +33,6 @@ public class FileUploadController {
         this.dataImportService = dataImportService;
     }
 
-    /**
-     * Endpoint to upload a question bank file along with metadata.
-     */
     @PostMapping(value="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadQuestionBank(
             @RequestParam("name") String name,
