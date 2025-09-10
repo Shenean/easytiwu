@@ -6,10 +6,10 @@
 
       <!-- 菜单 -->
       <n-menu
-          v-model:value="activeKey"
+          :value="(route.name ?? 'upload') as string"
           mode="horizontal"
           :options="menuOptions"
-          @update:value="handleSelect"
+          :router="true"
           class="menu"
       />
     </div>
@@ -17,46 +17,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import type { MenuOption } from 'naive-ui'
 
-const router = useRouter()
 const route = useRoute()
-
-const activeKey = ref<string | null>('upload')
 
 const menuOptions: MenuOption[] = [
   {
     label: '上传',
-    key: 'upload'
+    key: 'upload',
+    to: { name: 'upload' }
   },
   {
     label: '题库',
-    key: 'bank'
+    key: 'bank',
+    to: { name: 'bank' }
   }
 ]
-
-function handleSelect(key: string) {
-  if (key === 'upload') {
-    router.push('/upload')
-  } else if (key === 'bank') {
-    router.push('/bank')
-  }
-}
-
-// 监听路由变化，同步更新导航栏激活状态
-watch(
-    () => route.name,
-    (newVal) => {
-      if (newVal === 'upload') {
-        activeKey.value = 'upload'
-      } else if (newVal === 'bank') {
-        activeKey.value = 'bank'
-      }
-    },
-    { immediate: true }
-)
 </script>
 
 <style scoped>

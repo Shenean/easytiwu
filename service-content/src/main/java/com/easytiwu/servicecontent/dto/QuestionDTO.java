@@ -3,14 +3,18 @@ package com.easytiwu.servicecontent.dto;
 import lombok.Data;
 import java.util.List;
 
+/**
+ * @author sheny
+ */
 @Data
 public class QuestionDTO {
     private Long id;
     private String content;
-    private String type; // single, multiple, fill_blank, true_false, short_answer
+    private String type;
     private List<QuestionOptionDTO> options;
-    private String correct_answer; // return empty when is_completed=0
-    private String analysis;       // return empty when is_completed=0
-    private Integer is_completed;
-    private Integer is_correct;    // could be null
+    private String userAnswer;
+    private String correctAnswer;
+    private String analysis;
+    private Integer isCompleted;
+    private Integer isCorrect;
 }

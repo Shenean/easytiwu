@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author sheny
+ */
 @Data
 @TableName("question_options")
 public class QuestionOption {

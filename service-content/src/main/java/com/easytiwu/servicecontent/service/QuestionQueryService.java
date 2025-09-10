@@ -48,8 +48,11 @@ public class QuestionQueryService {
             dto.setId(q.getId());
             dto.setContent(q.getContent());
             dto.setType(q.getType());
-            dto.setIs_completed(q.getIsCompleted());
-            dto.setIs_correct(q.getIsCorrect());
+            dto.setUserAnswer(q.getUserAnswer());
+            dto.setCorrectAnswer(q.getCorrectAnswer());
+            dto.setAnalysis(q.getAnalysis());
+            dto.setIsCompleted(q.getIsCompleted());
+            dto.setIsCorrect(q.getIsCorrect());
 
             // options mapping: convert to label/text
             List<QuestionOption> list = optionMap.getOrDefault(q.getId(), Collections.emptyList());
@@ -63,14 +66,6 @@ public class QuestionQueryService {
                     })
                     .collect(Collectors.toList());
             dto.setOptions(optDtos);
-
-            if (q.getIsCompleted() != null && q.getIsCompleted() == 0) {
-                dto.setCorrect_answer("");
-                dto.setAnalysis("");
-            } else {
-                dto.setCorrect_answer(q.getCorrectAnswer());
-                dto.setAnalysis(q.getAnalysis());
-            }
             dtos.add(dto);
         }
         return dtos;
