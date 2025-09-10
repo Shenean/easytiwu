@@ -14,7 +14,10 @@ public class QuestionBank {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    @TableField("name")
     private String name;
+
+    @TableField("description")
     private String description;
 
     @TableField("total_count")

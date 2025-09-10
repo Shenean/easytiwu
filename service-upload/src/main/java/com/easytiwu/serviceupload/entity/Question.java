@@ -29,6 +29,7 @@ public class Question {
     @TableField("correct_answer")
     private String correctAnswer;
 
+    @TableField("analysis")
     private String analysis;
 
     @TableField("is_completed")

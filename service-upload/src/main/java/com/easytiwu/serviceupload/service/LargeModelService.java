@@ -15,8 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.springframework.core.io.ClassPathResource;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * 调用 Qwen 大模型，将题目文本转为 JSON
  * @author sheny
  */
 @Service
@@ -26,7 +31,8 @@ public class LargeModelService {
     private static final String QWEN_CB = "qwenService";
 
     private final Generation generationClient;
-    
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Value("${llm.dashscope.api-key}")
     private String dashscopeApiKey;
 
@@ -35,64 +41,78 @@ public class LargeModelService {
     }
 
     /**
-     * 清理LLM输出，去除Markdown格式包装
-     * @param raw 原始LLM输出
-     * @return 清理后的JSON字符串
+     * 从配置文件中读取 system prompt
+     * @return system prompt 内容
      */
-    public String cleanLLMOutput(String raw) {
-        if (raw == null) return "{}";
-        // 去掉 Markdown ```json ... ``` 包装
-        return raw.replaceAll("(?s)```json", "")
-                  .replaceAll("(?s)```", "")
-                  .trim();
+    private String loadSystemPrompt() {
+        try {
+            ClassPathResource resource = new ClassPathResource("prompts/parser_prompt.txt");
+            InputStream inputStream = resource.getInputStream();
+            byte[] bytes = inputStream.readAllBytes();
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            logger.error("Failed to load system prompt from file", e);
+            throw new RuntimeException("Unable to load system prompt", e);
+        }
     }
 
-    /**
-     * Sends the text content to Qwen model to generate questions JSON.
-     * Uses Resilience4j CircuitBreaker to handle failures gracefully.
-     */
     @CircuitBreaker(name = QWEN_CB, fallbackMethod = "fallbackQuestionsJson")
-    public String generateQuestionsJson(String textContent) throws ApiException, NoApiKeyException, InputRequiredException {
-        String systemPrompt = "你是一个智能助手，根据输入的题目内容生成题目列表的JSON，格式为{ \"questions\": [ ... ] }，请严格按照要求输出。";
+    public String generateQuestionsJson(String textContent)
+            throws ApiException, NoApiKeyException, InputRequiredException {
+
+        String systemPrompt = loadSystemPrompt();
         Message systemMsg = Message.builder().role(Role.SYSTEM.getValue()).content(systemPrompt).build();
-        Message userMsg   = Message.builder().role(Role.USER.getValue()).content(textContent).build();
-        // Build parameters for generation
+        Message userMsg = Message.builder().role(Role.USER.getValue()).content(textContent).build();
+
         GenerationParam param = GenerationParam.builder()
                 .apiKey(dashscopeApiKey)
                 .model("qwen-plus")
                 .messages(Arrays.asList(systemMsg, userMsg))
-                .resultFormat(GenerationParam.ResultFormat.MESSAGE)
+                .resultFormat(GenerationParam.ResultFormat.TEXT)
                 .temperature(0.1f)
-                .topP(0.8)
-                .maxTokens(2000)
+                .topP(0.9)
+                .maxTokens(8192)
                 .seed(12345)
                 .build();
-        // Call the model API
+
         logger.info("Calling Qwen model API with DashScope...");
         GenerationResult result = generationClient.call(param);
-        // Extract the generated text (JSON string) from result
-        String output = result.getOutput().getChoices().get(0).getMessage().getContent();
-        // Log and return the JSON output
-        logger.debug("LLM raw output: {}", output);
-        
-        // 清理LLM输出，去除可能的Markdown格式包装
-        String cleanOutput = cleanLLMOutput(output);
-        
-        // 简单校验是否包含 JSON 结构
-        if (!cleanOutput.trim().startsWith("{") || !cleanOutput.contains("\"questions\"")) {
-            logger.warn("LLM output does not seem to be valid JSON: {}", cleanOutput);
-            throw new RuntimeException("Invalid JSON format from LLM");
+
+        if (result == null || result.getOutput() == null) {
+            logger.error("Received null result or output from DashScope API");
+            throw new RuntimeException("Invalid response from LLM API");
         }
-        
-        return cleanOutput;
+
+        // ✅ 正确获取模型输出
+        String output = result.getOutput().getText();
+        logger.debug("LLM raw output: {}", output);
+
+        // --- 内联清洗逻辑 ---
+        String candidate = output.trim();
+        if (!candidate.startsWith("{") && !candidate.startsWith("[")) {
+            candidate = candidate.replaceAll("(?s)```json", "")
+                    .replaceAll("(?s)```", "")
+                    .trim();
+            logger.debug("LLM cleaned output: {}", candidate);
+        }
+
+        // --- JSON 真正校验 ---
+        try {
+            objectMapper.readTree(candidate);
+        } catch (Exception e) {
+            logger.error("Invalid JSON from LLM: {}", candidate, e);
+            throw new RuntimeException("Invalid JSON format from LLM", e);
+        }
+
+        return candidate;
     }
 
     /**
-     * Fallback method for circuit breaker – returns an empty questions JSON if the LLM call fails.
+     * Circuit breaker fallback method
+     * 返回一个最小 JSON，保证前端拿到结构
      */
-    private String fallbackQuestionsJson(String textContent, Throwable ex) {
+    public String fallbackQuestionsJson(String textContent, Throwable ex) {
         logger.error("Qwen API call failed or timed out, entering fallback. Error: {}", ex.getMessage(), ex);
-        // Return a minimal JSON structure indicating failure (could also throw a custom exception)
-        return "{\"questions\":[]}";
+        return "[]";
     }
 }
