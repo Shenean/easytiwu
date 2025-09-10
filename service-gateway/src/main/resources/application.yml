@@ -33,19 +33,46 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
+            allowedOrigins: 
+              - "http://localhost:3000"
+              - "http://127.0.0.1:3000"
+            allowedMethods: 
+              - "GET"
+              - "POST"
+              - "PUT"
+              - "DELETE"
+              - "OPTIONS"
+            allowedHeaders: 
+              - "*"
             allowCredentials: true
+            maxAge: 3600
             
       # 默认过滤器
       default-filters:
+        - name: Logging
         - name: Retry
           args:
             retries: 3
             statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+            backoff:
+              firstBackoff: 100ms
+              maxBackoff: 500ms
+              factor: 2
+              basedOnPreviousValue: false
             
+# 服务配置
+service:
+  upload:
+    url: http://localhost:8081
+  bank:
+    url: http://localhost:8082
+  content:
+    url: http://localhost:8083
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
+    com.easytiwu.servicegateway: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

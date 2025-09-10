@@ -98,6 +98,7 @@
 import { ref, computed } from 'vue'
 import { useMessage } from 'naive-ui'
 import type { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
+import { uploadAPI } from '../api/config'
 
 interface UploadForm {
   name: string
@@ -117,7 +118,6 @@ const form = ref<UploadForm>({
 
 // 表单是否有效（用于按钮禁用）
 const isFormValid = computed(() => {
-  // 简单判断：三项都非空（file 至少一个）
   return !!form.value.name.trim() && form.value.file.length > 0
 })
 
@@ -133,7 +133,17 @@ const rules: FormRules = {
     { max: 30, message: '最多 30 字', trigger: 'input' }
   ],
   file: [
-    { required: true, message: '请上传文件', trigger: 'change' }
+    {
+      required: true,
+      message: '请上传文件',
+      trigger: 'change',
+      validator: (_rule: any, value: UploadFileInfo[]) => {
+        if (!value || value.length === 0) {
+          return new Error('请上传文件')
+        }
+        return true
+      }
+    }
   ]
 }
 
@@ -152,26 +162,42 @@ function formatFileSize(bytes: number): string {
  * 上传前校验文件
  */
 function beforeUpload(file: UploadFileInfo) {
-  const allowTypes = [
-    'application/msword', // .doc
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-    'application/pdf', // .pdf
-    'text/plain' // .txt
+  const fileName = file.file?.name || file.name || ''
+  if (!fileName) {
+    message.error('无法获取文件名')
+    return false
+  }
+
+  const allowedExtensions = ['.doc', '.docx', '.pdf', '.txt']
+  const allowedMimeTypes = [
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/pdf',
+    'text/plain'
   ]
 
+  const fileExt = fileName.includes('.') 
+    ? '.' + fileName.split('.').pop()?.toLowerCase() 
+    : ''
+
   const fileType = file.type || ''
+  const isExtAllowed = allowedExtensions.includes(fileExt)
+  const isMimeAllowed = allowedMimeTypes.includes(fileType)
   const fileSize = file.file?.size ?? 0
-  const isAllowed = allowTypes.includes(fileType)
   const isLt20M = fileSize / 1024 / 1024 < 20
 
-  if (!isAllowed) {
-    message.error('仅支持 doc, docx, pdf, txt 格式')
+  if (!isExtAllowed) {
+    message.error(`仅支持 ${allowedExtensions.join(', ')} 格式`)
     return false
   }
   if (!isLt20M) {
     message.error('文件大小不能超过 20MB')
     return false
   }
+  if (!isMimeAllowed) {
+    console.warn(`[MIME mismatch] 文件 ${fileName} 的 MIME 类型为 ${fileType}，但扩展名合法。`)
+  }
+
   return true
 }
 
@@ -204,7 +230,6 @@ function handleReset() {
 function handleSubmit() {
   formRef.value?.validate(async (errors) => {
     if (errors) {
-      // 显示第一条错误信息
       const firstError = Object.values(errors)
         .flat()
         .find(err => err.message)?.message || '请检查表单输入'
@@ -214,13 +239,23 @@ function handleSubmit() {
 
     submitting.value = true
     try {
-      // TODO: 调用后端 API 提交 form 数据
-      await new Promise(resolve => setTimeout(resolve, 1200)) // 模拟异步
+      if (!form.value.file[0]?.file) {
+        message.error('请选择有效的文件')
+        return
+      }
+
+      const formData = new FormData()
+      formData.append('name', form.value.name)
+      formData.append('description', form.value.description)
+      formData.append('file', form.value.file[0].file as Blob)
+
+      await uploadAPI.uploadFile(formData)
+
       message.success('上传成功 🎉')
-      // 成功后可自动重置或跳转
-      // form.value = { name: '', description: '', file: [] }
-    } catch (err) {
-      message.error('上传失败，请重试')
+      form.value = { name: '', description: '', file: [] }
+    } catch (err: any) {
+      console.error('Upload error:', err)
+      message.error(err.response?.data || '上传失败，请重试')
     } finally {
       submitting.value = false
     }
@@ -243,7 +278,6 @@ defineExpose({
   border-radius: 12px;
 }
 
-/* 上传区域悬停效果 */
 :deep(.n-upload-dragger) {
   transition: all 0.3s ease;
   border-radius: 8px;

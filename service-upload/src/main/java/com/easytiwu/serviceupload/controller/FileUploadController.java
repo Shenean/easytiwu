@@ -37,7 +37,7 @@ public class FileUploadController {
     public ResponseEntity<String> uploadQuestionBank(
             @RequestParam("name") String name,
             @RequestParam("description") String description,
-            @RequestPart("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file) {
         try {
             // 1. Validate file type
             String filename = file.getOriginalFilename();

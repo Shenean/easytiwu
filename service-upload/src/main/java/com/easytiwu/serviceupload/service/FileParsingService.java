@@ -1,5 +1,6 @@
 package com.easytiwu.serviceupload.service;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * @author sheny
@@ -26,11 +28,11 @@ public class FileParsingService {
      * Extracts text content from the given file. Supports PDF, Word (.docx), and TXT.
      */
     public String extractText(MultipartFile file) throws IOException {
-        String fname = file.getOriginalFilename().toLowerCase();
+        String fname = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
         try (InputStream in = file.getInputStream()) {
             if (fname.endsWith(".pdf")) {
                 // Use PDFBox to extract text from PDF
-                try (PDDocument pdfDoc = PDDocument.load(in)) {
+                try (PDDocument pdfDoc = Loader.loadPDF(in.readAllBytes())) {
                     PDFTextStripper stripper = new PDFTextStripper();
                     return stripper.getText(pdfDoc);
                 }

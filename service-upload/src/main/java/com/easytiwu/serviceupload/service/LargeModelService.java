@@ -35,6 +35,19 @@ public class LargeModelService {
     }
 
     /**
+     * 清理LLM输出，去除Markdown格式包装
+     * @param raw 原始LLM输出
+     * @return 清理后的JSON字符串
+     */
+    public String cleanLLMOutput(String raw) {
+        if (raw == null) return "{}";
+        // 去掉 Markdown ```json ... ``` 包装
+        return raw.replaceAll("(?s)```json", "")
+                  .replaceAll("(?s)```", "")
+                  .trim();
+    }
+
+    /**
      * Sends the text content to Qwen model to generate questions JSON.
      * Uses Resilience4j CircuitBreaker to handle failures gracefully.
      */
@@ -62,13 +75,16 @@ public class LargeModelService {
         // Log and return the JSON output
         logger.debug("LLM raw output: {}", output);
         
+        // 清理LLM输出，去除可能的Markdown格式包装
+        String cleanOutput = cleanLLMOutput(output);
+        
         // 简单校验是否包含 JSON 结构
-        if (!output.trim().startsWith("{") || !output.contains("\"questions\"")) {
-            logger.warn("LLM output does not seem to be valid JSON: {}", output);
+        if (!cleanOutput.trim().startsWith("{") || !cleanOutput.contains("\"questions\"")) {
+            logger.warn("LLM output does not seem to be valid JSON: {}", cleanOutput);
             throw new RuntimeException("Invalid JSON format from LLM");
         }
         
-        return output;
+        return cleanOutput;
     }
 
     /**
