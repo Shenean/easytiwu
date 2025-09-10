@@ -22,14 +22,16 @@ public class ContentController {
 
     @PostMapping("/questions")
     public List<QuestionDTO> getQuestions(@RequestBody QuestionQueryRequest req) {
-        Long bankId = req.getId();
-        String type = req.getType();
-        return questionQueryService.queryQuestions(bankId, type);
+        if (req.getBankId() == null) {
+            throw new IllegalArgumentException("参数 bankId 不能为空");
+        }
+        return questionQueryService.queryQuestions(req.getBankId(), req.getType());
     }
+
 
     @Data
     public static class QuestionQueryRequest {
-        private Long id;
+        private Long bankId;
         private String type;
     }
 }

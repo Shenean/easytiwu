@@ -1,5 +1,5 @@
 <template>
-  <n-layout class="content-layout">
+  <div class="page-container">
     <!-- 加载状态 -->
     <div v-if="loading" class="loading-container">
       <n-spin size="large">
@@ -16,17 +16,18 @@
       </n-empty>
     </div>
     
-    <!-- 题目内容 -->
+    <!-- 主要内容区域 -->
     <template v-else>
-      <!-- 左侧：题目区域 -->
-      <n-layout-content class="question-area">
-        <!-- 题干 -->
-        <n-card :title="`第 ${currentQuestion.id} 题`" size="small" class="question-card">
-          <div class="question-stem" v-html="currentQuestion.content"></div>
-        </n-card>
+      <div class="content-layout">
+        <!-- 左侧：题目区域 -->
+        <div class="main-content">
+          <!-- 题干 -->
+          <n-card :title="`第 ${currentQuestionIndex + 1} 题`" size="small" class="question-card">
+            <div class="question-stem" v-html="currentQuestion.content"></div>
+          </n-card>
 
-      <!-- 作答区 -->
-      <n-card title="作答区" size="small" class="answer-area">
+          <!-- 作答区 -->
+          <n-card title="作答区" size="small" class="answer-area">
         <!-- 单选 -->
         <div v-if="currentQuestion.type === 'single'">
           <n-radio-group v-model:value="localAnswer" name="single-choice" size="large">
@@ -79,82 +80,90 @@
               :disabled="isSubmitted"
               clearable
           />
-        </div>
-      </n-card>
+            </div>
+          </n-card>
 
-      <!-- 答案与解析（提交后或已作答显示） -->
-      <n-card v-if="showAnswer" title="答案与解析" size="small" class="answer-card">
-        <n-alert type="success" title="正确答案" :show-icon="false" class="mb-4">
-          {{ displayCorrectAnswer }}
-        </n-alert>
-        <n-alert
-            v-if="currentQuestion.analysis"
-            type="info"
-            title="解析"
-            :show-icon="false"
-        >
-          {{ currentQuestion.analysis }}
-        </n-alert>
-      </n-card>
-
-      <!-- 操作按钮 -->
-      <div class="action-buttons">
-        <n-button
-            :disabled="currentQuestionIndex === 0"
-            @click="prevQuestion"
-            size="large"
-            type="default"
-        >
-          上一题
-        </n-button>
-
-        <n-button
-            v-if="!isSubmitted"
-            type="primary"
-            size="large"
-            @click="submitAnswer"
-            :disabled="!canSubmit"
-        >
-          提交答案
-        </n-button>
-
-        <n-button
-            v-else
-            type="success"
-            size="large"
-            @click="nextQuestion"
-            :disabled="currentQuestionIndex >= questionList.length - 1"
-        >
-          下一题
-        </n-button>
-      </div>
-    </n-layout-content>
-
-    <!-- 右侧：答题卡 -->
-    <n-layout-sider
-        bordered
-        :width="300"
-        content-style="padding: 16px;"
-        class="answer-card-sider"
-    >
-      <n-card title="答题卡" size="small">
-        <n-grid :cols="5" :x-gap="8" :y-gap="8">
-          <n-grid-item v-for="q in questionList" :key="q.id">
-            <n-button
-                :type="getCardButtonType(q)"
-                :size="getCardButtonSize"
-                block
-                @click="jumpToQuestion(q.id)"
-                :bordered="false"
+          <!-- 答案与解析（提交后或已作答显示） -->
+          <n-card v-if="showAnswer" title="答案与解析" size="small" class="answer-card">
+            <n-alert type="success" title="正确答案" :show-icon="false" class="mb-4">
+              {{ displayCorrectAnswer }}
+            </n-alert>
+            <n-alert
+                v-if="currentQuestion.analysis"
+                type="info"
+                title="解析"
+                :show-icon="false"
             >
-              {{ q.id }}
-            </n-button>
-          </n-grid-item>
-        </n-grid>
-      </n-card>
-    </n-layout-sider>
+              {{ currentQuestion.analysis }}
+            </n-alert>
+          </n-card>
+        </div>
+
+        <!-- 右侧：答题卡 -->
+        <div class="sidebar">
+          <n-card title="答题卡" size="small" class="answer-card-container">
+            <n-grid :cols="4" :x-gap="8" :y-gap="8">
+              <n-grid-item v-for="(q, index) in questionList" :key="q.id">
+                <n-button
+                    :type="getCardButtonType(q)"
+                    :size="getCardButtonSize"
+                    block
+                    @click="jumpToQuestion(q.id)"
+                    :bordered="false"
+                >
+                  {{ index + 1 }}
+                </n-button>
+              </n-grid-item>
+            </n-grid>
+          </n-card>
+        </div>
+      </div>
+
+      <!-- 底部固定操作按钮 -->
+       <div class="bottom-actions">
+         <div class="action-buttons">
+           <n-button
+               :disabled="currentQuestionIndex === 0"
+               @click="prevQuestion"
+               size="large"
+               type="default"
+           >
+             上一题
+           </n-button>
+
+           <n-button
+               :disabled="currentQuestionIndex >= questionList.length - 1"
+               @click="nextQuestion"
+               size="large"
+               type="default"
+           >
+             下一题
+           </n-button>
+
+           <n-button
+               v-if="!isSubmitted"
+               type="primary"
+               size="large"
+               @click="submitAnswer"
+               :disabled="!canSubmit"
+           >
+             提交答案
+           </n-button>
+
+           <n-button
+               v-else
+               type="success"
+               size="large"
+               @click="nextQuestion"
+               :disabled="currentQuestionIndex >= questionList.length - 1"
+               style="display: none;"
+           >
+             下一题
+           </n-button>
+         </div>
+       </div>
     </template>
-  </n-layout>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -394,62 +403,125 @@ watch(currentQuestion, () => {
 </script>
 
 <style scoped>
-.content-layout {
-  display: flex;
-  height: calc(100vh - 120px);
-  margin: 20px;
-  gap: 20px;
+/* 页面容器 */
+.page-container {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f5f5;
 }
 
-.question-area {
+/* 主要内容布局 */
+.content-layout {
+  display: flex;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 140px);
+}
+
+/* 左侧主内容区 */
+.main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  min-width: 0;
 }
 
-.answer-card-sider {
+/* 右侧答题卡区域 */
+.sidebar {
+  width: 280px;
   flex-shrink: 0;
-  height: fit-content;
-  max-height: 100%;
+}
+
+.answer-card-container {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 200px);
   overflow-y: auto;
 }
 
+/* 题目相关样式 */
 .question-card,
 .answer-area,
 .answer-card {
-  flex-shrink: 0;
+  margin-bottom: 0;
 }
 
 .question-stem {
   font-size: 16px;
   line-height: 1.6;
+  color: #333;
+}
+
+/* 底部固定操作区 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  padding: 16px 20px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .action-buttons {
   display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-  gap: 12px;
+  justify-content: center;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-/* 响应式：小屏堆叠 */
-@media (max-width: 768px) {
+/* 为底部按钮留出空间 */
+.content-layout {
+  padding-bottom: 80px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
   .content-layout {
     flex-direction: column;
-    height: auto;
+    gap: 20px;
   }
-
-  .answer-card-sider {
-    width: 100% !important;
+  
+  .sidebar {
+    width: 100%;
+    order: -1;
+  }
+  
+  .answer-card-container {
+    position: static;
     max-height: 300px;
   }
 }
 
+@media (max-width: 768px) {
+  .page-container {
+    padding: 16px;
+  }
+  
+  .content-layout {
+    gap: 16px;
+  }
+  
+  .bottom-actions {
+    padding: 12px 16px;
+  }
+  
+  .action-buttons {
+    gap: 12px;
+  }
+}
+
+/* 通用样式 */
 .mb-4 {
   margin-bottom: 16px;
 }
 
+/* 加载和空状态 */
 .loading-container,
 .empty-container {
   display: flex;
@@ -457,39 +529,72 @@ watch(currentQuestion, () => {
   align-items: center;
   height: 60vh;
   width: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* 表单元素样式 */
 :deep(.n-radio-content),
 :deep(.n-checkbox-content) {
   font-size: 15px;
+  line-height: 1.5;
 }
 
-/* ============= 答题卡按钮样式强化 ============= */
-:deep(.answer-card-sider .n-button--default) {
+:deep(.n-radio),
+:deep(.n-checkbox) {
+  margin-bottom: 8px;
+}
+
+/* 答题卡按钮样式优化 */
+:deep(.answer-card-container .n-button) {
+  height: 40px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+:deep(.answer-card-container .n-button--default) {
   background-color: #ffffff !important;
-  border-color: #dcdcdc !important;
-  color: #333 !important;
+  border: 2px solid #e0e0e0 !important;
+  color: #666 !important;
 }
 
-:deep(.answer-card-sider .n-button--success) {
-  background-color: #18a058 !important;
-  border-color: #18a058 !important;
+:deep(.answer-card-container .n-button--success) {
+  background-color: #52c41a !important;
+  border: 2px solid #52c41a !important;
   color: #fff !important;
 }
 
-:deep(.answer-card-sider .n-button--error) {
-  background-color: #dd2c2c !important;
-  border-color: #dd2c2c !important;
+:deep(.answer-card-container .n-button--error) {
+  background-color: #ff4d4f !important;
+  border: 2px solid #ff4d4f !important;
   color: #fff !important;
 }
 
-/* 按钮悬停微调 */
-:deep(.answer-card-sider .n-button) {
-  transition: all 0.2s ease;
+:deep(.answer-card-container .n-button:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-:deep(.answer-card-sider .n-button:hover) {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+:deep(.answer-card-container .n-button--default:hover) {
+  border-color: #1890ff !important;
+  color: #1890ff !important;
+}
+
+/* 卡片样式优化 */
+:deep(.n-card) {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+:deep(.n-card .n-card-header) {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+:deep(.n-card .n-card-content) {
+  padding: 20px;
 }
 </style>
