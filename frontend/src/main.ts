@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
 import router from './router'
 import 'vfonts/Lato.css'
 import 'vfonts/FiraCode.css'
