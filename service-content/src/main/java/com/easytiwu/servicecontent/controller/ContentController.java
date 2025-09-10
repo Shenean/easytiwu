@@ -7,26 +7,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author sheny
+ */
 @RestController
 @RequestMapping({"/api/content", "/content"})
-public class QuestionController {
+public class ContentController {
 
     private final QuestionQueryService questionQueryService;
 
-    public QuestionController(QuestionQueryService questionQueryService) {
+    public ContentController(QuestionQueryService questionQueryService) {
         this.questionQueryService = questionQueryService;
     }
 
     @PostMapping("/questions")
     public List<QuestionDTO> getQuestions(@RequestBody QuestionQueryRequest req) {
-        Long bankId = Long.valueOf(req.getId());
-        String type = req.getType(); // all or wrong
+        Long bankId = req.getId();
+        String type = req.getType();
         return questionQueryService.queryQuestions(bankId, type);
     }
 
     @Data
     public static class QuestionQueryRequest {
-        private String id;   // bank id as string per example
-        private String type; // all | wrong
+        private Long id;
+        private String type;
     }
 }

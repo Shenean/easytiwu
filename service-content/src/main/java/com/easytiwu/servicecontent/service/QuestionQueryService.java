@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author sheny
+ */
 @Service
 public class QuestionQueryService {
 
@@ -29,11 +32,12 @@ public class QuestionQueryService {
         if ("wrong".equalsIgnoreCase(type)) {
             qw.eq(Question::getIsCompleted, 1).eq(Question::getIsCorrect, 0);
         }
-        // else: all -> no extra filter
-        List<Question> questions = questionMapper.selectList(qw);
-        if (questions.isEmpty()) return Collections.emptyList();
 
-        // Fetch options for all questions in one query
+        List<Question> questions = questionMapper.selectList(qw);
+        if (questions.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Long> qids = questions.stream().map(Question::getId).toList();
         LambdaQueryWrapper<QuestionOption> ow = new LambdaQueryWrapper<>();
         ow.in(QuestionOption::getQuestionId, qids);
@@ -64,7 +68,7 @@ public class QuestionQueryService {
                         od.setText(opt.getOptionContent());
                         return od;
                     })
-                    .collect(Collectors.toList());
+                    .toList();
             dto.setOptions(optDtos);
             dtos.add(dto);
         }
