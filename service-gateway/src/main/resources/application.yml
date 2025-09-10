@@ -16,14 +16,14 @@ spring:
             - StripPrefix=1
 
         - id: service-bank
-          uri: http://localhost:8083   # 银行/题库服务端口
+          uri: http://localhost:8082   # 银行/题库服务端口
           predicates:
             - Path=/api/bank/**
           filters:
             - StripPrefix=1
             
         - id: service-content
-          uri: http://localhost:8084   # 内容服务端口
+          uri: http://localhost:8083   # 内容服务端口
           predicates:
             - Path=/api/content/**
           filters:

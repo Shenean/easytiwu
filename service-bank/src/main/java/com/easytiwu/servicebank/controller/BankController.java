@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/api/bank")
+@RequestMapping("/bank")
 public class BankController {
 
     private final QuestionBankService questionBankService;
