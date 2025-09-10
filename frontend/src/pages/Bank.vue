@@ -26,6 +26,7 @@
 import { ref, onMounted, h } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
 import { useMessage, NButton, NSpace, useDialog, NEllipsis } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import axios, { AxiosError } from 'axios'
 
 // 定义统一响应格式
@@ -48,6 +49,7 @@ interface QuestionBank {
 // ================== 状态管理 ==================
 const message = useMessage()
 const dialog = useDialog()
+const router = useRouter()
 const banks = ref<QuestionBank[]>([])
 const loading = ref(false)
 
@@ -166,15 +168,23 @@ async function fetchBanks() {
 
 // ================== 操作处理 ==================
 function handlePractice(id: number) {
-  message.success(`进入题库 ID: ${id} 的全部练习`)
-  // TODO: 路由跳转 or 调用后端接口
-  // router.push(`/practice/${id}`)
+  try {
+    router.push({ name: 'content', params: { bankId: id.toString(), type: 'all' } })
+    message.success(`进入题库 ID: ${id} 的全部练习`)
+  } catch (error) {
+    console.error('路由跳转失败:', error)
+    message.error('页面跳转失败，请稍后重试')
+  }
 }
 
 function handleWrongSet(id: number) {
-  message.success(`进入题库 ID: ${id} 的错题集`)
-  // TODO: 路由跳转 or 调用后端接口
-  // router.push(`/wrong-set/${id}`)
+  try {
+    router.push({ name: 'content', params: { bankId: id.toString(), type: 'wrong' } })
+    message.success(`进入题库 ID: ${id} 的错题集`)
+  } catch (error) {
+    console.error('路由跳转失败:', error)
+    message.error('页面跳转失败，请稍后重试')
+  }
 }
 
 function confirmDelete(id: number) {
