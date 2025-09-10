@@ -8,8 +8,8 @@ spring:
     password: ${DB_PASSWORD:123456}
 
 server:
-  port: 8082
+  port: 8082  
 
 logging:
   level:
-    com.easytiwu.serviceupload: DEBUG
+    com.easytiwu.servicebank: DEBUG

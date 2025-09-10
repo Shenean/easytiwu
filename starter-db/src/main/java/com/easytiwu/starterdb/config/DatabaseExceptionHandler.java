@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * 数据库相关异常处理类
+ * @author sheny
  */
 @RestControllerAdvice
 public class DatabaseExceptionHandler {

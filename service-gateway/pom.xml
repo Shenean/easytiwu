@@ -13,19 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>service-gateway</name>
     <description>service-gateway</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -36,7 +23,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>4.1.1</version>
         </dependency>
         
         <dependency>

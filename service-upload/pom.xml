@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>com.easytiwu</groupId>
 			<artifactId>starter-db</artifactId>
-			<version>1.1.0</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- 添加Web依赖 -->
@@ -36,6 +36,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- 文件上传处理相关依赖 -->
@@ -64,19 +65,22 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>dashscope-sdk-java</artifactId>
-			<version>2.13.0</version>
 		</dependency>
 
 		<!-- Resilience4j 用于熔断降级 -->
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-circuitbreaker</artifactId>
-			<version>2.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-spring-boot3</artifactId>
-			<version>2.2.0</version>
+		</dependency>
+
+		<!-- 通用异常处理模块 -->
+		<dependency>
+			<groupId>com.easytiwu</groupId>
+			<artifactId>common-exception</artifactId>
 		</dependency>
 
 		<dependency>

@@ -12,6 +12,7 @@ import java.util.Arrays;
 /**
  * 跨域配置
  * 确保上传服务能正确处理来自网关的请求
+ * @author sheny
  */
 @Configuration
 public class CorsConfig {

@@ -46,22 +46,21 @@ api.interceptors.response.use(
           break
         case 404:
           console.error('请求的资源不存在')
+          // 添加更详细的404错误信息
+          if (error.config) {
+            console.error('请求URL:', error.config.baseURL + error.config.url)
+            console.error('请求方法:', error.config.method?.toUpperCase())
+          }
           break
         case 500:
           console.error('服务器内部错误')
           break
-        case 502:
-          console.error('网关错误')
-          break
-        case 503:
-          console.error('服务不可用')
-          break
         default:
-          console.error('未知错误:', status, data)
+          console.error(`未知错误状态码: ${status}`)
       }
     } else if (error.request) {
-      // 请求发送但没有收到响应
-      console.error('网络错误，请检查网络连接')
+      // 请求已发出但没有收到响应
+      console.error('网络错误或服务器无响应')
     } else {
       // 其他错误
       console.error('请求配置错误:', error.message)

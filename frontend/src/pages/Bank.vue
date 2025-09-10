@@ -18,19 +18,23 @@
         :data="banks"
         :loading="loading"
         :bordered="false"
-        :pagination="paginationReactive"
-        remote
-        @update:page="handlePageChange"
-        @update:page-size="handlePageSizeChange"
     />
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, h, reactive } from 'vue'
+import { ref, onMounted, h } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
 import { useMessage, NButton, NSpace, useDialog, NEllipsis } from 'naive-ui'
 import axios, { AxiosError } from 'axios'
+
+// 定义统一响应格式
+interface ApiResponse<T> {
+  code: number
+  message: string
+  data: T
+  timestamp: number
+}
 
 interface QuestionBank {
   id: number
@@ -47,14 +51,7 @@ const dialog = useDialog()
 const banks = ref<QuestionBank[]>([])
 const loading = ref(false)
 
-// 分页状态（支持响应式更新）
-const paginationReactive = reactive({
-  page: 1,
-  pageSize: 10,
-  showSizePicker: true,
-  pageSizes: [10, 20, 50, 100],
-  itemCount: 0 // 用于显示总条数（后端应返回）
-})
+
 
 // ================== 表格列定义 ==================
 const columns: DataTableColumns<QuestionBank> = [
@@ -142,23 +139,19 @@ const columns: DataTableColumns<QuestionBank> = [
 
 // ================== 数据获取 ==================
 /**
- * 获取题库数据（支持分页）
+ * 获取题库数据
  */
 async function fetchBanks() {
   loading.value = true
   try {
-    const params = {
-      page: paginationReactive.page,
-      page_size: paginationReactive.pageSize
+    const res = await axios.get<ApiResponse<QuestionBank[]>>('/api/bank')
+
+    // 检查响应格式并正确处理数据
+    if (res.data.code === 200) {
+      banks.value = res.data.data || []
+    } else {
+      message.error(res.data.message || '获取题库失败')
     }
-
-    const res = await axios.get<{
-      data: QuestionBank[]
-      total: number
-    }>('/api/question-banks', { params })
-
-    banks.value = res.data.data
-    paginationReactive.itemCount = res.data.total || 0
   } catch (err) {
     console.error('[API Error] 获取题库失败:', err)
     if (err instanceof AxiosError) {
@@ -169,18 +162,6 @@ async function fetchBanks() {
   } finally {
     loading.value = false
   }
-}
-
-// ================== 分页处理 ==================
-function handlePageChange(page: number) {
-  paginationReactive.page = page
-  fetchBanks()
-}
-
-function handlePageSizeChange(pageSize: number) {
-  paginationReactive.pageSize = pageSize
-  paginationReactive.page = 1 // 切换每页条数时重置到第一页
-  fetchBanks()
 }
 
 // ================== 操作处理 ==================
@@ -216,14 +197,15 @@ function confirmDelete(id: number) {
 
 async function handleDelete(id: number) {
   try {
-    await axios.delete(`/api/question-banks/${id}`)
-    message.success('删除成功 ✅')
-    // 优化：前端移除，避免重新拉取全部数据
-    banks.value = banks.value.filter(b => b.id !== id)
-    // 如果当前页数据被删空，且不是第一页，则自动跳回上一页
-    if (banks.value.length === 0 && paginationReactive.page > 1) {
-      paginationReactive.page -= 1
-      await fetchBanks()
+    const res = await axios.delete<ApiResponse<void>>(`/api/bank/${id}`)
+    
+    // 检查响应格式
+    if (res.data.code === 200) {
+      message.success('删除成功 ✅')
+      // 优化：前端移除，避免重新拉取全部数据
+      banks.value = banks.value.filter(b => b.id !== id)
+    } else {
+      message.error(res.data.message || '删除失败')
     }
   } catch (err) {
     console.error('[API Error] 删除失败:', err)
@@ -243,7 +225,6 @@ onMounted(() => {
 // ================== 暴露方法（供父组件调用） ==================
 defineExpose({
   refresh: fetchBanks,
-  getCurrentPage: () => paginationReactive.page,
   getBanks: () => [...banks.value]
 })
 </script>

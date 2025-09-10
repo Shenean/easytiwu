@@ -4,27 +4,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
  * 网关请求日志过滤器
  * 记录完整的请求和响应信息用于问题追踪
+ * @author sheny
  */
 @Component
 public class LoggingGatewayFilterFactory extends AbstractGatewayFilterFactory<LoggingGatewayFilterFactory.Config> {
     
     private static final Logger logger = LoggerFactory.getLogger(LoggingGatewayFilterFactory.class);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     
     public LoggingGatewayFilterFactory() {
         super(Config.class);
@@ -37,7 +33,7 @@ public class LoggingGatewayFilterFactory extends AbstractGatewayFilterFactory<Lo
             ServerHttpResponse response = exchange.getResponse();
             
             String requestId = generateRequestId();
-            String timestamp = LocalDateTime.now().format(formatter);
+            String timestamp = LocalDateTime.now().format(FORMATTER);
             
             // 记录请求信息
             logger.info("[{}] [{}] 请求开始 - Method: {}, URI: {}, Headers: {}, RemoteAddress: {}",
@@ -49,7 +45,7 @@ public class LoggingGatewayFilterFactory extends AbstractGatewayFilterFactory<Lo
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 long endTime = System.currentTimeMillis();
                 long duration = endTime - startTime;
-                String endTimestamp = LocalDateTime.now().format(formatter);
+                String endTimestamp = LocalDateTime.now().format(FORMATTER);
                 
                 // 记录响应信息
                 logger.info("[{}] [{}] 请求完成 - Status: {}, Duration: {}ms, Headers: {}",
