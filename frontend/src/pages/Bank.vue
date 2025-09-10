@@ -98,7 +98,7 @@ const columns: DataTableColumns<QuestionBank> = [
     key: 'actions',
     width: 260,
     align: 'center',
-    fixed: 'right', // 固定右侧，滚动时保持可见
+    fixed: 'right', 
     render(row) {
       return h(NSpace, { size: 'small' }, () => [
         h(
