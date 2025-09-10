@@ -241,18 +241,80 @@ defineExpose({
 
 <style scoped>
 .bank-card {
-  max-width: 1000px;
-  margin: 40px auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
+  max-width: 1080px;
+  margin: 48px auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+.bank-card:hover {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
 }
 
 .empty-state {
-  padding: 40px 0;
+  padding: 48px 0;
   text-align: center;
+  animation: fadeIn 0.5s ease-out;
 }
 
-:deep(.n-data-table-th--right) {
-  background-color: var(--n-th-color);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+/* 表格优化：鼠标悬停高亮当前行 */
+:deep(.n-data-table-tr:hover) {
+  background-color: #f7fefb !important;
+  transition: background-color 0.25s ease;
+}
+
+/* 操作列按钮组统一 spacing、视觉平衡 */
+:deep(.n-space) {
+  justify-content: center;
+  align-items: center;
+}
+
+:deep(.n-button) {
+  transition: all 0.2s ease;
+}
+
+:deep(.n-button:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+:deep(.n-button:active) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 空状态提示按钮动画 */
+:deep(.n-empty .n-button) {
+  animation: fadeIn 0.3s ease 0.2s backwards;
+}
+
+/* 小屏适配优化 */
+@media (max-width: 768px) {
+  .bank-card {
+    margin: 24px 12px;
+    padding: 12px;
+  }
+
+  .empty-state {
+    padding: 32px 0;
+  }
+
+  :deep(.n-space) {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
 </style>

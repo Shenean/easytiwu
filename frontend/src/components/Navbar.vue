@@ -1,31 +1,32 @@
 <template>
   <n-layout-header bordered class="navbar">
     <div class="navbar-container">
-      <!-- Logo / 标题 -->
+      <!-- Logo -->
       <router-link to="/" class="logo" aria-label="返回首页">
         EasyTiwu
       </router-link>
 
-      <!-- 菜单 -->
+      <!-- 桌面端菜单 -->
       <n-menu
-          v-if="!isMobile"
-          :value="currentRouteName"
-          mode="horizontal"
-          :options="menuOptions"
-          @update:value="handleMenuSelect"
-          class="menu"
-          :disabled-keys="disabledKeys"
+        v-if="!isMobile"
+        :value="currentRouteName"
+        mode="horizontal"
+        :options="menuOptions"
+        @update:value="handleMenuSelect"
+        class="menu"
+        :disabled-keys="disabledKeys"
       />
 
       <!-- 移动端汉堡菜单 -->
       <n-dropdown
-          v-else
-          :options="menuOptions"
-          trigger="click"
-          @select="handleMenuSelect"
-          placement="bottom-end"
+        v-else
+        :options="menuOptions"
+        trigger="click"
+        placement="bottom-end"
+        animation="fade-in-scale-up-transition"
+        @select="handleMenuSelect"
       >
-        <n-button text>
+        <n-button text aria-label="菜单" class="btn-ripple">
           <n-icon size="24">
             <i class="i-ion-menu-outline"></i>
           </n-icon>
@@ -44,15 +45,15 @@ import { useWindowSize } from '@vueuse/core'
 const route = useRoute()
 const router = useRouter()
 
-// 当前路由名（带默认 fallback）
+// 当前路由名（默认 fallback）
 const currentRouteName = computed(() => {
   return (route.name?.toString() || 'upload') as string
 })
 
-// 禁用当前路由对应的菜单项（避免重复跳转）
+// 禁用当前所在路由项
 const disabledKeys = computed(() => [currentRouteName.value])
 
-// 菜单配置
+// 菜单配置项
 const menuOptions = ref<MenuOption[]>([
   {
     label: '上传题库',
@@ -63,60 +64,74 @@ const menuOptions = ref<MenuOption[]>([
     label: '题库列表',
     key: 'bank',
     icon: () => h('i', { class: 'i-ion-library-outline' })
+  },
+  {
+    label: '设置',
+    key: 'settings',
+    icon: () => h('i', { class: 'i-ion-settings-outline' })
   }
 ])
 
-// 菜单点击处理
+// 菜单选择跳转
 const handleMenuSelect = (key: string) => {
-  if (key === currentRouteName.value) return // 避免重复跳转
+  if (key === currentRouteName.value) return
   router.push({ name: key }).catch(err => {
     console.warn('[Router] Navigation cancelled or duplicated:', err)
   })
 }
 
-// 响应式：判断是否为移动端
+// 响应式判断是否为移动端
 const { width } = useWindowSize()
 const MOBILE_BREAKPOINT = 768
 const isMobile = computed(() => width.value < MOBILE_BREAKPOINT)
 
-// 可选：监听页面返回/前进，同步菜单选中状态（如手动改 URL）
+// 路由变化监听（可选增强）
 let unwatchRoute: (() => void) | null = null
-
 onMounted(() => {
-  // 监听路由变化，确保菜单同步（虽然 computed 已响应，但加强健壮性）
   unwatchRoute = router.afterEach(() => {
-    // 无需操作，currentRouteName 已自动更新
+    // currentRouteName 已自动更新
   })
 })
-
 onUnmounted(() => {
   if (unwatchRoute) unwatchRoute()
 })
 
-// 暴露方法供外部控制
+// 暴露方法（可选）
 defineExpose({
   refreshMenu: () => {
-    // 强制刷新菜单状态（极端情况备用）
+    // 预留外部刷新入口
   }
 })
 </script>
 
 <style scoped>
 .navbar {
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  height: 64px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 15px 15px 0 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* Safari 兼容 */
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  border-radius: 16px 16px 0 0;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: all 0.3s ease;
+  height: 64px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  animation: navbar-fade-in 0.6s ease-out both;
+}
+
+@keyframes navbar-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .navbar-container {
@@ -126,6 +141,7 @@ defineExpose({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .logo {
@@ -135,40 +151,64 @@ defineExpose({
   text-decoration: none;
   padding: 0 15px;
   letter-spacing: -0.5px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .logo:hover {
   color: #18a058;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .menu {
-  background-color: transparent;
   height: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
 }
 
 :deep(.n-menu-item-content) {
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 :deep(.n-menu-item-content:hover),
 :deep(.n-menu-item.n-menu-item--active .n-menu-item-content) {
   color: #18a058 !important;
+  transform: scale(1.03);
 }
 
-/* 毛玻璃增强：加一层微妙渐变 */
+/* 毛玻璃叠加渐变 */
 .navbar::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 100%);
   pointer-events: none;
-  border-radius: 15px 15px 0 0;
+  border-radius: 16px 16px 0 0;
+  z-index: -1;
+}
+
+/* Ripple 效果 */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+.btn-ripple:active::after {
+  width: 120%;
+  height: 120%;
+  transition: 0s;
 }
 
 /* 移动端适配 */
@@ -181,6 +221,10 @@ defineExpose({
   .logo {
     font-size: 20px;
     padding: 0 8px;
+  }
+
+  .n-button {
+    padding: 6px 10px;
   }
 }
 </style>

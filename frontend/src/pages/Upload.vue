@@ -272,28 +272,47 @@ defineExpose({
 
 <style scoped>
 .upload-card {
-  max-width: 600px;
+  max-width: 640px;
   margin: 40px auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+.upload-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
 :deep(.n-upload-dragger) {
   transition: all 0.3s ease;
-  border-radius: 8px;
+  border: 2px dashed #d9d9d9;
+  padding: 24px;
+  border-radius: 10px;
+  background-color: #fafafa;
+  cursor: pointer;
 }
+
 :deep(.n-upload-dragger:hover) {
   border-color: #18a058 !important;
-  background-color: #f6ffed;
+  background-color: #f0fdf4;
+  transform: scale(1.02);
 }
 
 .uploaded-file {
   padding: 16px 0;
   text-align: center;
+  word-break: break-all;
 }
 
 .file-tag {
   font-size: 14px;
+  max-width: 90%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .form-actions {
@@ -301,5 +320,37 @@ defineExpose({
   justify-content: flex-end;
   gap: 12px;
   width: 100%;
+  margin-top: 12px;
 }
+
+:deep(.n-button) {
+  transition: all 0.2s ease;
+}
+
+:deep(.n-button:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+:deep(.n-button:active) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+@media (max-width: 480px) {
+  .upload-card {
+    margin: 24px 12px;
+    padding: 12px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .file-tag {
+    font-size: 13px;
+  }
+}
+
 </style>
