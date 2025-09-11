@@ -63,33 +63,6 @@ public class BusinessException extends RuntimeException {
     }
     
     /**
-     * 构造函数 - 使用错误码和错误信息
-     * 
-     * @param code 错误码
-     * @param message 错误信息
-     */
-    public BusinessException(Integer code, String message) {
-        super(message);
-        this.code = code;
-        this.message = message;
-        this.detailMessage = null;
-    }
-    
-    /**
-     * 构造函数 - 使用错误码、错误信息和原因
-     * 
-     * @param code 错误码
-     * @param message 错误信息
-     * @param cause 原因
-     */
-    public BusinessException(Integer code, String message, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-        this.message = message;
-        this.detailMessage = cause != null ? cause.getMessage() : null;
-    }
-    
-    /**
      * 构造函数 - 使用ErrorCode枚举和原因
      * 
      * @param errorCode 错误码枚举
@@ -100,35 +73,6 @@ public class BusinessException extends RuntimeException {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
         this.detailMessage = cause != null ? cause.getMessage() : null;
-    }
-    
-    /**
-     * 构造函数 - 使用ErrorCode枚举、自定义消息和原因
-     * 
-     * @param errorCode 错误码枚举
-     * @param customMessage 自定义错误信息
-     * @param cause 原因
-     */
-    public BusinessException(ErrorCode errorCode, String customMessage, Throwable cause) {
-        super(customMessage, cause);
-        this.code = errorCode.getCode();
-        this.message = customMessage;
-        this.detailMessage = cause != null ? cause.getMessage() : null;
-    }
-    
-    /**
-     * 构造函数 - 完整参数
-     * 
-     * @param code 错误码
-     * @param message 错误信息
-     * @param detailMessage 详细错误信息
-     * @param cause 原因
-     */
-    public BusinessException(Integer code, String message, String detailMessage, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-        this.message = message;
-        this.detailMessage = detailMessage;
     }
     
     public Integer getCode() {
@@ -175,17 +119,6 @@ public class BusinessException extends RuntimeException {
      */
     public static BusinessException of(ErrorCode errorCode, String customMessage) {
         return new BusinessException(errorCode, customMessage);
-    }
-    
-    /**
-     * 静态工厂方法 - 创建业务异常（带原因）
-     * 
-     * @param errorCode 错误码枚举
-     * @param cause 原因
-     * @return BusinessException实例
-     */
-    public static BusinessException of(ErrorCode errorCode, Throwable cause) {
-        return new BusinessException(errorCode, cause);
     }
     
     @Override

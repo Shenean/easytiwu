@@ -28,7 +28,7 @@
                       <div class="preview-main"></div>
                     </div>
                   </div>
-                  <span class="theme-label">浅色主题</span>
+                  <span class="theme-label">浅色主题 🌞</span>
                 </n-radio>
               </div>
               <div class="theme-option">
@@ -40,7 +40,7 @@
                       <div class="preview-main"></div>
                     </div>
                   </div>
-                  <span class="theme-label">深色主题</span>
+                  <span class="theme-label">深色主题 🌙</span>
                 </n-radio>
               </div>
               <div class="theme-option">
@@ -88,7 +88,7 @@ const message = useMessage()
 // 主题相关
 const currentTheme = ref<'light' | 'dark' | 'auto'>('light')
 
-// 注入全局主题方法（稍后在App.vue中提供）
+// 注入全局主题方法（在 App.vue 提供）
 const setGlobalTheme = inject<(theme: string) => void>('setGlobalTheme')
 const getGlobalTheme = inject<() => string>('getGlobalTheme')
 
@@ -97,7 +97,6 @@ onMounted(() => {
   if (getGlobalTheme) {
     currentTheme.value = getGlobalTheme() as 'light' | 'dark' | 'auto'
   } else {
-    // 从localStorage读取
     const savedTheme = localStorage.getItem('app-theme') || 'light'
     currentTheme.value = savedTheme as 'light' | 'dark' | 'auto'
   }
@@ -106,16 +105,9 @@ onMounted(() => {
 // 处理主题切换
 const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   currentTheme.value = theme
-  
-  // 保存到localStorage
   localStorage.setItem('app-theme', theme)
-  
-  // 调用全局主题设置方法
-  if (setGlobalTheme) {
-    setGlobalTheme(theme)
-  }
-  
-  // 显示成功消息
+  if (setGlobalTheme) setGlobalTheme(theme)
+
   const themeNames = {
     light: '浅色主题',
     dark: '深色主题',
@@ -127,14 +119,16 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
 
 <style scoped>
 .settings-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px;
 }
 
 .settings-card {
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -142,11 +136,15 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   padding: 20px 0;
 }
 
+/* 每个分区增加分隔线 */
 .setting-section {
-  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed var(--n-border-color);
+  margin-bottom: 32px;
 }
 
 .setting-section:last-child {
+  border-bottom: none;
   margin-bottom: 0;
 }
 
@@ -174,6 +172,7 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   font-size: 14px;
 }
 
+/* 主题选项 */
 .theme-options {
   margin-top: 16px;
 }
@@ -182,11 +181,13 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .theme-option {
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
+  max-width: 280px;
 }
 
 .theme-radio {
@@ -202,18 +203,19 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
 .theme-preview {
   width: 100%;
   height: 120px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 2px solid transparent;
   overflow: hidden;
   margin-bottom: 12px;
-  transition: all 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
   cursor: pointer;
   position: relative;
 }
 
 .theme-radio:hover .theme-preview {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: scale(1.03);
+  filter: brightness(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 :deep(.n-radio--checked) .theme-preview {
@@ -221,75 +223,65 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   box-shadow: 0 0 0 3px rgba(24, 160, 88, 0.2);
 }
 
-/* 浅色主题预览 */
+/* 浅色主题 */
 .light-preview {
   background: #ffffff;
 }
-
 .light-preview .preview-header {
   height: 30px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border-bottom: 1px solid #dee2e6;
 }
-
 .light-preview .preview-content {
   display: flex;
   height: 90px;
 }
-
 .light-preview .preview-sidebar {
   width: 30%;
   background: #f8f9fa;
   border-right: 1px solid #dee2e6;
 }
-
 .light-preview .preview-main {
   flex: 1;
   background: #ffffff;
 }
 
-/* 深色主题预览 */
+/* 深色主题 */
 .dark-preview {
   background: #1a1a1a;
 }
-
 .dark-preview .preview-header {
   height: 30px;
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
   border-bottom: 1px solid #404040;
 }
-
 .dark-preview .preview-content {
   display: flex;
   height: 90px;
 }
-
 .dark-preview .preview-sidebar {
   width: 30%;
   background: #2d2d2d;
   border-right: 1px solid #404040;
 }
-
 .dark-preview .preview-main {
   flex: 1;
   background: #1a1a1a;
 }
 
-/* 自动主题预览 */
+/* 自动主题 */
 .auto-preview {
-  background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #1a1a1a 50%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #ffffff 50%, #1a1a1a 50%);
 }
-
 .auto-preview .preview-header {
   height: 30px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #f8f9fa 50%, #2d2d2d 50%, #2d2d2d 100%);
+  background: linear-gradient(135deg, #f8f9fa 50%, #2d2d2d 50%);
   border-bottom: 1px solid #dee2e6;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
-
 .preview-sun {
   width: 12px;
   height: 12px;
@@ -299,7 +291,6 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   left: 20%;
   animation: rotate 3s linear infinite;
 }
-
 .preview-moon {
   width: 12px;
   height: 12px;
@@ -309,26 +300,21 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   right: 20%;
   clip-path: inset(0 0 0 30%);
 }
-
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
 .auto-preview .preview-content {
   display: flex;
   height: 90px;
 }
-
 .auto-preview .preview-sidebar {
   width: 30%;
-  background: linear-gradient(135deg, #f8f9fa 0%, #f8f9fa 50%, #2d2d2d 50%, #2d2d2d 100%);
-  border-right: 1px solid #dee2e6;
+  background: linear-gradient(135deg, #f8f9fa 50%, #2d2d2d 50%);
 }
-
 .auto-preview .preview-main {
   flex: 1;
-  background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #1a1a1a 50%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #ffffff 50%, #1a1a1a 50%);
 }
 
 .theme-label {
@@ -339,21 +325,15 @@ const handleThemeChange = (theme: 'light' | 'dark' | 'auto') => {
   font-size: 14px;
 }
 
-/* 响应式设计 */
+/* 响应式 */
 @media (max-width: 768px) {
   .settings-container {
     padding: 16px;
   }
-  
   .theme-radio-group {
     flex-direction: column;
     gap: 16px;
   }
-  
-  .theme-option {
-    min-width: auto;
-  }
-  
   .theme-preview {
     height: 100px;
   }

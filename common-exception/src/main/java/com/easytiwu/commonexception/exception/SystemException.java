@@ -63,33 +63,6 @@ public class SystemException extends RuntimeException {
     }
     
     /**
-     * 构造函数 - 使用错误码和错误信息
-     * 
-     * @param code 错误码
-     * @param message 错误信息
-     */
-    public SystemException(Integer code, String message) {
-        super(message);
-        this.code = code;
-        this.message = message;
-        this.detailMessage = null;
-    }
-    
-    /**
-     * 构造函数 - 使用错误码、错误信息和原因
-     * 
-     * @param code 错误码
-     * @param message 错误信息
-     * @param cause 原因
-     */
-    public SystemException(Integer code, String message, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-        this.message = message;
-        this.detailMessage = cause != null ? cause.getMessage() : null;
-    }
-    
-    /**
      * 构造函数 - 使用ErrorCode枚举和原因
      * 
      * @param errorCode 错误码枚举
@@ -114,21 +87,6 @@ public class SystemException extends RuntimeException {
         this.code = errorCode.getCode();
         this.message = customMessage;
         this.detailMessage = cause != null ? cause.getMessage() : null;
-    }
-    
-    /**
-     * 构造函数 - 完整参数
-     * 
-     * @param code 错误码
-     * @param message 错误信息
-     * @param detailMessage 详细错误信息
-     * @param cause 原因
-     */
-    public SystemException(Integer code, String message, String detailMessage, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-        this.message = message;
-        this.detailMessage = detailMessage;
     }
     
     public Integer getCode() {
@@ -167,17 +125,6 @@ public class SystemException extends RuntimeException {
     }
     
     /**
-     * 静态工厂方法 - 创建系统异常（自定义消息）
-     * 
-     * @param errorCode 错误码枚举
-     * @param customMessage 自定义错误信息
-     * @return SystemException实例
-     */
-    public static SystemException of(ErrorCode errorCode, String customMessage) {
-        return new SystemException(errorCode, customMessage);
-    }
-    
-    /**
      * 静态工厂方法 - 创建系统异常（带原因）
      * 
      * @param errorCode 错误码枚举
@@ -206,7 +153,7 @@ public class SystemException extends RuntimeException {
      * @return SystemException实例
      */
     public static SystemException externalServiceError(String serviceName, Throwable cause) {
-        return new SystemException(ErrorCode.EXTERNAL_SERVICE_ERROR, 
+        return new SystemException(ErrorCode.INTERNAL_SERVER_ERROR, 
                 "调用外部服务失败: " + serviceName, cause);
     }
     
@@ -219,7 +166,7 @@ public class SystemException extends RuntimeException {
      * @return SystemException实例
      */
     public static SystemException fileOperationError(String operation, String fileName, Throwable cause) {
-        return new SystemException(ErrorCode.FILE_UPLOAD_ERROR, 
+        return new SystemException(ErrorCode.FILE_SIZE_EXCEEDED, 
                 String.format("文件%s失败: %s", operation, fileName), cause);
     }
     

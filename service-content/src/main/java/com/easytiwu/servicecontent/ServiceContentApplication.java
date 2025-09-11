@@ -6,7 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author sheny
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+    "com.easytiwu.servicecontent",
+    "com.easytiwu.commonexception"
+})
 public class ServiceContentApplication {
 
     public static void main(String[] args) {

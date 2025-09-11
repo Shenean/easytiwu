@@ -43,7 +43,6 @@ public class FileParsingService {
                     return extractor.getText();
                 }
             } else if (fname.endsWith(".txt")) {
-                // Plain text file: read all text (assuming UTF-8)
                 byte[] bytes = in.readAllBytes();
                 return new String(bytes, StandardCharsets.UTF_8);
             } else {

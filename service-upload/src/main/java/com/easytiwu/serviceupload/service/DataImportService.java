@@ -41,7 +41,6 @@ public class DataImportService {
             String clean = questionsJson.trim();
 
             if (clean.startsWith("[")) {
-                // LLM 输出裸数组，自动包装成 {"questions": [...]}
                 JSONArray arr = JSON.parseArray(clean);
                 root = new JSONObject();
                 root.put("questions", arr);
@@ -53,7 +52,9 @@ public class DataImportService {
         }
 
         JSONArray arr = root.getJSONArray("questions");
-        if (arr == null) throw new IllegalArgumentException("JSON 缺少 questions 数组");
+        if (arr == null) {
+            throw new IllegalArgumentException("JSON 缺少 questions 数组");
+        }
 
         // === 创建题库 ===
         QuestionBank bank = new QuestionBank();
@@ -86,7 +87,9 @@ public class DataImportService {
                     JSONObject opt = options.getJSONObject(j);
                     String label = opt.getString("label");
                     String text = opt.getString("text");
-                    if (label == null || text == null) continue;
+                    if (label == null || text == null) {
+                        continue;
+                    }
 
                     QuestionOption o = new QuestionOption();
                     o.setQuestionId(question.getId());

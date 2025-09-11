@@ -2,6 +2,8 @@ package com.easytiwu.servicecontent.controller;
 
 import com.easytiwu.servicecontent.dto.QuestionDTO;
 import com.easytiwu.servicecontent.service.QuestionQueryService;
+import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.commonexception.enums.ErrorCode;
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,15 +25,41 @@ public class ContentController {
     @PostMapping("/questions")
     public List<QuestionDTO> getQuestions(@RequestBody QuestionQueryRequest req) {
         if (req.getBankId() == null) {
-            throw new IllegalArgumentException("参数 bankId 不能为空");
+            throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 bankId 不能为空");
         }
         return questionQueryService.queryQuestions(req.getBankId(), req.getType());
     }
 
+    @PostMapping("/verify-answer")
+    public AnswerVerificationResponse verifyAnswer(@RequestBody AnswerVerificationRequest req) {
+        if (req.getQuestionId() == null) {
+            throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 questionId 不能为空");
+        }
+        if (req.getUserAnswer() == null || req.getUserAnswer().trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 userAnswer 不能为空");
+        }
+        return questionQueryService.verifyAnswer(req.getQuestionId(), req.getUserAnswer());
+    }
 
     @Data
     public static class QuestionQueryRequest {
         private Long bankId;
         private String type;
+    }
+
+    @Data
+    public static class AnswerVerificationRequest {
+        private Long questionId;
+        private String userAnswer;
+    }
+
+    @Data
+    public static class AnswerVerificationResponse {
+        private Boolean isCorrect;
+        private String correctAnswer;
+        private String analysis;
+        private String message;
+        private Long questionId;
+        private String userAnswer;
     }
 }

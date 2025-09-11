@@ -109,29 +109,6 @@ public class Result<T> implements Serializable {
     }
     
     /**
-     * 成功响应（自定义消息）
-     * 
-     * @param message 响应消息
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> success(String message) {
-        return new Result<>(ErrorCode.SUCCESS.getCode(), message, null);
-    }
-    
-    /**
-     * 成功响应（自定义消息和数据）
-     * 
-     * @param message 响应消息
-     * @param data 响应数据
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> success(String message, T data) {
-        return new Result<>(ErrorCode.SUCCESS.getCode(), message, data);
-    }
-    
-    /**
      * 失败响应（使用ErrorCode枚举）
      * 
      * @param errorCode 错误码枚举
@@ -152,106 +129,6 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result<T> error(ErrorCode errorCode, String customMessage) {
         return new Result<>(errorCode.getCode(), customMessage, null);
-    }
-    
-    /**
-     * 失败响应（使用错误码和错误消息）
-     * 
-     * @param code 错误码
-     * @param message 错误消息
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> error(Integer code, String message) {
-        return new Result<>(code, message, null);
-    }
-    
-    /**
-     * 失败响应（使用默认错误信息）
-     * 
-     * @param message 错误消息
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> error(String message) {
-        return new Result<>(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), message, null);
-    }
-    
-    /**
-     * 参数校验失败响应
-     * 
-     * @param message 错误消息
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> paramError(String message) {
-        Result<T> result = new Result<>(ErrorCode.PARAM_INVALID, null);
-        result.setMessage(message);
-        return result;
-    }
-    
-    /**
-     * 业务异常响应
-     * 
-     * @param message 错误消息
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> businessError(String message) {
-        Result<T> result = new Result<>(ErrorCode.BUSINESS_ERROR, null);
-        result.setMessage(message);
-        return result;
-    }
-    
-    /**
-     * 系统异常响应
-     * 
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> systemError() {
-        return new Result<>(ErrorCode.INTERNAL_SERVER_ERROR, null);
-    }
-    
-    /**
-     * 系统异常响应（自定义消息）
-     * 
-     * @param message 错误消息
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> systemError(String message) {
-        return new Result<>(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), message, null);
-    }
-    
-    /**
-     * 未授权响应
-     * 
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> unauthorized() {
-        return new Result<>(ErrorCode.UNAUTHORIZED, null);
-    }
-    
-    /**
-     * 禁止访问响应
-     * 
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> forbidden() {
-        return new Result<>(ErrorCode.FORBIDDEN, null);
-    }
-    
-    /**
-     * 资源不存在响应
-     * 
-     * @param <T> 数据类型
-     * @return Result实例
-     */
-    public static <T> Result<T> notFound() {
-        return new Result<>(ErrorCode.NOT_FOUND, null);
     }
     
     /**

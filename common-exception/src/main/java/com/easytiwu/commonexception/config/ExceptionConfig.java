@@ -15,22 +15,27 @@ import org.springframework.context.annotation.Configuration;
 public class ExceptionConfig {
     
     /**
-     * 是否启用详细错误信息（开发环境建议开启，生产环境建议关闭）
+     * 是否启用详细错误信息（开发环境建议启用）
      */
-    private boolean enableDetailMessage = false;
-    
-    /**
-     * 是否启用异常堆栈跟踪（开发环境建议开启，生产环境建议关闭）
-     */
-    private boolean enableStackTrace = false;
+    private boolean enableDetailedErrorInfo = false;
     
     /**
      * 是否启用异常日志记录
      */
+    private boolean enableExceptionLogging = true;
+    
+    /**
+     * 是否启用异常堆栈跟踪
+     */
+    private boolean enableStackTrace = false;
+    
+    /**
+     * 是否启用日志记录
+     */
     private boolean enableLogging = true;
     
     /**
-     * 异常日志级别（ERROR, WARN, INFO, DEBUG）
+     * 日志级别
      */
     private String logLevel = "ERROR";
     
@@ -40,17 +45,17 @@ public class ExceptionConfig {
     private boolean enableTraceId = true;
     
     /**
-     * 追踪ID的Header名称
+     * 追踪ID的请求头名称
      */
     private String traceIdHeader = "X-Trace-Id";
     
     /**
-     * 默认错误消息（当异常消息为空时使用）
+     * 默认错误信息
      */
-    private String defaultErrorMessage = "系统繁忙，请稍后重试";
+    private String defaultErrorMessage = "系统内部错误";
     
     /**
-     * 是否启用国际化支持
+     * 是否启用国际化
      */
     private boolean enableI18n = false;
     
@@ -59,18 +64,21 @@ public class ExceptionConfig {
      */
     private String defaultLocale = "zh_CN";
     
-    /**
-     * 异常响应格式配置
-     */
-    private ResponseFormat responseFormat = new ResponseFormat();
-    
     // Getter and Setter methods
-    public boolean isEnableDetailMessage() {
-        return enableDetailMessage;
+    public boolean isEnableDetailedErrorInfo() {
+        return enableDetailedErrorInfo;
     }
     
-    public void setEnableDetailMessage(boolean enableDetailMessage) {
-        this.enableDetailMessage = enableDetailMessage;
+    public void setEnableDetailedErrorInfo(boolean enableDetailedErrorInfo) {
+        this.enableDetailedErrorInfo = enableDetailedErrorInfo;
+    }
+    
+    public boolean isEnableExceptionLogging() {
+        return enableExceptionLogging;
+    }
+    
+    public void setEnableExceptionLogging(boolean enableExceptionLogging) {
+        this.enableExceptionLogging = enableExceptionLogging;
     }
     
     public boolean isEnableStackTrace() {
@@ -137,57 +145,5 @@ public class ExceptionConfig {
         this.defaultLocale = defaultLocale;
     }
     
-    public ResponseFormat getResponseFormat() {
-        return responseFormat;
-    }
-    
-    public void setResponseFormat(ResponseFormat responseFormat) {
-        this.responseFormat = responseFormat;
-    }
-    
-    /**
-     * 响应格式配置
-     */
-    public static class ResponseFormat {
-        
-        /**
-         * 是否包含时间戳
-         */
-        private boolean includeTimestamp = true;
-        
-        /**
-         * 是否包含请求路径
-         */
-        private boolean includePath = true;
-        
-        /**
-         * 时间戳格式
-         */
-        private String timestampFormat = "yyyy-MM-dd HH:mm:ss";
-        
-        // Getter and Setter methods
-        public boolean isIncludeTimestamp() {
-            return includeTimestamp;
-        }
-        
-        public void setIncludeTimestamp(boolean includeTimestamp) {
-            this.includeTimestamp = includeTimestamp;
-        }
-        
-        public boolean isIncludePath() {
-            return includePath;
-        }
-        
-        public void setIncludePath(boolean includePath) {
-            this.includePath = includePath;
-        }
-        
-        public String getTimestampFormat() {
-            return timestampFormat;
-        }
-        
-        public void setTimestampFormat(String timestampFormat) {
-            this.timestampFormat = timestampFormat;
-        }
-    }
+
 }

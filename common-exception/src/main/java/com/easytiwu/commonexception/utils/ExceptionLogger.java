@@ -233,63 +233,18 @@ public class ExceptionLogger {
     }
     
     /**
-     * 记录系统异常日志（通用Exception）
+     * 记录通用异常日志
      * 
-     * @param exception 系统异常
+     * @param exception 异常
      */
-    public void logSystemException(Exception exception) {
+    public void logException(Exception exception) {
         String traceId = generateTraceId();
         
         try {
             MDC.put(TRACE_ID_KEY, traceId);
-            MDC.put(EXCEPTION_TYPE_KEY, "SYSTEM");
+            MDC.put(EXCEPTION_TYPE_KEY, "GENERAL");
             
-            logger.error("[系统异常] 异常类型: {}, 错误信息: {}, 追踪ID: {}", 
-                    exception.getClass().getSimpleName(), 
-                    exception.getMessage(),
-                    traceId, 
-                    exception);
-            
-        } finally {
-            MDC.clear();
-        }
-    }
-    
-    /**
-     * 记录参数异常日志（通用Exception）
-     * 
-     * @param exception 参数异常
-     */
-    public void logParameterException(Exception exception) {
-        String traceId = generateTraceId();
-        
-        try {
-            MDC.put(TRACE_ID_KEY, traceId);
-            MDC.put(EXCEPTION_TYPE_KEY, "PARAMETER");
-            
-            logger.warn("[参数异常] 异常类型: {}, 错误信息: {}, 追踪ID: {}", 
-                    exception.getClass().getSimpleName(), 
-                    exception.getMessage(),
-                    traceId);
-            
-        } finally {
-            MDC.clear();
-        }
-    }
-    
-    /**
-     * 记录未知异常日志
-     * 
-     * @param exception 未知异常
-     */
-    public void logUnknownException(Exception exception) {
-        String traceId = generateTraceId();
-        
-        try {
-            MDC.put(TRACE_ID_KEY, traceId);
-            MDC.put(EXCEPTION_TYPE_KEY, "UNKNOWN");
-            
-            logger.error("[未知异常] 异常类型: {}, 错误信息: {}, 追踪ID: {}", 
+            logger.error("[通用异常] 异常类型: {}, 错误信息: {}, 追踪ID: {}", 
                     exception.getClass().getSimpleName(), 
                     exception.getMessage(),
                     traceId, 
