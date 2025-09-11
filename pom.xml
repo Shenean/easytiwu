@@ -12,6 +12,7 @@
     <!-- 聚合模块 -->
     <modules>
         <module>BOM</module>
+        <module>common-exception</module>
         <module>service-gateway</module>
         <module>service-upload</module>
         <module>service-bank</module>

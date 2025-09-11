@@ -11,24 +11,18 @@ import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import jakarta.servlet.ServletException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.servlet.NoHandlerFoundException;
-
 import java.nio.file.AccessDeniedException;
-import java.sql.SQLException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,24 +34,24 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    
+
     /**
      * 是否为开发环境
      */
     @Value("${spring.profiles.active:prod}")
     private String activeProfile;
-    
+
     /**
      * 异常日志记录工具
      */
     private final ExceptionLogger exceptionLogger;
-    
+
     public GlobalExceptionHandler() {
         this.exceptionLogger = new ExceptionLogger();
     }
-    
+
     /**
      * 处理业务异常
      * 
@@ -67,15 +61,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Result<Void>> handleBusinessException(BusinessException e) {
         exceptionLogger.logBusinessException(e);
-        
+
         Result<Void> result = Result.error(e.getCode(), e.getMessage());
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getDetailMessage());
         }
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     /**
      * 处理系统异常
      * 
@@ -85,15 +79,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SystemException.class)
     public ResponseEntity<Result<Void>> handleSystemException(SystemException e) {
         exceptionLogger.logSystemException(e);
-        
+
         Result<Void> result = Result.error(e.getCode(), e.getMessage());
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getDetailMessage());
         }
-        
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
     }
-    
+
     /**
      * 处理参数异常
      * 
@@ -103,15 +97,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParameterException.class)
     public ResponseEntity<Result<Void>> handleParameterException(ParameterException e) {
         exceptionLogger.logParameterException(e);
-        
+
         Result<Void> result = Result.error(e.getCode(), e.getMessage());
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getFullMessage());
         }
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理参数校验异常（@Valid注解）
      * 
@@ -121,11 +115,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Result<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         exceptionLogger.logValidationException(e);
-        
+
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining("; "));
-        
+
         Result<Void> result = Result.error(ErrorCode.PARAM_INVALID, errorMessage);
         if (isDevelopmentEnvironment()) {
             String detailMessage = e.getBindingResult().getFieldErrors().stream()
@@ -133,10 +127,10 @@ public class GlobalExceptionHandler {
                     .collect(Collectors.joining(", "));
             result.setDetailMessage(detailMessage);
         }
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理绑定异常
      * 
@@ -146,11 +140,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<Result<Void>> handleBindException(BindException e) {
         exceptionLogger.logValidationException(e);
-        
+
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining("; "));
-        
+
         Result<Void> result = Result.error(ErrorCode.PARAM_INVALID, errorMessage);
         if (isDevelopmentEnvironment()) {
             String detailMessage = e.getBindingResult().getFieldErrors().stream()
@@ -158,10 +152,10 @@ public class GlobalExceptionHandler {
                     .collect(Collectors.joining(", "));
             result.setDetailMessage(detailMessage);
         }
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理约束违反异常
      * 
@@ -171,12 +165,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Result<Void>> handleConstraintViolationException(ConstraintViolationException e) {
         exceptionLogger.logValidationException(e);
-        
+
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         String errorMessage = violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining("; "));
-        
+
         Result<Void> result = Result.error(ErrorCode.PARAM_INVALID, errorMessage);
         if (isDevelopmentEnvironment()) {
             String detailMessage = violations.stream()
@@ -184,10 +178,10 @@ public class GlobalExceptionHandler {
                     .collect(Collectors.joining(", "));
             result.setDetailMessage(detailMessage);
         }
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理缺少请求参数异常
      * 
@@ -195,15 +189,16 @@ public class GlobalExceptionHandler {
      * @return 错误响应
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Result<Void>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    public ResponseEntity<Result<Void>> handleMissingServletRequestParameterException(
+            MissingServletRequestParameterException e) {
         exceptionLogger.logHttpException(e);
-        
+
         String errorMessage = "缺少必要参数: " + e.getParameterName();
         Result<Void> result = Result.error(ErrorCode.PARAM_MISSING, errorMessage);
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理方法参数类型不匹配异常
      * 
@@ -211,16 +206,17 @@ public class GlobalExceptionHandler {
      * @return 错误响应
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Result<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<Result<Void>> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e) {
         exceptionLogger.logHttpException(e);
-        
-        String errorMessage = String.format("参数类型错误: %s，期望类型: %s", 
+
+        String errorMessage = String.format("参数类型错误: %s，期望类型: %s",
                 e.getName(), e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "未知");
         Result<Void> result = Result.error(ErrorCode.PARAM_TYPE_ERROR, errorMessage);
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理HTTP消息不可读异常
      * 
@@ -230,15 +226,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Result<Void>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         exceptionLogger.logHttpException(e);
-        
+
         Result<Void> result = Result.error(ErrorCode.PARAM_FORMAT_ERROR, "请求参数格式错误");
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getMessage());
         }
-        
+
         return ResponseEntity.badRequest().body(result);
     }
-    
+
     /**
      * 处理请求方法不支持异常
      * 
@@ -246,15 +242,16 @@ public class GlobalExceptionHandler {
      * @return 错误响应
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Result<Void>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<Result<Void>> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException e) {
         exceptionLogger.logHttpException(e);
-        
+
         String errorMessage = String.format("不支持的请求方法: %s", e.getMethod());
         Result<Void> result = Result.error(ErrorCode.METHOD_NOT_ALLOWED, errorMessage);
-        
+
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(result);
     }
-    
+
     /**
      * 处理访问拒绝异常
      * 
@@ -264,12 +261,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Result<Void>> handleAccessDeniedException(AccessDeniedException e) {
         exceptionLogger.logSecurityException(e);
-        
+
         Result<Void> result = Result.error(ErrorCode.FORBIDDEN, "访问被拒绝");
-        
+
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
     }
-    
+
     /**
      * 处理其他未知异常
      * 
@@ -279,15 +276,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Result<Void>> handleException(Exception e) {
         exceptionLogger.logException(e);
-        
+
         Result<Void> result = Result.error(ErrorCode.INTERNAL_SERVER_ERROR, "系统内部错误");
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getMessage());
         }
-        
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
     }
-    
+
     /**
      * 判断是否为开发环境
      * 
