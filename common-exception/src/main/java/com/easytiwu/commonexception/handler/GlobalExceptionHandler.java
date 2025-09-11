@@ -8,8 +8,6 @@ import com.easytiwu.commonexception.result.Result;
 import com.easytiwu.commonexception.utils.ExceptionLogger;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +33,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    // logger 已被 exceptionLogger 替代，移除未使用的字段
 
     /**
      * 是否为开发环境
@@ -210,8 +208,10 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException e) {
         exceptionLogger.logHttpException(e);
 
+        Class<?> requiredType = e.getRequiredType();
+        String typeName = requiredType != null ? requiredType.getSimpleName() : "未知";
         String errorMessage = String.format("参数类型错误: %s，期望类型: %s",
-                e.getName(), e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "未知");
+                e.getName(), typeName);
         Result<Void> result = Result.error(ErrorCode.PARAM_TYPE_ERROR, errorMessage);
 
         return ResponseEntity.badRequest().body(result);

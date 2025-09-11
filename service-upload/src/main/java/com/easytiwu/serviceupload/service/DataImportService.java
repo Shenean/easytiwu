@@ -28,8 +28,9 @@ import java.util.List;
 public class DataImportService {
 
     private final QuestionBankMapper bankMapper;
-    private final QuestionMapper questionMapper;
-    private final QuestionOptionMapper optionMapper;
+    // questionMapper 和 optionMapper 已被 SqlSessionFactory 替代进行批量操作
+    // private final QuestionMapper questionMapper;
+    // private final QuestionOptionMapper optionMapper;
     private final SqlSessionFactory sqlSessionFactory;
 
     /**
@@ -38,12 +39,13 @@ public class DataImportService {
     private static final int BATCH_SIZE = 1000;
 
     public DataImportService(QuestionBankMapper bankMapper,
-                             QuestionMapper questionMapper,
-                             QuestionOptionMapper optionMapper,
-                             SqlSessionFactory sqlSessionFactory) {
+            QuestionMapper questionMapper,
+            QuestionOptionMapper optionMapper,
+            SqlSessionFactory sqlSessionFactory) {
         this.bankMapper = bankMapper;
-        this.questionMapper = questionMapper;
-        this.optionMapper = optionMapper;
+        // questionMapper 和 optionMapper 在构造函数中保留，但实际使用 SqlSessionFactory 进行批量操作
+        // this.questionMapper = questionMapper;
+        // this.optionMapper = optionMapper;
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
@@ -75,7 +77,7 @@ public class DataImportService {
 
         // === 创建题库 ===
         QuestionBank bank = createQuestionBank(bankName, bankDesc);
-        
+
         // === 批量导入题目和选项 ===
         batchImportQuestions(bank.getId(), arr);
 
@@ -108,7 +110,7 @@ public class DataImportService {
     private void batchImportQuestions(Long bankId, JSONArray questionsArray) {
         List<Question> questionBatch = new ArrayList<>();
         List<QuestionOption> optionBatch = new ArrayList<>();
-        
+
         // 预处理所有题目数据
         for (int i = 0; i < questionsArray.size(); i++) {
             try {
@@ -132,7 +134,7 @@ public class DataImportService {
 
         // 执行批量插入
         batchInsertQuestions(questionBatch);
-        
+
         // 为选项设置正确的questionId并批量插入
         if (!optionBatch.isEmpty()) {
             assignQuestionIdsToOptions(questionBatch, optionBatch, questionsArray);
@@ -184,17 +186,17 @@ public class DataImportService {
 
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             QuestionMapper mapper = sqlSession.getMapper(QuestionMapper.class);
-            
+
             for (int i = 0; i < questions.size(); i++) {
                 mapper.insert(questions.get(i));
-                
+
                 // 每达到批次大小或最后一批时提交
                 if ((i + 1) % BATCH_SIZE == 0 || i == questions.size() - 1) {
                     sqlSession.flushStatements();
                     log.debug("Batch inserted {} questions", Math.min(i + 1, BATCH_SIZE));
                 }
             }
-            
+
             sqlSession.commit();
             log.info("Successfully batch inserted {} questions", questions.size());
         } catch (Exception e) {
@@ -206,14 +208,15 @@ public class DataImportService {
     /**
      * 为选项分配正确的questionId
      */
-    private void assignQuestionIdsToOptions(List<Question> questions, List<QuestionOption> allOptions, JSONArray questionsArray) {
+    private void assignQuestionIdsToOptions(List<Question> questions, List<QuestionOption> allOptions,
+            JSONArray questionsArray) {
         int optionIndex = 0;
-        
+
         for (int i = 0; i < questions.size(); i++) {
             Question question = questions.get(i);
             JSONObject q = questionsArray.getJSONObject(i);
             JSONArray options = q.getJSONArray("options");
-            
+
             if (options != null && ("single".equals(question.getType()) || "multiple".equals(question.getType()))) {
                 int optionCount = 0;
                 for (int j = 0; j < options.size(); j++) {
@@ -241,17 +244,17 @@ public class DataImportService {
 
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             QuestionOptionMapper mapper = sqlSession.getMapper(QuestionOptionMapper.class);
-            
+
             for (int i = 0; i < options.size(); i++) {
                 mapper.insert(options.get(i));
-                
+
                 // 每达到批次大小或最后一批时提交
                 if ((i + 1) % BATCH_SIZE == 0 || i == options.size() - 1) {
                     sqlSession.flushStatements();
                     log.debug("Batch inserted {} options", Math.min(i + 1, BATCH_SIZE));
                 }
             }
-            
+
             sqlSession.commit();
             log.info("Successfully batch inserted {} options", options.size());
         } catch (Exception e) {

@@ -25,7 +25,8 @@ public class FileParsingService {
     }
 
     /**
-     * Extracts text content from the given file. Supports PDF, Word (.docx), and TXT.
+     * Extracts text content from the given file. Supports PDF, Word (.docx), and
+     * TXT.
      */
     public String extractText(MultipartFile file) throws IOException {
         String fname = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
@@ -38,8 +39,8 @@ public class FileParsingService {
                 }
             } else if (fname.endsWith(".docx")) {
                 // Use POI XWPF for .docx files
-                try (XWPFDocument docx = new XWPFDocument(in)) {
-                    XWPFWordExtractor extractor = new XWPFWordExtractor(docx);
+                try (XWPFDocument docx = new XWPFDocument(in);
+                        XWPFWordExtractor extractor = new XWPFWordExtractor(docx)) {
                     return extractor.getText();
                 }
             } else if (fname.endsWith(".txt")) {

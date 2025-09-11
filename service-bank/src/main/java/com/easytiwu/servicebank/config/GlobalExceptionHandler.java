@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 /**
  * 全局异常处理器
  * 统一使用 common-exception 模块的标准异常处理
+ * 
  * @author system
  */
 @Slf4j
@@ -102,8 +103,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<Void> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        String typeName = e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "未知类型";
-        String message = String.format("参数 '%s' 类型错误，期望类型: %s", 
+        Class<?> requiredType = e.getRequiredType();
+        String typeName = requiredType != null ? requiredType.getSimpleName() : "未知类型";
+        String message = String.format("参数 '%s' 类型错误，期望类型: %s",
                 e.getName(), typeName);
         log.warn("参数类型转换异常: {}", message);
         return Result.error(ErrorCode.BAD_REQUEST, message);
