@@ -16,7 +16,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-json</artifactId>
+				<artifactId>spring-boot-starter-web</artifactId>
 			</dependency>
 
 		<!-- 添加数据库 starter 依赖 -->
