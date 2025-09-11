@@ -282,12 +282,14 @@ defineExpose({
 }
 
 :deep(.n-button) {
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 :deep(.n-button:hover) {
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
 }
 
 :deep(.n-button:active) {
@@ -298,6 +300,7 @@ defineExpose({
 /* 空状态提示按钮动画 */
 :deep(.n-empty .n-button) {
   animation: fadeIn 0.3s ease 0.2s backwards;
+  border-radius: 8px;
 }
 
 /* 小屏适配优化 */
