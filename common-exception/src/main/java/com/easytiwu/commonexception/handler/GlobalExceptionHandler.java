@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result<Void>> handleBusinessException(BusinessException e) {
         exceptionLogger.logBusinessException(e);
         
-        Result<Void> result = Result.error(ErrorCode.getByCode(e.getCode()), e.getMessage());
+        Result<Void> result = Result.error(e.getCode(), e.getMessage());
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getDetailMessage());
         }
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result<Void>> handleSystemException(SystemException e) {
         exceptionLogger.logSystemException(e);
         
-        Result<Void> result = Result.error(ErrorCode.getByCode(e.getCode()), e.getMessage());
+        Result<Void> result = Result.error(e.getCode(), e.getMessage());
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getDetailMessage());
         }
@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result<Void>> handleParameterException(ParameterException e) {
         exceptionLogger.logParameterException(e);
         
-        Result<Void> result = Result.error(ErrorCode.getByCode(e.getCode()), e.getMessage());
+        Result<Void> result = Result.error(e.getCode(), e.getMessage());
         if (isDevelopmentEnvironment()) {
             result.setDetailMessage(e.getFullMessage());
         }

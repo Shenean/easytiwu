@@ -1,7 +1,8 @@
 package com.easytiwu.servicebank.service.impl;
 
 import com.easytiwu.servicebank.entity.QuestionBank;
-import com.easytiwu.servicebank.exception.BusinessException;
+import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.servicebank.mapper.QuestionBankMapper;
 import com.easytiwu.servicebank.service.QuestionBankService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
             return questionBanks;
         } catch (Exception e) {
             log.error("查询题库列表失败", e);
-            throw new BusinessException("查询题库列表失败");
+            throw BusinessException.of(ErrorCode.BUSINESS_ERROR, "查询题库列表失败");
         }
     }
 
@@ -39,7 +40,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteQuestionBank(Long id) {
         if (id == null || id <= 0) {
-            throw new BusinessException(400, "题库ID不能为空且必须大于0");
+            throw BusinessException.of(ErrorCode.BAD_REQUEST, "题库ID不能为空且必须大于0");
         }
 
         try {
@@ -48,7 +49,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
             // 先检查题库是否存在
             QuestionBank existingBank = questionBankMapper.selectById(id);
             if (existingBank == null) {
-                throw new BusinessException(404, "题库不存在，ID: " + id);
+                throw BusinessException.of(ErrorCode.NOT_FOUND, "题库不存在，ID: " + id);
             }
 
             // 执行删除操作
@@ -59,7 +60,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
                 log.info("成功删除题库，ID: {}, 题库名称: {}", id, existingBank.getName());
             } else {
                 log.warn("删除题库失败，ID: {}", id);
-                throw new BusinessException("删除题库失败");
+                throw BusinessException.of(ErrorCode.BUSINESS_ERROR, "删除题库失败");
             }
             
             return success;
@@ -67,7 +68,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
             throw e;
         } catch (Exception e) {
             log.error("删除题库时发生异常，ID: {}", id, e);
-            throw new BusinessException("删除题库失败，系统异常");
+            throw BusinessException.of(ErrorCode.INTERNAL_SERVER_ERROR, "删除题库失败，系统异常");
         }
     }
 }

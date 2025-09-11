@@ -1,12 +1,13 @@
 package com.easytiwu.serviceupload.controller;
 
+import com.easytiwu.commonexception.enums.ErrorCode;
+import com.easytiwu.commonexception.result.Result;
 import com.easytiwu.serviceupload.service.FileParsingService;
 import com.easytiwu.serviceupload.service.LargeModelService;
 import com.easytiwu.serviceupload.service.DataImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class FileUploadController {
     }
 
     @PostMapping(value="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadQuestionBank(
+    public Result<String> uploadQuestionBank(
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("file") MultipartFile file) {
@@ -42,10 +43,10 @@ public class FileUploadController {
             // 1. Validate file type
             String filename = file.getOriginalFilename();
             if (filename == null || file.isEmpty()) {
-                return ResponseEntity.badRequest().body("No file uploaded or file is empty.");
+                return Result.error(ErrorCode.BAD_REQUEST, "No file uploaded or file is empty.");
             }
             if (!fileParsingService.isSupportedFile(filename)) {
-                return ResponseEntity.badRequest().body("Unsupported file format. Only PDF, Word (.docx/.doc), or TXT are allowed.");
+                return Result.error(ErrorCode.BAD_REQUEST, "Unsupported file format. Only PDF, Word (.docx/.doc), or TXT are allowed.");
             }
 
             // 2. Parse file to extract text content
@@ -60,11 +61,11 @@ public class FileUploadController {
             dataImportService.importQuestionsFromJson(name, description, questionsJson);
 
             // 5. Return success response
-            return ResponseEntity.ok("Question bank uploaded and processed successfully.");
+            return Result.success("Question bank uploaded and processed successfully.");
         } catch (Exception e) {
             logger.error("Error processing upload: {}", e.getMessage(), e);
             // Return internal server error with generic message (specifics are logged)
-            return ResponseEntity.status(500).body("Failed to process the file. Please try again later.");
+            return Result.error(ErrorCode.INTERNAL_SERVER_ERROR, "Failed to process the file. Please try again later.");
         }
     }
 }

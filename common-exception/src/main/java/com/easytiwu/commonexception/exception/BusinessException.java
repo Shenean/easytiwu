@@ -13,7 +13,7 @@ public class BusinessException extends RuntimeException {
     /**
      * 错误码
      */
-    private final Integer code;
+    private final ErrorCode errorCode;
     
     /**
      * 错误信息
@@ -32,7 +32,7 @@ public class BusinessException extends RuntimeException {
      */
     public BusinessException(String message) {
         super(message);
-        this.code = ErrorCode.BUSINESS_ERROR.getCode();
+        this.errorCode = ErrorCode.BUSINESS_ERROR;
         this.message = message;
         this.detailMessage = null;
     }
@@ -44,7 +44,7 @@ public class BusinessException extends RuntimeException {
      */
     public BusinessException(ErrorCode errorCode) {
         super(errorCode.getMessage());
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.detailMessage = null;
     }
@@ -57,7 +57,7 @@ public class BusinessException extends RuntimeException {
      */
     public BusinessException(ErrorCode errorCode, String customMessage) {
         super(customMessage);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = customMessage;
         this.detailMessage = null;
     }
@@ -70,13 +70,13 @@ public class BusinessException extends RuntimeException {
      */
     public BusinessException(ErrorCode errorCode, Throwable cause) {
         super(errorCode.getMessage(), cause);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.detailMessage = cause != null ? cause.getMessage() : null;
     }
     
-    public Integer getCode() {
-        return code;
+    public ErrorCode getCode() {
+        return errorCode;
     }
     
     @Override
@@ -124,7 +124,7 @@ public class BusinessException extends RuntimeException {
     @Override
     public String toString() {
         return "BusinessException{" +
-                "code=" + code +
+                "code=" + errorCode +
                 ", message='" + message + '\'' +
                 (detailMessage != null ? ", detailMessage='" + detailMessage + '\'' : "") +
                 '}';

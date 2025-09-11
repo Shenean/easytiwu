@@ -13,7 +13,7 @@ public class ParameterException extends RuntimeException {
     /**
      * 错误码
      */
-    private final Integer code;
+    private final ErrorCode errorCode;
     
     /**
      * 错误信息
@@ -42,7 +42,7 @@ public class ParameterException extends RuntimeException {
      */
     public ParameterException(String message) {
         super(message);
-        this.code = ErrorCode.PARAM_INVALID.getCode();
+        this.errorCode = ErrorCode.PARAM_INVALID;
         this.message = message;
         this.parameterName = null;
         this.parameterValue = null;
@@ -56,7 +56,7 @@ public class ParameterException extends RuntimeException {
      */
     public ParameterException(ErrorCode errorCode) {
         super(errorCode.getMessage());
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.parameterName = null;
         this.parameterValue = null;
@@ -71,7 +71,7 @@ public class ParameterException extends RuntimeException {
      */
     public ParameterException(ErrorCode errorCode, String parameterName) {
         super(errorCode.getMessage());
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.parameterName = parameterName;
         this.parameterValue = null;
@@ -87,7 +87,7 @@ public class ParameterException extends RuntimeException {
      */
     public ParameterException(ErrorCode errorCode, String parameterName, Object parameterValue) {
         super(errorCode.getMessage());
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.parameterName = parameterName;
         this.parameterValue = parameterValue;
@@ -102,7 +102,7 @@ public class ParameterException extends RuntimeException {
      */
     public ParameterException(ErrorCode errorCode, String customMessage, String parameterName) {
         super(customMessage);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = customMessage;
         this.parameterName = parameterName;
         this.parameterValue = null;
@@ -121,7 +121,7 @@ public class ParameterException extends RuntimeException {
     public ParameterException(ErrorCode errorCode, String customMessage, String parameterName, 
                             Object parameterValue, String detailMessage) {
         super(customMessage);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = customMessage;
         this.parameterName = parameterName;
         this.parameterValue = parameterValue;
@@ -130,8 +130,8 @@ public class ParameterException extends RuntimeException {
     
 
     
-    public Integer getCode() {
-        return code;
+    public ErrorCode getCode() {
+        return errorCode;
     }
     
     @Override
@@ -213,7 +213,7 @@ public class ParameterException extends RuntimeException {
     @Override
     public String toString() {
         return "ParameterException{" +
-                "code=" + code +
+                "code=" + errorCode +
                 ", message='" + message + '\'' +
                 (parameterName != null ? ", parameterName='" + parameterName + '\'' : "") +
                 (parameterValue != null ? ", parameterValue=" + parameterValue : "") +

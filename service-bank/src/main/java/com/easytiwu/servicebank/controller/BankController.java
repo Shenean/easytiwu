@@ -1,6 +1,7 @@
 package com.easytiwu.servicebank.controller;
 
-import com.easytiwu.servicebank.common.ApiResponse;
+import com.easytiwu.commonexception.enums.ErrorCode;
+import com.easytiwu.commonexception.result.Result;
 import com.easytiwu.servicebank.entity.QuestionBank;
 import com.easytiwu.servicebank.service.QuestionBankService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,8 @@ public class BankController {
      * 健康检查接口
      */
     @GetMapping("/health")
-    public ApiResponse<String> healthCheck() {
-        return ApiResponse.success("Bank service is running");
+    public Result<String> healthCheck() {
+        return Result.success("Bank service is running");
     }
 
     /**
@@ -40,21 +41,21 @@ public class BankController {
      * @return 题库列表
      */
     @GetMapping
-    public ApiResponse<List<QuestionBank>> getAllQuestionBanks() {
+    public Result<List<QuestionBank>> getAllQuestionBanks() {
         try {
             log.info("接收到查询所有题库的请求");
             List<QuestionBank> questionBanks = questionBankService.getAllQuestionBanks();
             
             if (questionBanks == null || questionBanks.isEmpty()) {
                 log.warn("查询结果为空");
-                return ApiResponse.success("查询成功，但没有找到题库数据", questionBanks);
+                return Result.success(questionBanks);
             }
             
             log.info("成功查询到 {} 个题库", questionBanks.size());
-            return ApiResponse.success("查询成功", questionBanks);
+            return Result.success(questionBanks);
         } catch (Exception e) {
             log.error("查询题库列表时发生异常: ", e);
-            return ApiResponse.error("系统异常，请稍后重试");
+            return Result.error(ErrorCode.INTERNAL_SERVER_ERROR, "系统异常，请稍后重试");
         }
     }
 
@@ -64,7 +65,7 @@ public class BankController {
      * @return 删除结果
      */
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteQuestionBank(
+    public Result<Void> deleteQuestionBank(
             @PathVariable("id") 
             @NotNull(message = "题库ID不能为空") 
             @Min(value = 1, message = "题库ID必须大于0") 
@@ -72,9 +73,9 @@ public class BankController {
         log.info("接收到删除题库的请求，ID: {}", id);
         boolean success = questionBankService.deleteQuestionBank(id);
         if (success) {
-            return ApiResponse.success("删除成功", null);
+            return Result.success();
         } else {
-            return ApiResponse.error("删除失败");
+            return Result.error(ErrorCode.BUSINESS_ERROR, "删除失败");
         }
     }
 }

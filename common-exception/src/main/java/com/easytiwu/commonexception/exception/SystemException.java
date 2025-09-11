@@ -13,7 +13,7 @@ public class SystemException extends RuntimeException {
     /**
      * 错误码
      */
-    private final Integer code;
+    private final ErrorCode errorCode;
     
     /**
      * 错误信息
@@ -32,7 +32,7 @@ public class SystemException extends RuntimeException {
      */
     public SystemException(String message) {
         super(message);
-        this.code = ErrorCode.INTERNAL_SERVER_ERROR.getCode();
+        this.errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
         this.message = message;
         this.detailMessage = null;
     }
@@ -44,7 +44,7 @@ public class SystemException extends RuntimeException {
      */
     public SystemException(ErrorCode errorCode) {
         super(errorCode.getMessage());
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.detailMessage = null;
     }
@@ -57,7 +57,7 @@ public class SystemException extends RuntimeException {
      */
     public SystemException(ErrorCode errorCode, String customMessage) {
         super(customMessage);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = customMessage;
         this.detailMessage = null;
     }
@@ -70,7 +70,7 @@ public class SystemException extends RuntimeException {
      */
     public SystemException(ErrorCode errorCode, Throwable cause) {
         super(errorCode.getMessage(), cause);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = errorCode.getMessage();
         this.detailMessage = cause != null ? cause.getMessage() : null;
     }
@@ -84,13 +84,13 @@ public class SystemException extends RuntimeException {
      */
     public SystemException(ErrorCode errorCode, String customMessage, Throwable cause) {
         super(customMessage, cause);
-        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
         this.message = customMessage;
         this.detailMessage = cause != null ? cause.getMessage() : null;
     }
     
-    public Integer getCode() {
-        return code;
+    public ErrorCode getCode() {
+        return errorCode;
     }
     
     @Override
@@ -173,7 +173,7 @@ public class SystemException extends RuntimeException {
     @Override
     public String toString() {
         return "SystemException{" +
-                "code=" + code +
+                "code=" + errorCode +
                 ", message='" + message + '\'' +
                 (detailMessage != null ? ", detailMessage='" + detailMessage + '\'' : "") +
                 '}';

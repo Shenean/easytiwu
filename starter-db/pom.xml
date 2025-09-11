@@ -18,6 +18,12 @@
     <description>Database Starter Module</description>
 
     <dependencies>
+        <!-- 通用异常处理模块 -->
+        <dependency>
+            <groupId>com.easytiwu</groupId>
+            <artifactId>common-exception</artifactId>
+        </dependency>
+
         <!-- Spring Boot 基础依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
