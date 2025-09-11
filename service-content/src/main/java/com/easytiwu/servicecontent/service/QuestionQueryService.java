@@ -9,7 +9,6 @@ import com.easytiwu.servicecontent.entity.Question;
 import com.easytiwu.servicecontent.entity.QuestionOption;
 import com.easytiwu.servicecontent.mapper.QuestionMapper;
 import com.easytiwu.servicecontent.mapper.QuestionOptionMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

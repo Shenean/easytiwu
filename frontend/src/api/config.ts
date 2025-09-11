@@ -2,8 +2,8 @@ import axios from 'axios'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: '/api', // 通过Vite代理转发到网关
-  timeout: 30000, // 30秒超时
+  baseURL: '/api',
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -94,5 +94,15 @@ export const bankAPI = {
 export const contentAPI = {
   // 内容相关API
   getContentList: () => api.get('/content/list'),
-  getContentDetail: (id: string) => api.get(`/content/${id}`)
+  getContentDetail: (id: string) => api.get(`/content/${id}`),
+  
+  // 题目查询
+  getQuestions: (bankId: number, type: string) => {
+    return api.post('/content/questions', { bankId, type })
+  },
+  
+  // 答案验证
+  verifyAnswer: (questionId: number, userAnswer: string) => {
+    return api.post('/content/verify-answer', { questionId, userAnswer })
+  }
 }

@@ -36,7 +36,7 @@
                   v-for="opt in currentQuestion.options"
                   :key="opt.label"
                   :value="opt.label"
-                  :disabled="isSubmitted"
+                  :disabled="false"
               >
                 <strong>{{ opt.label }}.</strong> {{ opt.text }}
               </n-radio>
@@ -52,7 +52,7 @@
                   v-for="opt in currentQuestion.options"
                   :key="opt.label"
                   :value="opt.label"
-                  :disabled="isSubmitted"
+                  :disabled="false"
               >
                 <strong>{{ opt.label }}.</strong> {{ opt.text }}
               </n-checkbox>
@@ -64,8 +64,8 @@
         <div v-else-if="currentQuestion.type === 'true_false'">
           <n-radio-group v-model:value="localAnswer" name="true-false" size="large">
             <n-space>
-              <n-radio :value="'1'" :disabled="isSubmitted">正确</n-radio>
-              <n-radio :value="'0'" :disabled="isSubmitted">错误</n-radio>
+              <n-radio :value="'1'" :disabled="false">正确</n-radio>
+              <n-radio :value="'0'" :disabled="false">错误</n-radio>
             </n-space>
           </n-radio-group>
         </div>
@@ -77,7 +77,7 @@
               type="textarea"
               placeholder="请输入你的答案"
               :autosize="{ minRows: 2, maxRows: 6 }"
-              :disabled="isSubmitted"
+              :disabled="false"
               clearable
           />
             </div>
@@ -123,7 +123,7 @@
        <div class="bottom-actions">
          <div class="action-buttons">
            <n-button
-               :disabled="currentQuestionIndex === 0"
+               :disabled="currentQuestionIndex === 0 || submitting"
                @click="prevQuestion"
                size="large"
                type="default"
@@ -132,7 +132,7 @@
            </n-button>
 
            <n-button
-               :disabled="currentQuestionIndex >= questionList.length - 1"
+               :disabled="currentQuestionIndex >= questionList.length - 1 || submitting"
                @click="nextQuestion"
                size="large"
                type="default"
@@ -141,24 +141,13 @@
            </n-button>
 
            <n-button
-               v-if="!isSubmitted"
                type="primary"
                size="large"
                @click="submitAnswer"
-               :disabled="!canSubmit"
+               :disabled="!canSubmit || submitting"
+               :loading="submitting"
            >
-             提交答案
-           </n-button>
-
-           <n-button
-               v-else
-               type="success"
-               size="large"
-               @click="nextQuestion"
-               :disabled="currentQuestionIndex >= questionList.length - 1"
-               style="display: none;"
-           >
-             下一题
+             {{ submitting ? '提交中...' : '提交答案' }}
            </n-button>
          </div>
        </div>
@@ -171,7 +160,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useMessage } from 'naive-ui'
 import { useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
-import api from '../api/config'
+import api, { contentAPI } from '../api/config'
 
 interface Question {
   id: number
@@ -188,6 +177,15 @@ interface Question {
 interface QuestionQueryRequest {
   bankId: number
   type: string
+}
+
+interface AnswerVerificationResponse {
+  isCorrect: boolean
+  correctAnswer: string
+  analysis: string
+  message: string
+  questionId: number
+  userAnswer: string
 }
 
 // 定义路由参数类型
@@ -210,9 +208,9 @@ const localAnswer = ref<string | string[]>('')
 // 计算当前题目
 const currentQuestion = computed(() => questionList.value[currentQuestionIndex.value])
 
-// 是否显示答案（提交后或已作答）
+// 是否显示答案（已作答时显示）
 const showAnswer = computed(() => {
-  return isSubmitted.value || (currentQuestion.value && currentQuestion.value.isCompleted === 1)
+  return currentQuestion.value && currentQuestion.value.isCompleted === 1
 })
 
 // 格式化显示正确答案（多选转为 A,B,C 格式）
@@ -262,7 +260,7 @@ async function fetchQuestions() {
       type
     }
 
-    const response = await api.post('/content/questions', requestData)
+    const response = await contentAPI.getQuestions(bankId, type)
     
     if (response.data && Array.isArray(response.data)) {
       questionList.value = response.data.map((item: any) => ({
@@ -270,11 +268,11 @@ async function fetchQuestions() {
         content: item.content,
         type: item.type,
         options: item.options || [],
-        userAnswer: null,
+        userAnswer: item.userAnswer || null,
         correctAnswer: item.correctAnswer || '',
         analysis: item.analysis || '',
-        isCompleted: 0,
-        isCorrect: null
+        isCompleted: item.isCompleted || 0,
+        isCorrect: item.isCorrect || null
       }))
       
       if (questionList.value.length === 0) {
@@ -303,6 +301,10 @@ function initLocalAnswer() {
   if (!currentQuestion.value) return
   
   const ua = currentQuestion.value.userAnswer
+  
+  // 重置提交状态，允许重新作答
+  isSubmitted.value = false
+  
   if (!ua) {
     localAnswer.value = currentQuestion.value.type === 'multiple' ? [] : ''
     return
@@ -319,11 +321,18 @@ function initLocalAnswer() {
   }
 }
 
+// 提交答案状态
+const submitting = ref(false)
+
 // 提交答案
-function submitAnswer() {
+async function submitAnswer() {
   if (!canSubmit.value || !currentQuestion.value) {
     message.warning('请先完成作答！')
     return
+  }
+
+  if (submitting.value) {
+    return // 防止重复提交
   }
 
   let answerToSave: string
@@ -335,17 +344,76 @@ function submitAnswer() {
     answerToSave = localAnswer.value.toString()
   }
 
-  // 更新题目状态
-  currentQuestion.value.userAnswer = answerToSave
-  currentQuestion.value.isCompleted = 1
+  try {
+    submitting.value = true
+    
+    // 调用后端验证接口
+     const response = await contentAPI.verifyAnswer(
+       currentQuestion.value.id,
+       answerToSave
+     )
 
-  // 判断是否正确
-  const isCorrect = answerToSave === currentQuestion.value.correctAnswer
-  currentQuestion.value.isCorrect = isCorrect ? 1 : 0
+    const result: AnswerVerificationResponse = response.data
+    
+    // 更新题目状态
+    currentQuestion.value.userAnswer = result.userAnswer
+    currentQuestion.value.correctAnswer = result.correctAnswer
+    currentQuestion.value.analysis = result.analysis
+    currentQuestion.value.isCompleted = 1
+    currentQuestion.value.isCorrect = result.isCorrect ? 1 : 0
 
-  isSubmitted.value = true
-
-  message.success(isCorrect ? '回答正确！🎉' : '回答错误，继续加油！')
+    // 显示验证结果
+     if (result.isCorrect) {
+       message.success(result.message || '回答正确！🎉', {
+         duration: 3000
+       })
+     } else {
+       message.error(result.message || '回答错误，继续加油！', {
+         duration: 3000
+       })
+     }
+     
+     // 强制更新答题卡显示
+     setTimeout(() => {
+       // 触发响应式更新
+       questionList.value = [...questionList.value]
+     }, 100)
+    
+  } catch (error) {
+     console.error('提交答案失败:', error)
+     
+     if (error instanceof AxiosError) {
+       if (error.response) {
+         // 服务器返回错误
+         const status = error.response.status
+         const errorMsg = error.response.data?.message || '服务器错误'
+         
+         switch (status) {
+           case 400:
+             message.error(`参数错误: ${errorMsg}`)
+             break
+           case 404:
+             message.error('题目不存在，请刷新页面重试')
+             break
+           case 500:
+             message.error('服务器内部错误，请稍后重试')
+             break
+           default:
+             message.error(`提交失败: ${errorMsg}`)
+         }
+       } else if (error.request) {
+         // 网络错误
+         message.error('网络连接失败，请检查网络后重试')
+       } else {
+         // 其他错误
+         message.error(`请求配置错误: ${error.message}`)
+       }
+     } else {
+       message.error('提交答案失败，请稍后重试')
+     }
+   } finally {
+     submitting.value = false
+   }
 }
 
 // 跳转题目
@@ -353,8 +421,7 @@ function jumpToQuestion(id: number) {
   const index = questionList.value.findIndex(q => q.id === id)
   if (index !== -1) {
     currentQuestionIndex.value = index
-    isSubmitted.value = false
-    initLocalAnswer()
+    initLocalAnswer() // initLocalAnswer会根据题目状态设置isSubmitted
   }
 }
 
@@ -362,8 +429,7 @@ function jumpToQuestion(id: number) {
 function prevQuestion() {
   if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--
-    isSubmitted.value = false
-    initLocalAnswer()
+    initLocalAnswer() // initLocalAnswer会根据题目状态设置isSubmitted
   }
 }
 
@@ -371,8 +437,7 @@ function prevQuestion() {
 function nextQuestion() {
   if (currentQuestionIndex.value < questionList.value.length - 1) {
     currentQuestionIndex.value++
-    isSubmitted.value = false
-    initLocalAnswer()
+    initLocalAnswer() // initLocalAnswer会根据题目状态设置isSubmitted
   } else {
     message.info('已是最后一题')
   }
@@ -397,8 +462,7 @@ onMounted(() => {
 
 // 当题目切换时，重置本地答案状态
 watch(currentQuestion, () => {
-  initLocalAnswer()
-  isSubmitted.value = false
+  initLocalAnswer() // initLocalAnswer会根据题目状态设置isSubmitted
 })
 </script>
 
