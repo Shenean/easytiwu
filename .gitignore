@@ -69,7 +69,6 @@ desktop.ini
 *.log
 
 # Database #
-*.sql
 *.sqlite
 
 # Temporary files #
@@ -81,3 +80,23 @@ desktop.ini
 
 # Lingma directory #
 .lingma/
+
+# Node/PNPM/Vite #
+node_modules/
+.pnpm-store/
+pnpm-debug.log*
+.vite/
+.eslintcache
+
+# Env files #
+.env
+.env.local
+.env.*.local
+
+# JVM and coverage #
+hs_err_pid*.log
+*.hprof
+coverage/
+.nyc_output
+*.mv.db
+*.trace.db
