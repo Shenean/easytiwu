@@ -14,10 +14,6 @@
     <name>service-gateway</name>
     <description>service-gateway</description>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
         
         <!-- 添加Spring Cloud Gateway依赖 -->
         <dependency>

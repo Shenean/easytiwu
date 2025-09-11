@@ -3,6 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.13</version>
+        <relativePath/>
+    </parent>
+
     <groupId>com.easytiwu</groupId>
     <artifactId>easytiwu-parent</artifactId>
     <version>1.1.0</version>
@@ -45,20 +52,40 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- Spring Boot 插件（无需指定版本，BOM 里已有） -->
+                <!-- Spring Boot 插件：开启分层打包 -->
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <layers>
+                            <enabled>true</enabled>
+                        </layers>
+                    </configuration>
                 </plugin>
 
                 <!-- 编译器插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
                     <configuration>
                         <release>${maven.compiler.release}</release>
                         <encoding>UTF-8</encoding>
                     </configuration>
+                </plugin>
+
+                <!-- 测试插件（单元测试） -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                </plugin>
+
+                <!-- JAR 插件（如需独立 jar 配置可在子模块覆写） -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.4.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>

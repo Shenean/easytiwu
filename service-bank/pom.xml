@@ -34,7 +34,6 @@
         <dependency>
             <groupId>com.easytiwu</groupId>
             <artifactId>starter-db</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- 添加 Lombok 依赖 -->
@@ -62,11 +61,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <layers>
-                        <enabled>true</enabled>
-                    </layers>
-                </configuration>
             </plugin>
         </plugins>
     </build>
