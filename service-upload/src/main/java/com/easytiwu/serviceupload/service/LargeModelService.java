@@ -10,6 +10,9 @@ import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.protocol.ConnectionConfigurations;
 import com.alibaba.dashscope.utils.Constants;
+import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.commonexception.exception.SystemException;
+import com.easytiwu.commonexception.enums.ErrorCode;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,29 +60,33 @@ public class LargeModelService {
      */
     @PostConstruct
     public void initializeConnectionPool() {
-        configureConnectionPool();
+        try {
+            configureConnectionPool(connectTimeoutSeconds, readTimeoutSeconds);
+        } catch (Exception e) {
+            logger.error("Failed to initialize connection pool: {}", e.getMessage(), e);
+            // 不重新抛出异常，避免影响服务启动
+        }
     }
 
     /**
      * 配置DashScope连接池参数，包括超时设置
      */
-    private void configureConnectionPool() {
+    private static void configureConnectionPool(int connectTimeoutSeconds, int readTimeoutSeconds) {
         try {
-            ConnectionConfigurations connectionConfig = ConnectionConfigurations.builder()
+            Constants.connectionConfigurations = ConnectionConfigurations.builder()
                     .connectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
                     .readTimeout(Duration.ofSeconds(readTimeoutSeconds))
                     .writeTimeout(Duration.ofSeconds(60))
                     .connectionIdleTimeout(Duration.ofSeconds(300))
-                    .connectionPoolSize(32) 
+                    .connectionPoolSize(32)
                     .maximumAsyncRequests(32)
                     .maximumAsyncRequestsPerHost(32)
                     .build();
-
-            Constants.connectionConfigurations = connectionConfig;
-            logger.info("DashScope connection pool configured - connectTimeout: {}s, readTimeout: {}s",
+            LoggerFactory.getLogger(LargeModelService.class).info("DashScope connection pool configured - connectTimeout: {}s, readTimeout: {}s",
                     connectTimeoutSeconds, readTimeoutSeconds);
         } catch (Exception e) {
-            logger.warn("Failed to configure DashScope connection pool, using default settings", e);
+            LoggerFactory.getLogger(LargeModelService.class).error("Failed to configure DashScope connection pool: {}", e.getMessage(), e);
+            // 在静态方法中不抛出异常，避免影响服务启动
         }
     }
 
@@ -95,14 +102,16 @@ public class LargeModelService {
             byte[] bytes = inputStream.readAllBytes();
             return new String(bytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            logger.error("Failed to load system prompt from file", e);
-            throw new RuntimeException("Unable to load system prompt", e);
+            String errorMsg = String.format("加载系统提示词失败，资源路径: %s，错误信息: %s", 
+                                          "prompts/parser_prompt.txt", e.getMessage());
+            logger.error(errorMsg, e);
+            throw new SystemException(ErrorCode.INTERNAL_SERVER_ERROR, errorMsg, e);
         }
     }
 
     @CircuitBreaker(name = QWEN_CB, fallbackMethod = "fallbackQuestionsJson")
     public String generateQuestionsJson(String textContent)
-            throws ApiException, NoApiKeyException, InputRequiredException {
+            throws ApiException {
 
         String systemPrompt = loadSystemPrompt();
         Message systemMsg = Message.builder().role(Role.SYSTEM.getValue()).content(systemPrompt).build();
@@ -120,11 +129,31 @@ public class LargeModelService {
                 .build();
 
         logger.info("Calling Qwen model API with DashScope...");
-        GenerationResult result = generationClient.call(param);
+        GenerationResult result;
+        try {
+            result = generationClient.call(param);
+        } catch (ApiException e) {
+            String errorMsg = String.format("调用大模型API失败: %s", e.getMessage());
+            logger.error(errorMsg, e);
+            throw BusinessException.of(ErrorCode.BAD_REQUEST, errorMsg);
+        } catch (NoApiKeyException e) {
+            String errorMsg = "缺少API密钥";
+            logger.error("{}: {}", errorMsg, e.getMessage(), e);
+            throw BusinessException.of(ErrorCode.UNAUTHORIZED, errorMsg);
+        } catch (InputRequiredException e) {
+            String errorMsg = "缺少必要输入参数";
+            logger.error("{}: {}", errorMsg, e.getMessage(), e);
+            throw BusinessException.of(ErrorCode.PARAM_MISSING, errorMsg);
+        } catch (Exception e) {
+            String errorMsg = String.format("调用大模型服务时发生未知错误: %s", e.getMessage());
+            logger.error(errorMsg, e);
+            throw new SystemException(ErrorCode.INTERNAL_SERVER_ERROR, errorMsg, e);
+        }
 
-        if (result == null || result.getOutput() == null) {
-            logger.error("Received null result or output from DashScope API");
-            throw new RuntimeException("Invalid response from LLM API");
+        if (result.getOutput() == null) {
+            String errorMsg = "从大模型API收到无效响应";
+            logger.error(errorMsg);
+            throw BusinessException.of(ErrorCode.BUSINESS_ERROR, errorMsg);
         }
 
         String output = result.getOutput().getText();
@@ -143,19 +172,20 @@ public class LargeModelService {
         try {
             objectMapper.readTree(candidate);
         } catch (Exception e) {
-            logger.error("Invalid JSON from LLM: {}", candidate, e);
-            throw new RuntimeException("Invalid JSON format from LLM", e);
+            String errorMsg = String.format("大模型返回的数据格式不正确: %s", e.getMessage());
+            logger.error(errorMsg, e);
+            throw BusinessException.of(ErrorCode.PARAM_FORMAT_ERROR, errorMsg);
         }
 
         return candidate;
     }
-
+    
     /**
      * Circuit breaker fallback method
      * 返回一个最小 JSON，保证前端拿到结构
      */
     public String fallbackQuestionsJson(String textContent, Throwable ex) {
-        logger.error("Qwen API call failed or timed out, entering fallback. Error: {}", ex.getMessage(), ex);
+        logger.error("Qwen API call failed or timed out for text content: {}", textContent, ex);
         return "[]";
     }
 }
