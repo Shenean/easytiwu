@@ -18,14 +18,15 @@
 
 ## 服务架构
 
-| 服务 | 端口 | 功能 |
-|------|------|------|
-| service-gateway | 8080 | API 网关，统一路由转发 |
-| service-upload | 8084 | 文件上传与题库解析 |
-| service-bank | 8081 | 题库与题目管理 |
-| service-content | 8082 | 内容管理服务 |
-| service-statistics | 8083 | 数据统计服务 |
-| frontend | 3000 | 前端开发服务器 |
+| 服务               | 端口 | 功能                   |
+|--------------------|------|------------------------|
+| frontend           | 3000 | 前端开发服务器         |
+| service-gateway    | 8080 | API 网关，统一路由转发 |
+| service-bank       | 8081 | 题库与题目管理         |
+| service-content    | 8082 | 内容管理服务           |
+| service-statistics | 8083 | 数据统计服务           |
+| service-upload     | 8084 | 文件上传与题库解析     |
+
 
 ## 快速启动
 
@@ -42,7 +43,7 @@ source DB.SQL
 配置以下环境变量或在 application.yml 中设置：
 ```bash
 DB_PASSWORD=your_mysql_password
-DASHSCOPE_API_KEY=your_dashscope_api_key
+DASHSCOPE_API_KEY=your_dashscope_api_key(仅upload模块)
 ```
 
 ### 3. 启动服务
@@ -57,8 +58,11 @@ cd service-upload && mvn spring-boot:run
 # 3. 启动题库服务
 cd service-bank && mvn spring-boot:run
 
-# 4. 启动内容服务（可选）
+# 4. 启动内容服务
 cd service-content && mvn spring-boot:run
+
+# 5. 启动统计服务
+cd service-statistics && mvn spring-boot:run
 ```
 
 **前端服务**
@@ -79,14 +83,6 @@ npm run dev
 - **在线练习**：支持单选、多选、填空、判断、简答等题型
 - **统计分析**：练习进度、正确率、错题统计
 
-## API 接口
-
-| 接口 | 方法 | 功能 |
-|------|------|------|
-| /api/upload/file | POST | 上传题库文件 |
-| /api/bank/list | GET | 获取题库列表 |
-| /api/bank/questions | GET | 查询题目 |
-| /api/statistics/* | GET | 统计数据 |
 
 ## 数据库设计
 

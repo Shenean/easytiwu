@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class ExceptionConfig {
     
     /**
-     * 是否启用详细错误信息（开发环境建议启用）
+     * 是否启用详细错误信息
      */
     private boolean enableDetailedErrorInfo = false;
     
