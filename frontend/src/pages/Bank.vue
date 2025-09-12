@@ -11,21 +11,71 @@
       </n-empty>
     </div>
 
-    <!-- 数据表格 -->
-    <n-data-table
-        v-else
-        :columns="columns"
-        :data="banks"
-        :loading="loading"
-        :bordered="false"
-    />
+    <!-- 移动端卡片列表 -->
+    <div v-else class="banks-container">
+      <div v-for="bank in banks" :key="bank.id" class="bank-card-item">
+        <div class="bank-header">
+          <div class="bank-id">ID: {{ bank.id }}</div>
+          <div class="bank-name">{{ bank.name }}</div>
+        </div>
+        
+        <div class="bank-description" v-if="bank.description">
+          {{ bank.description }}
+        </div>
+        
+        <div class="bank-stats">
+          <div class="stat-item">
+            <div class="stat-label">总题数</div>
+            <div class="stat-value">{{ bank.totalCount }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">已完成</div>
+            <div class="stat-value">{{ bank.completedCount }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">错题数</div>
+            <div class="stat-value">{{ bank.wrongCount }}</div>
+          </div>
+        </div>
+        
+        <div class="bank-actions">
+          <BaseButton 
+            type="primary" 
+            size="medium"
+            class="action-button"
+            @click="handlePractice(bank.id)"
+            :aria-label="`练习题库 ${bank.name}`"
+          >
+            开始练习
+          </BaseButton>
+          <BaseButton 
+            type="warning" 
+            size="medium"
+            class="action-button"
+            @click="handleWrongSet(bank.id)"
+            :aria-label="`查看错题集 ${bank.name}`"
+          >
+            错题集
+          </BaseButton>
+          <BaseButton 
+            type="error" 
+            ghost
+            size="medium"
+            class="action-button"
+            @click="confirmDelete(bank.id)"
+            :aria-label="`删除题库 ${bank.name}`"
+          >
+            删除
+          </BaseButton>
+        </div>
+      </div>
+    </div>
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, h } from 'vue'
-import type { DataTableColumns } from 'naive-ui'
-import { useMessage, NSpace, useDialog, NEllipsis } from 'naive-ui'
+import { ref, onMounted } from 'vue'
+import { useMessage, useDialog } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import axios, { AxiosError } from 'axios'
 import BaseButton from '../components/common/BaseButton.vue'
@@ -56,89 +106,7 @@ const loading = ref(false)
 
 
 
-// ================== 表格列定义 ==================
-const columns: DataTableColumns<QuestionBank> = [
-  {
-    title: 'ID',
-    key: 'id',
-    width: 70,
-    align: 'center'
-  },
-  {
-    title: '题库名',
-    key: 'name',
-    render(row) {
-      return h(NEllipsis, { tooltip: true }, () => row.name)
-    }
-  },
-  {
-    title: '描述',
-    key: 'description',
-    render(row) {
-      return h(NEllipsis, { tooltip: true }, () => row.description || '—')
-    }
-  },
-  {
-    title: '总题数',
-    key: 'totalCount',
-    width: 90,
-    align: 'center'
-  },
-  {
-    title: '已完成',
-    key: 'completedCount',
-    width: 90,
-    align: 'center'
-  },
-  {
-    title: '错题数',
-    key: 'wrongCount',
-    width: 90,
-    align: 'center'
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    width: 260,
-    align: 'center',
-    fixed: 'right', 
-    render(row) {
-      return h(NSpace, { size: 'small' }, () => [
-        h(
-            BaseButton,
-            {
-              size: 'small',
-              type: 'primary',
-              onClick: () => handlePractice(row.id),
-              'aria-label': `练习题库 ${row.name}`
-            },
-            { default: () => '全部练习' }
-        ),
-        h(
-            BaseButton,
-            {
-              size: 'small',
-              type: 'warning',
-              onClick: () => handleWrongSet(row.id),
-              'aria-label': `查看错题集 ${row.name}`
-            },
-            { default: () => '错题集' }
-        ),
-        h(
-            BaseButton,
-            {
-              size: 'small',
-              type: 'error',
-              ghost: true,
-              onClick: () => confirmDelete(row.id),
-              'aria-label': `删除题库 ${row.name}`
-            },
-            { default: () => '删除' }
-        )
-      ])
-    }
-  }
-]
+
 
 // ================== 数据获取 ==================
 /**
@@ -270,32 +238,118 @@ defineExpose({
   }
 }
 
-/* 表格优化：鼠标悬停高亮当前行 */
-:deep(.n-data-table-tr:hover) {
-  background-color: #f7fefb !important;
-  transition: background-color 0.25s ease;
+/* 卡片容器样式 */
+.banks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
 }
 
-/* 操作列按钮组统一 spacing、视觉平衡 */
-:deep(.n-space) {
-  justify-content: center;
-  align-items: center;
+.bank-card-item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-:deep(.n-button) {
+.bank-card-item:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bank-id {
+  font-size: 12px;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.bank-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.bank-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  word-break: break-word;
+}
+
+.bank-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.bank-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  flex: 1;
+  min-height: 48px;
+  min-width: 120px;
+  font-size: 14px;
+  font-weight: 500;
   border-radius: 8px;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+  cursor: pointer;
 }
 
-:deep(.n-button:hover) {
+.action-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-:deep(.n-button:active) {
+.action-button:active {
   transform: translateY(0);
-  box-shadow: none;
+  transition: transform 0.1s;
 }
 
 /* 空状态提示按钮动画 */
@@ -304,20 +358,131 @@ defineExpose({
   border-radius: 8px;
 }
 
-/* 小屏适配优化 */
+/* 移动端适配 */
 @media (max-width: 768px) {
   .bank-card {
-    margin: 24px 12px;
-    padding: 12px;
+    margin: 16px;
+    border-radius: 12px;
   }
-
+  
+  .table-container {
+    margin: 0 -16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .mobile-table {
+    font-size: 14px;
+    min-width: 650px;
+  }
+  
+  :deep(.n-data-table-th) {
+    padding: 10px 8px !important;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  
+  :deep(.n-data-table-td) {
+    padding: 12px 8px !important;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  
+  :deep(.action-btn) {
+    min-width: 50px;
+    padding: 6px 8px;
+    font-size: 11px;
+    margin: 0 2px;
+  }
+  
   .empty-state {
-    padding: 32px 0;
+    padding: 40px 20px;
   }
+  
+  /* 优化表格行高 */
+  :deep(.n-data-table-tr) {
+    min-height: 60px;
+  }
+}
 
-  :deep(.n-space) {
-    flex-direction: column;
-    gap: 8px;
+@media (max-width: 480px) {
+  .bank-card {
+    margin: 12px;
+  }
+  
+  .mobile-table {
+    font-size: 13px;
+    min-width: 600px;
+  }
+  
+  :deep(.n-data-table-th) {
+    padding: 8px 6px !important;
+    font-size: 12px;
+  }
+  
+  :deep(.n-data-table-td) {
+    padding: 10px 6px !important;
+    font-size: 12px;
+  }
+  
+  :deep(.action-btn) {
+    min-width: 45px;
+    padding: 4px 6px;
+    font-size: 10px;
+    margin: 0 1px;
+  }
+  
+  .empty-state {
+    padding: 30px 16px;
+  }
+  
+  /* 进一步优化小屏幕表格 */
+  :deep(.n-data-table-tr) {
+    min-height: 55px;
+  }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 360px) {
+  .bank-card {
+    margin: 8px;
+  }
+  
+  .mobile-table {
+    min-width: 550px;
+  }
+  
+  :deep(.action-btn) {
+    min-width: 40px;
+    padding: 3px 5px;
+    font-size: 9px;
+  }
+  
+  :deep(.n-data-table-th),
+  :deep(.n-data-table-td) {
+    padding: 6px 4px !important;
+    font-size: 11px;
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .bank-card {
+    margin: 8px 16px;
+  }
+  
+  .empty-state {
+    padding: 20px;
+  }
+  
+  :deep(.n-data-table-tr) {
+    min-height: 45px;
+  }
+  
+  :deep(.n-data-table-th),
+  :deep(.n-data-table-td) {
+    padding: 6px 8px !important;
   }
 }
 

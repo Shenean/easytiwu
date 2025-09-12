@@ -1,15 +1,15 @@
 <template>
-  <n-card title="答题卡" size="small" class="answer-card-container">
-    <n-grid :cols="4" :x-gap="8" :y-gap="8">
+  <n-card title="答题卡" size="small" class="answer-card-container" :class="{ 'mobile-mode': mobileMode }">
+    <n-grid :cols="mobileMode ? 5 : 4" :x-gap="mobileMode ? 6 : 8" :y-gap="mobileMode ? 6 : 8">
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
         <n-button
           :type="getCardButtonType(q)"
-          :size="getCardButtonSize"
+          :size="mobileMode ? 'small' : getCardButtonSize"
           block
           @click="jumpToQuestion(q.id)"
           :bordered="false"
           class="answer-card-btn"
-          :class="{ active: q.id === currentQuestionId }"
+          :class="{ active: q.id === currentQuestionId, 'mobile-btn': mobileMode }"
         >
           {{ index + 1 }}
         </n-button>
@@ -19,8 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-
 interface Question {
   id: number
   isCompleted: number
@@ -30,9 +28,10 @@ interface Question {
 interface Props {
   questions: Question[]
   currentQuestionId?: number
+  mobileMode?: boolean
 }
 
-const { questions, currentQuestionId } = defineProps<Props>()
+const { questions, currentQuestionId, mobileMode = false } = defineProps<Props>()
 
 const emit = defineEmits<{
   questionClick: [id: number]
@@ -44,9 +43,7 @@ function getCardButtonType(q: Question) {
   return 'error'
 }
 
-const getCardButtonSize = computed(() => {
-  return window.innerWidth < 768 ? 'small' : 'medium'
-})
+const getCardButtonSize = 'medium'
 
 function jumpToQuestion(id: number) {
   emit('questionClick', id)
@@ -114,5 +111,85 @@ function jumpToQuestion(id: number) {
 .answer-card-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* 移动端模式样式 */
+.mobile-mode {
+  position: static;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mobile-mode :deep(.n-card__header) {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-mode :deep(.n-card__content) {
+  padding: 16px;
+}
+
+.mobile-btn {
+  height: 44px !important;
+  min-width: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  touch-action: manipulation;
+}
+
+.mobile-btn:active {
+  transform: scale(0.95) !important;
+  transition: transform 0.1s ease;
+}
+
+.mobile-btn.active {
+  box-shadow: 0 0 0 2px #18a058, 0 2px 8px rgba(24, 160, 88, 0.3);
+  transform: scale(1.02);
+}
+
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  .answer-card-container:not(.mobile-mode) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-mode :deep(.n-card__header) {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  
+  .mobile-mode :deep(.n-card__content) {
+    padding: 12px;
+  }
+  
+  .mobile-btn {
+    height: 42px !important;
+    min-width: 42px;
+    font-size: 13px;
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-mode :deep(.n-card__header) {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .mobile-mode :deep(.n-card__content) {
+    padding: 10px;
+  }
+  
+  .mobile-btn {
+    height: 38px !important;
+    min-width: 38px;
+    font-size: 12px;
+  }
 }
 </style>

@@ -8,30 +8,36 @@
 
       <!-- 桌面端菜单 -->
       <n-menu
-        v-if="!isMobile"
         :value="currentRouteName"
         mode="horizontal"
         :options="menuOptions"
         @update:value="handleMenuSelect"
-        class="menu"
+        class="menu desktop-nav"
         :disabled-keys="disabledKeys"
       />
-
+      
       <!-- 移动端汉堡菜单 -->
-      <n-dropdown
-        v-else
-        :options="menuOptions"
-        trigger="click"
-        placement="bottom-end"
-        animation="fade-in-scale-up-transition"
-        @select="handleMenuSelect"
-      >
-        <n-button text aria-label="菜单" class="btn-ripple">
-          <n-icon size="24">
-            <i class="i-ion-menu-outline"></i>
-          </n-icon>
+      <div class="mobile-nav">
+        <n-button text @click="showMobileMenu = !showMobileMenu" class="mobile-menu-btn">
+          <template #icon>
+            <n-icon size="20">
+              <MenuOutline />
+            </n-icon>
+          </template>
         </n-button>
-      </n-dropdown>
+      </div>
+    </div>
+    
+    <!-- 移动端下拉菜单 -->
+    <div v-if="showMobileMenu" class="mobile-menu">
+      <div 
+        v-for="option in menuOptions" 
+        :key="option.key"
+        class="mobile-menu-item"
+        @click="navigateAndClose(option.key as string)"
+      >
+        <span>{{ option.label }}</span>
+      </div>
     </div>
   </n-layout-header>
 </template>
@@ -40,11 +46,14 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { MenuOption } from 'naive-ui'
-import { useWindowSize } from '@vueuse/core'
+import { MenuOutline } from '@vicons/ionicons5'
 import { mainMenuOptions } from '../config/menuOptions'
 
 const route = useRoute()
 const router = useRouter()
+
+// 移动端菜单显示状态
+const showMobileMenu = ref(false)
 
 // 当前路由名
 const currentRouteName = computed(() => {
@@ -65,10 +74,13 @@ const handleMenuSelect = (key: string) => {
   })
 }
 
-// 响应式判断是否为移动端
-const { width } = useWindowSize()
-const MOBILE_BREAKPOINT = 768
-const isMobile = computed(() => width.value < MOBILE_BREAKPOINT)
+// 移动端导航并关闭菜单
+const navigateAndClose = (key: string) => {
+  showMobileMenu.value = false
+  handleMenuSelect(key)
+}
+
+
 
 // 路由变化监听（可选增强）
 let unwatchRoute: (() => void) | null = null
@@ -144,6 +156,71 @@ defineExpose({
   background: transparent;
 }
 
+/* 响应式导航 */
+.desktop-nav {
+  display: flex;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.mobile-menu-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.mobile-menu-item:hover {
+  background-color: rgba(24, 160, 88, 0.1);
+  color: #18a058;
+}
+
+.mobile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu-btn {
+  padding: 8px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+  
+  .mobile-nav {
+    display: flex;
+  }
+  
+  .navbar {
+    padding: 0 16px;
+  }
+  
+  .logo {
+    font-size: 20px;
+    padding: 0 8px;
+  }
+}
+
 :deep(.n-menu-item-content) {
   font-weight: 500;
   transition: color 0.2s, transform 0.2s;
@@ -187,10 +264,5 @@ defineExpose({
   transition: 0s;
 }
 
-/* 移动端适配 */
-@media (max-width: 768px) {
-  .navbar { padding: 0 12px; height: 56px; }
-  .logo   { font-size: 20px; padding: 0 8px; }
-  .n-button { padding: 6px 10px; }
-}
+
 </style>

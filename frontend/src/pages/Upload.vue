@@ -187,12 +187,72 @@ defineExpose({
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
-@media (max-width: 480px) {
+/* 移动端表单优化 */
+@media (max-width: 768px) {
   .upload-card {
-    margin: 24px 12px;
-    padding: 12px;
+    margin: 16px;
+    max-width: none;
   }
-
+  
+  /* 表单项移动端优化 */
+  :deep(.n-form-item-label) {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  :deep(.n-input) {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+  
+  :deep(.n-input__input-el) {
+    font-size: 16px !important;
+  }
+  
+  :deep(.n-input__textarea-el) {
+    font-size: 16px !important;
+  }
+  
+  :deep(.n-button) {
+    min-height: 44px;
+    font-size: 16px;
+    font-weight: 600;
+  }
 }
 
+@media (max-width: 480px) {
+  .upload-card {
+    margin: 12px;
+    border-radius: 12px;
+  }
+  
+  :deep(.n-form-item-label) {
+    font-size: 13px;
+  }
+  
+  :deep(.n-input) {
+    min-height: 42px;
+  }
+  
+  :deep(.n-button) {
+    min-height: 42px;
+    font-size: 15px;
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .upload-card {
+    margin: 8px;
+  }
+  
+  :deep(.n-input) {
+    min-height: 38px;
+  }
+  
+  :deep(.n-button) {
+    min-height: 38px;
+    font-size: 14px;
+  }
+}
 </style>

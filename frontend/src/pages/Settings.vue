@@ -143,9 +143,147 @@ function handleThemeChange(theme: Theme) {
 /* 标签 */
 .theme-label { font-size:14px; color:var(--n-text-color); font-weight:500; text-align:center; }
 
-/* 响应式 */
-@media (max-width:720px) {
-  .theme-item { width:100%; max-width:420px; }
-  .settings-container { padding:12px; }
+/* 移动端设置页面优化 */
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 16px;
+  }
+  
+  .settings-card {
+    border-radius: 8px;
+    margin: 0 -4px;
+  }
+  
+  .setting-section {
+    padding: 12px 16px;
+  }
+  
+  .setting-section.small {
+    padding-bottom: 8px;
+  }
+  
+  .setting-header {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  
+  .setting-title {
+    font-size: 15px;
+  }
+  
+  .setting-description {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .theme-list {
+    gap: 10px;
+    justify-content: space-around;
+  }
+  
+  .theme-item {
+    width: 100px;
+    padding: 6px;
+  }
+  
+  .theme-radio {
+    gap: 6px;
+  }
+  
+  .preview {
+    height: 60px;
+    border-radius: 6px;
+  }
+  
+  .theme-label {
+    font-size: 12px;
+  }
+  
+  /* 表单组件优化 */
+  :deep(.n-radio-group) {
+    width: 100%;
+  }
+  
+  :deep(.n-radio) {
+    width: 100%;
+    min-height: 44px;
+  }
+  
+  :deep(.n-radio__dot) {
+    transform: scale(1.2);
+  }
+  
+  :deep(.n-card__header) {
+    padding: 16px 16px 0;
+  }
+  
+  :deep(.n-card__content) {
+    padding: 0;
+  }
 }
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 12px;
+  }
+  
+  .setting-section {
+    padding: 10px 12px;
+  }
+  
+  .setting-title {
+    font-size: 14px;
+  }
+  
+  .setting-description {
+    font-size: 11px;
+  }
+  
+  .theme-item {
+    width: 90px;
+    padding: 4px;
+  }
+  
+  .preview {
+    height: 50px;
+  }
+  
+  .theme-label {
+    font-size: 11px;
+  }
+  
+  :deep(.n-card__header) {
+    padding: 12px 12px 0;
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .theme-list {
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .theme-item {
+    width: 80px;
+  }
+  
+  .preview {
+    height: 45px;
+  }
+}
+
+/* 触摸优化 */
+@media (hover: none) and (pointer: coarse) {
+  .theme-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .theme-item:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+  }
+}
+
 </style>

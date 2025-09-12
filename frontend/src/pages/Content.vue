@@ -18,6 +18,18 @@
 
     <!-- 主要内容区域 -->
     <template v-else>
+      <!-- 移动端答题卡按钮 -->
+      <div class="mobile-answer-card-toggle mobile-only">
+        <BaseButton 
+          @click="showMobileAnswerCard = !showMobileAnswerCard" 
+          type="primary" 
+          size="small"
+          class="answer-card-btn"
+        >
+          答题卡 ({{ currentQuestionIndex + 1 }}/{{ questionList.length }})
+        </BaseButton>
+      </div>
+
       <div class="content-layout">
         <!-- 左侧：题目区域 -->
         <div class="main-content">
@@ -48,8 +60,8 @@
           </n-card>
         </div>
 
-        <!-- 右侧：答题卡 -->
-        <div class="sidebar">
+        <!-- 桌面端右侧答题卡 -->
+        <div class="sidebar desktop-only">
           <AnswerCard
             :questions="questionList"
             :current-question-id="currentQuestion?.id"
@@ -57,6 +69,24 @@
           />
         </div>
       </div>
+
+      <!-- 移动端答题卡抽屉 -->
+      <n-drawer 
+        v-model:show="showMobileAnswerCard" 
+        :width="'90%'" 
+        placement="bottom" 
+        :height="'60%'"
+        class="mobile-only"
+      >
+        <n-drawer-content title="答题卡" closable>
+          <AnswerCard
+            :questions="questionList"
+            :current-question-id="currentQuestion?.id"
+            @question-click="handleMobileQuestionClick"
+            :mobile-mode="true"
+          />
+        </n-drawer-content>
+      </n-drawer>
 
       <!-- 底部固定操作按钮 -->
       <QuestionActions
@@ -122,6 +152,7 @@ const route = useRoute()
 const currentQuestionIndex = ref(0)
 const isSubmitted = ref(false)
 const submitting = ref(false)
+const showMobileAnswerCard = ref(false)
 
 // 本地作答状态（可与 QuestionAnswer.vue 双向绑定）
 const localAnswer = ref<AnswerValue>(null)
@@ -356,6 +387,12 @@ function nextQuestion() {
   }
 }
 
+/** 移动端答题卡处理 */
+function handleMobileQuestionClick(id: number) {
+  jumpToQuestion(id)
+  showMobileAnswerCard.value = false
+}
+
 /** 生命周期 */
 onMounted(() => {
   fetchQuestions()
@@ -373,6 +410,26 @@ watch(currentQuestion, () => {
   min-height: 100vh;
   padding: 20px;
   background-color: #f5f5f5;
+}
+
+/* 移动端答题卡切换按钮 */
+.mobile-answer-card-toggle {
+  position: fixed;
+  top: 80px;
+  right: 16px;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.answer-card-btn {
+  border-radius: 16px !important;
+  font-size: 12px;
+  padding: 8px 12px;
+  font-weight: 600;
 }
 
 /* 主要内容布局 */
@@ -416,34 +473,6 @@ watch(currentQuestion, () => {
   padding-bottom: 80px;
 }
 
-/* 响应式设计 */
-@media (max-width: 1024px) {
-  .content-layout {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .sidebar {
-    width: 100%;
-    order: -1;
-  }
-
-  .answer-card-container {
-    position: static;
-    max-height: 300px;
-  }
-}
-
-@media (max-width: 768px) {
-  .page-container {
-    padding: 16px;
-  }
-
-  .content-layout {
-    gap: 16px;
-  }
-}
-
 /* 通用样式 */
 .mb-4 {
   margin-bottom: 16px;
@@ -476,5 +505,94 @@ watch(currentQuestion, () => {
 
 :deep(.n-card .n-card-content) {
   padding: 20px;
+}
+
+/* ===== 移动端响应式设计 ===== */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 12px 8px;
+  }
+  
+  .mobile-answer-card-toggle {
+    top: 70px;
+    right: 12px;
+  }
+  
+  .content-layout {
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 100px; /* 为移动端底部按钮留更多空间 */
+  }
+  
+  .main-content {
+    gap: 16px;
+  }
+  
+  .question-stem {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  
+  /* 移动端卡片优化 */
+  :deep(.n-card .n-card-header) {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  :deep(.n-card .n-card-content) {
+    padding: 16px;
+  }
+  
+  /* 移动端抽屉样式 */
+  :deep(.n-drawer .n-drawer-content) {
+    padding: 0;
+  }
+  
+  :deep(.n-drawer .n-drawer-header) {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  :deep(.n-drawer .n-drawer-body) {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 8px 4px;
+  }
+  
+  .mobile-answer-card-toggle {
+    top: 65px;
+    right: 8px;
+  }
+  
+  .answer-card-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+  
+  .content-layout {
+    gap: 12px;
+    padding-bottom: 110px;
+  }
+  
+  .main-content {
+    gap: 12px;
+  }
+  
+  .question-stem {
+    font-size: 14px;
+  }
+  
+  :deep(.n-card .n-card-header) {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  :deep(.n-card .n-card-content) {
+    padding: 12px;
+  }
 }
 </style>

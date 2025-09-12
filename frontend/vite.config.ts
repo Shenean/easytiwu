@@ -1,28 +1,49 @@
+// vite.config.ts
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import type { ServerResponse, IncomingMessage } from 'http'
-import type { ClientRequest } from 'http'
-import type { IncomingMessage as ProxyIncomingMessage } from 'http'
-import type { ProxyServer, ProxyReqCallback, ProxyResCallback } from 'http-proxy'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    }
+  },
   server: {
+    host: '0.0.0.0',
     port: 3000,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
-        configure: (proxy: ProxyServer) => {
-          proxy.on('error', (err: Error, req: IncomingMessage, res: ServerResponse) => {
-            console.error('proxy error', err)
+        configure: (proxy) => {
+          // 错误处理
+          proxy.on('error', (err, _req, res) => {
+            console.error('Proxy Error:', err)
+
+            // ✅ 类型守卫：确保 res 是 ServerResponse
+            if ('writeHead' in res && !res.headersSent) {
+              res.writeHead(500, {
+                'Content-Type': 'application/json',
+              })
+              res.end(JSON.stringify({
+                error: 'Proxy Error',
+                message: err.message,
+                code: 'PROXY_ERROR'
+              }))
+            }
           })
-          proxy.on('proxyReq', (proxyReq: ClientRequest, req: IncomingMessage, res: ServerResponse) => {
-            console.log('Sending Request to Target:', req.method, req.url)
+
+          // 请求转发前钩子
+          proxy.on('proxyReq', (_proxyReq, req, _res) => {
+            console.log('→ Forwarding Request:', req.method, req.url)
           })
-          proxy.on('proxyRes', (proxyRes: ProxyIncomingMessage, req: IncomingMessage, res: ServerResponse) => {
-            console.log('Received Response from Target:', proxyRes.statusCode, req.url)
+
+          // 收到响应后钩子
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('← Received Response:', proxyRes.statusCode, req.url)
           })
         }
       }

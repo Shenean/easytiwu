@@ -47,10 +47,5 @@ const emit = defineEmits<{
   margin-top: 12px;
 }
 
-@media (max-width: 480px) {
-  .form-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
+
 </style>

@@ -216,9 +216,5 @@ defineExpose({
   word-wrap: break-word;
 }
 
-@media (max-width: 480px) {
-  .file-tag {
-    font-size: 13px;
-  }
-}
+
 </style>

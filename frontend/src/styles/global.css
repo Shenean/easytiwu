@@ -1,0 +1,241 @@
+/* ===== 移动端优化全局样式 ===== */
+
+/* 禁用双击缩放，消除 300ms 延迟 */
+* {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent; /* 移除点击高亮 */
+}
+
+/* 基础响应式设置 */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%; /* 防止iOS字体缩放 */
+  -ms-text-size-adjust: 100%;
+}
+
+/* 移动端字体优化 */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* 移动端滚动优化 */
+* {
+  -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+}
+
+input, textarea, select {
+  -webkit-appearance: none;
+  appearance: none; 
+  border-radius: 0;
+}
+
+button {
+  -webkit-appearance: none;
+  appearance: none; 
+  border-radius: 0;
+  cursor: pointer;
+}
+
+/* 响应式容器 */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* 移动端媒体查询 */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
+  
+  /* 移动端卡片间距优化 */
+  .n-card {
+    margin: 8px 0 !important;
+  }
+  
+  /* 移动端按钮最小触摸区域 */
+  button, .n-button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+  
+  .container {
+    padding: 0 8px;
+  }
+}
+
+/* 移动端隐藏类 */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* 移动端表格优化 */
+@media (max-width: 768px) {
+  .n-data-table {
+    font-size: 12px;
+  }
+  
+  .n-data-table th,
+  .n-data-table td {
+    padding: 8px 4px !important;
+  }
+}
+
+/* 移动端表单优化 */
+@media (max-width: 768px) {
+  .n-form-item {
+    margin-bottom: 16px;
+  }
+  
+  .n-form-item-label {
+    padding-bottom: 4px;
+  }
+  
+  .n-input {
+    font-size: 16px !important; /* 防止iOS缩放 */
+  }
+}
+
+/* 移动端导航优化 */
+@media (max-width: 768px) {
+  .n-layout-header {
+    padding: 0 12px;
+  }
+  
+  .n-menu-item {
+    padding: 0 8px !important;
+  }
+}
+
+/* 移动端模态框优化 */
+@media (max-width: 768px) {
+  .n-modal {
+    margin: 16px !important;
+  }
+  
+  .n-card.n-modal {
+    max-height: calc(100vh - 32px) !important;
+  }
+}
+
+/* 移动端加载状态优化 */
+@media (max-width: 768px) {
+  .n-spin {
+    font-size: 14px;
+  }
+}
+
+/* 移动端消息提示优化 */
+@media (max-width: 768px) {
+  .n-message {
+    max-width: calc(100vw - 32px) !important;
+    margin: 0 16px;
+  }
+}
+
+/* 移动端性能优化和触摸反馈增强 */
+@media (max-width: 768px) {
+  /* 启用硬件加速 */
+  .n-card,
+  .n-button,
+  .n-drawer,
+  .n-modal,
+  .answer-card-btn,
+  .mobile-menu {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  
+  /* 优化滚动性能 */
+  body,
+  .n-scrollbar,
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* 触摸反馈增强 */
+  .n-button:active,
+  .answer-card-btn:active,
+  .mobile-menu-item:active,
+  .theme-item:active {
+    transform: scale(0.98) translateZ(0);
+    transition: transform 0.1s ease;
+  }
+  
+  /* 减少重绘和回流 */
+  .n-card,
+  .n-data-table {
+    contain: layout style paint;
+  }
+  
+  /* 优化动画性能 */
+  .n-drawer-content,
+  .mobile-menu {
+    will-change: transform;
+  }
+  
+  /* 触摸目标最小尺寸 */
+  .n-button,
+  .answer-card-btn,
+  .mobile-menu-item,
+  .theme-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 防止意外缩放 */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* 高分辨率屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .n-icon {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* 减少动画对性能的影响 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 暗色模式下的性能优化 */
+@media (prefers-color-scheme: dark) {
+  body {
+    color-scheme: dark;
+  }
+}

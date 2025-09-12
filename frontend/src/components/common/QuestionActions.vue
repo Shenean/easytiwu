@@ -65,6 +65,8 @@ defineEmits<{
   padding: 16px 20px;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .action-buttons {
@@ -75,14 +77,92 @@ defineEmits<{
   margin: 0 auto;
 }
 
-/* 响应式设计 */
+/* 移动端优化 */
 @media (max-width: 768px) {
   .bottom-actions {
     padding: 12px 16px;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
   }
   
   .action-buttons {
     gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  /* 移动端按钮优化 */
+  :deep(.n-button) {
+    min-height: 44px !important;
+    min-width: 80px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    flex: 1;
+    max-width: 120px;
+  }
+  
+  /* 主要按钮（提交）更突出 */
+  :deep(.n-button--primary) {
+    min-width: 100px;
+    box-shadow: 0 2px 8px rgba(24, 160, 88, 0.3);
+  }
+  
+  /* 触摸反馈 */
+  :deep(.n-button:active) {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-actions {
+    padding: 10px 12px;
+  }
+  
+  .action-buttons {
+    gap: 8px;
+  }
+  
+  :deep(.n-button) {
+    min-height: 42px !important;
+    font-size: 13px;
+    min-width: 70px;
+    max-width: 100px;
+  }
+  
+  :deep(.n-button--primary) {
+    min-width: 90px;
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .bottom-actions {
+    padding: 8px 16px;
+  }
+  
+  :deep(.n-button) {
+    min-height: 38px !important;
+    font-size: 13px;
+  }
+}
+
+/* 安全区域适配（iPhone X等） */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-actions {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  
+  @media (max-width: 768px) {
+    .bottom-actions {
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .bottom-actions {
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
   }
 }
 </style>
