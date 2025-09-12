@@ -1,60 +1,106 @@
-# EasyTiwu · AI 练题工具（精简版）
+# EasyTiwu · AI 练题工具
 
-一个基于 Spring Cloud 的微服务项目，支持题库上传、练习与 AI 智能解析，前端采用 Vue 3 + TypeScript。
+基于 Spring Cloud 微服务架构的智能练题平台，支持题库文件上传、在线练习和 AI 智能解析。
 
-## 项目概览
-- 后端：Spring Boot 3、Spring Cloud Gateway、MyBatis、MySQL 8、Apache POI、Lombok、FastJSON2
-- AI：阿里云通义千问（DashScope）
-- 前端：Vue 3、Vite、Naive UI、Axios、Vue Router、TypeScript
-- JDK：17 以上，构建：Maven 3.x
+## 技术栈
 
-## 模块与端口
-- service-gateway（8080）：API 网关
-- service-bank（8081）：题库与题目管理
-- service-content（8082）：内容管理
-- service-statistics（8083）：统计服务
-- service-upload（8084）：文件上传与解析
-- frontend（3000）：前端开发服务器
+**后端**
+- Spring Boot 3.3.13 + Spring Cloud Gateway
+- MyBatis Plus + MySQL 8
+- Apache POI（文档解析）+ 阿里云通义千问（AI 解析）
 
-## 快速开始
-1) 准备环境
+**前端**
+- Vue 3 + TypeScript + Vite
+- Naive UI + Vue Router + Pinia
+
+**环境要求**
 - JDK 17+、Node.js 18+、MySQL 8+、Maven 3.6+
 
-2) 初始化数据库
-- 创建数据库：easytiwu（utf8mb4）
-- 执行脚本：DB.SQL（位于项目根目录）
+## 服务架构
 
-3) 配置必要变量（以系统环境变量或启动参数方式提供）
-- DB_PASSWORD：MySQL 密码
-- DASHSCOPE_API_KEY：阿里云通义千问 API Key
+| 服务 | 端口 | 功能 |
+|------|------|------|
+| service-gateway | 8080 | API 网关，统一路由转发 |
+| service-upload | 8084 | 文件上传与题库解析 |
+| service-bank | 8081 | 题库与题目管理 |
+| service-content | 8082 | 内容管理服务 |
+| service-statistics | 8083 | 数据统计服务 |
+| frontend | 3000 | 前端开发服务器 |
 
-4) 启动后端（按顺序）
-- 进入各服务模块执行：mvn spring-boot:run
-  依次启动：service-gateway → service-upload → service-bank → service-content
+## 快速启动
 
-5) 启动前端
-- cd frontend && 安装依赖（npm i 或 pnpm i）
-- 运行开发服务器（npm run dev 或 pnpm dev）
-- 访问：http://localhost:3000
+### 1. 数据库初始化
+```sql
+-- 创建数据库
+CREATE DATABASE easytiwu CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-## 关键配置
-- 网关地址：http://localhost:8080
-- 数据库：localhost:3306 / easytiwu / 用户名 root / 密码由 DB_PASSWORD 提供
-- AI 服务：DashScope（DASHSCOPE_API_KEY）
+-- 执行建表脚本
+source DB.SQL
+```
 
-## 常用 API（经网关转发）
-- POST /api/upload/file：上传题库文件
-- GET  /api/bank/list：题库列表
-- GET  /api/bank/questions：题目查询
+### 2. 环境配置
+配置以下环境变量或在 application.yml 中设置：
+```bash
+DB_PASSWORD=your_mysql_password
+DASHSCOPE_API_KEY=your_dashscope_api_key
+```
 
-## 数据库核心表
-- question_banks：题库
-- questions：题目（含答案与解析）
-- question_options：选择题选项
+### 3. 启动服务
+**后端服务**（按顺序启动）
+```bash
+# 1. 启动网关
+cd service-gateway && mvn spring-boot:run
 
-## 许可证与反馈
-- 许可证：MIT（见 LICENSE）
-- 反馈：提交 Issue 或发送邮件至项目维护者
+# 2. 启动上传服务
+cd service-upload && mvn spring-boot:run
 
-—
-专注题库管理与高效练习。
+# 3. 启动题库服务
+cd service-bank && mvn spring-boot:run
+
+# 4. 启动内容服务（可选）
+cd service-content && mvn spring-boot:run
+```
+
+**前端服务**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 4. 访问应用
+- 前端地址：http://localhost:3000
+- API 网关：http://localhost:8080
+
+## 核心功能
+
+- **题库管理**：支持 Excel、Word、PDF 格式题库文件上传
+- **智能解析**：基于阿里云通义千问的题目自动解析
+- **在线练习**：支持单选、多选、填空、判断、简答等题型
+- **统计分析**：练习进度、正确率、错题统计
+
+## API 接口
+
+| 接口 | 方法 | 功能 |
+|------|------|------|
+| /api/upload/file | POST | 上传题库文件 |
+| /api/bank/list | GET | 获取题库列表 |
+| /api/bank/questions | GET | 查询题目 |
+| /api/statistics/* | GET | 统计数据 |
+
+## 数据库设计
+
+- `question_banks`：题库信息表
+- `questions`：题目详情表（含答案解析）
+- `question_options`：选择题选项表
+
+## 开发说明
+
+- 项目采用 Maven 多模块管理
+- 统一依赖版本通过 BOM 模块管理
+- 数据库连接池使用 HikariCP
+- 前端代理配置自动转发到网关服务
+
+---
+
+**License**: MIT | **反馈**: 提交 Issue 或 PR
