@@ -6,7 +6,6 @@ import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.servicebank.mapper.QuestionBankMapper;
 import com.easytiwu.servicebank.service.QuestionBankService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +19,11 @@ import java.util.List;
 @Service
 public class QuestionBankServiceImpl implements QuestionBankService {
 
-    @Autowired
-    private QuestionBankMapper questionBankMapper;
+    private final QuestionBankMapper questionBankMapper;
+
+    public QuestionBankServiceImpl(QuestionBankMapper questionBankMapper) {
+        this.questionBankMapper = questionBankMapper;
+    }
 
     @Override
     public List<QuestionBank> getAllQuestionBanks() {
@@ -54,16 +56,14 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 
             // 执行删除操作
             int deletedRows = questionBankMapper.deleteById(id);
-            boolean success = deletedRows > 0;
             
-            if (success) {
+            if (deletedRows > 0) {
                 log.info("成功删除题库，ID: {}, 题库名称: {}", id, existingBank.getName());
+                return true;
             } else {
                 log.warn("删除题库失败，ID: {}", id);
                 throw BusinessException.of(ErrorCode.BUSINESS_ERROR, "删除题库失败");
             }
-            
-            return success;
         } catch (BusinessException e) {
             throw e;
         } catch (Exception e) {
