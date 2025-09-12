@@ -10,6 +10,10 @@ import com.easytiwu.serviceupload.mapper.QuestionBankMapper;
 import com.easytiwu.serviceupload.mapper.QuestionMapper;
 import com.easytiwu.serviceupload.mapper.QuestionOptionMapper;
 import com.easytiwu.serviceupload.util.ValidateJson;
+import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.commonexception.exception.ParameterException;
+import com.easytiwu.commonexception.exception.SystemException;
+import com.easytiwu.commonexception.enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +31,9 @@ import java.util.List;
 @Service
 public class DataImportService {
 
+    private static final String QUESTIONS_KEY = "questions";
+    
     private final QuestionBankMapper bankMapper;
-    // questionMapper 和 optionMapper 已被 SqlSessionFactory 替代进行批量操作
-    // private final QuestionMapper questionMapper;
-    // private final QuestionOptionMapper optionMapper;
     private final SqlSessionFactory sqlSessionFactory;
 
     /**
@@ -39,18 +42,13 @@ public class DataImportService {
     private static final int BATCH_SIZE = 1000;
 
     public DataImportService(QuestionBankMapper bankMapper,
-            QuestionMapper questionMapper,
-            QuestionOptionMapper optionMapper,
             SqlSessionFactory sqlSessionFactory) {
         this.bankMapper = bankMapper;
-        // questionMapper 和 optionMapper 在构造函数中保留，但实际使用 SqlSessionFactory 进行批量操作
-        // this.questionMapper = questionMapper;
-        // this.optionMapper = optionMapper;
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void importQuestionsFromJson(String bankName, String bankDesc, String questionsJson) throws Exception {
+    public void importQuestionsFromJson(String bankName, String bankDesc, String questionsJson) {
         JSONObject root;
 
         try {
@@ -59,18 +57,18 @@ public class DataImportService {
             if (clean.startsWith("[")) {
                 JSONArray arr = JSON.parseArray(clean);
                 root = new JSONObject();
-                root.put("questions", arr);
+                root.put(QUESTIONS_KEY, arr);
             } else {
                 root = JSON.parseObject(clean);
             }
         } catch (Exception e) {
             log.error("Failed to parse LLM JSON response", e);
-            throw new IllegalArgumentException("LLM JSON 无法解析", e);
+            throw BusinessException.of(ErrorCode.PARAM_INVALID, "LLM JSON 无法解析");
         }
 
-        JSONArray arr = root.getJSONArray("questions");
+        JSONArray arr = root.getJSONArray(QUESTIONS_KEY);
         if (arr == null || arr.isEmpty()) {
-            throw new IllegalArgumentException("JSON 缺少 questions 数组或数组为空");
+            throw ParameterException.of(ErrorCode.PARAM_INVALID, QUESTIONS_KEY, arr);
         }
 
         log.info("Starting import process for {} questions", arr.size());
@@ -100,7 +98,7 @@ public class DataImportService {
             return bank;
         } catch (Exception e) {
             log.error("Failed to create question bank: {}", bankName, e);
-            throw new RuntimeException("创建题库失败", e);
+            throw SystemException.databaseError(e);
         }
     }
 
@@ -128,7 +126,7 @@ public class DataImportService {
                 }
             } catch (Exception e) {
                 log.error("Failed to process question at index {}", i, e);
-                throw new RuntimeException(String.format("处理第 %d 个题目时发生错误", i + 1), e);
+                throw BusinessException.of(ErrorCode.BUSINESS_ERROR, String.format("处理第 %d 个题目时发生错误", i + 1));
             }
         }
 
@@ -201,7 +199,7 @@ public class DataImportService {
             log.info("Successfully batch inserted {} questions", questions.size());
         } catch (Exception e) {
             log.error("Failed to batch insert questions", e);
-            throw new RuntimeException("批量插入题目失败", e);
+            throw SystemException.databaseError(e);
         }
     }
 
@@ -217,21 +215,36 @@ public class DataImportService {
             JSONObject q = questionsArray.getJSONObject(i);
             JSONArray options = q.getJSONArray("options");
 
-            if (options != null && ("single".equals(question.getType()) || "multiple".equals(question.getType()))) {
-                int optionCount = 0;
-                for (int j = 0; j < options.size(); j++) {
-                    JSONObject opt = options.getJSONObject(j);
-                    if (opt.getString("label") != null && opt.getString("text") != null) {
-                        if (optionIndex < allOptions.size()) {
-                            allOptions.get(optionIndex).setQuestionId(question.getId());
-                            optionIndex++;
-                            optionCount++;
-                        }
-                    }
-                }
+            if (shouldProcessOptions(question, options)) {
+                int[] result = processOptions(question, options, allOptions, optionIndex);
+                optionIndex = result[0];
+                int optionCount = result[1];
                 log.debug("Assigned questionId {} to {} options", question.getId(), optionCount);
             }
         }
+    }
+
+    /**
+     * 判断是否应该处理选项
+     */
+    private boolean shouldProcessOptions(Question question, JSONArray options) {
+        return options != null && ("single".equals(question.getType()) || "multiple".equals(question.getType()));
+    }
+
+    /**
+     * 处理选项并分配questionId
+     */
+    private int[] processOptions(Question question, JSONArray options, List<QuestionOption> allOptions, int optionIndex) {
+        int optionCount = 0;
+        for (int j = 0; j < options.size(); j++) {
+            JSONObject opt = options.getJSONObject(j);
+            if (opt.getString("label") != null && opt.getString("text") != null && optionIndex < allOptions.size()) {
+                allOptions.get(optionIndex).setQuestionId(question.getId());
+                optionIndex++;
+                optionCount++;
+            }
+        }
+        return new int[]{optionIndex, optionCount};
     }
 
     /**
@@ -259,7 +272,7 @@ public class DataImportService {
             log.info("Successfully batch inserted {} options", options.size());
         } catch (Exception e) {
             log.error("Failed to batch insert options", e);
-            throw new RuntimeException("批量插入选项失败", e);
+            throw SystemException.databaseError(e);
         }
     }
 }
