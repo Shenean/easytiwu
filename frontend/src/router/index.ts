@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import Upload from '../pages/Upload.vue'
 import Bank from '../pages/Bank.vue'
 import Content from '../pages/Content.vue'
+import Statistics from '../pages/Statistics.vue'
 import Settings from '../pages/Settings.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -9,6 +10,7 @@ const routes: RouteRecordRaw[] = [
     { path: '/upload', name: 'upload', component: Upload },
     { path: '/bank', name: 'bank', component: Bank },
     { path: '/content/:bankId/:type', name: 'content', component: Content, props: true },
+    { path: '/statistics', name: 'statistics', component: Statistics },
     { path: '/settings', name: 'settings', component: Settings }
 ]
 

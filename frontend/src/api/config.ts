@@ -29,7 +29,7 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error('响应错误:', error.response?.status, error.response?.data || error.message)
-    
+
     // 统一错误处理
     if (error.response) {
       // 服务器返回错误状态码
@@ -65,7 +65,7 @@ api.interceptors.response.use(
       // 其他错误
       console.error('请求配置错误:', error.message)
     }
-    
+
     return Promise.reject(error)
   }
 )
@@ -95,14 +95,22 @@ export const contentAPI = {
   // 内容相关API
   getContentList: () => api.get('/content/list'),
   getContentDetail: (id: string) => api.get(`/content/${id}`),
-  
+
   // 题目查询
   getQuestions: (bankId: number, type: string) => {
     return api.post('/content/questions', { bankId, type })
   },
-  
+
   // 答案验证
   verifyAnswer: (questionId: number, userAnswer: string) => {
     return api.post('/content/verify-answer', { questionId, userAnswer })
   }
+}
+
+export const statisticsAPI = {
+  // 统计相关API
+  getOverview: () => api.get('/statistics/overview'),
+  
+  // 健康检查
+  healthCheck: () => api.get('/statistics/health')
 }

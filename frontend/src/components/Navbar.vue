@@ -66,6 +66,11 @@ const menuOptions = ref<MenuOption[]>([
     icon: () => h('i', { class: 'i-ion-library-outline' })
   },
   {
+    label: '数据统计',
+    key: 'statistics',
+    icon: () => h('i', { class: 'i-ion-stats-chart-outline' })
+  },
+  {
     label: '设置',
     key: 'settings',
     icon: () => h('i', { class: 'i-ion-settings-outline' })
