@@ -40,3 +40,6 @@ mybatis-plus:
 llm:
   dashscope:
     api-key: sk-282b5b70ba484626baa755e617b3e7d4
+    # DashScope API 超时配置（单位：秒）
+    read-timeout: 300      # 数据读取超时，默认300秒（5分钟）
+    connect-timeout: 120   # 连接建立超时，默认120秒（2分钟）
