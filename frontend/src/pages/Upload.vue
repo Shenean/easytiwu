@@ -36,59 +36,26 @@
 
       <!-- 文件上传 -->
       <n-form-item label="文件" path="file">
-        <n-upload
-            v-model:file-list="form.file"
-            :max="1"
+        <BaseUpload
+            v-model="form.file"
+            :accept="['.doc', '.docx', '.pdf', '.txt']"
+            :max-size="20"
             :multiple="false"
-            :default-upload="false"
-            :on-before-upload="beforeUpload"
-            :on-remove="handleFileRemove"
-        >
-          <n-upload-dragger v-if="form.file.length === 0">
-            <div style="margin-bottom: 12px;">
-              <n-icon size="32" color="#18a058">
-                <i class="i-ion-cloud-upload-outline"></i>
-              </n-icon>
-            </div>
-            <div>点击或拖拽文件到此处上传</div>
-            <div style="font-size: 12px; color: #999;">
-              支持 .doc, .docx, .pdf, .txt，大小不超过 20MB
-            </div>
-          </n-upload-dragger>
-
-          <!-- 已上传文件展示 -->
-          <div v-else class="uploaded-file">
-            <n-tag
-                type="success"
-                size="small"
-                closable
-                @close="handleFileRemove"
-                class="file-tag"
-            >
-              {{ form.file[0].name }}
-              <span v-if="form.file[0].file">
-                ({{ formatFileSize(form.file[0].file.size) }})
-              </span>
-            </n-tag>
-          </div>
-        </n-upload>
+            :max="1"
+            @before-upload="handleBeforeUpload"
+            @remove="handleFileRemove"
+        />
       </n-form-item>
 
       <!-- 提交操作区 -->
       <n-form-item>
-        <div class="form-actions">
-          <n-button @click="handleReset">
-            重置
-          </n-button>
-          <n-button
-              type="primary"
-              :loading="submitting"
-              :disabled="!isFormValid"
-              @click="handleSubmit"
-          >
-            提交
-          </n-button>
-        </div>
+        <FormActions
+            :loading="submitting"
+            :disabled="!isFormValid"
+            :show-reset="true"
+            @submit="handleSubmit"
+            @reset="handleReset"
+        />
       </n-form-item>
     </n-form>
   </n-card>
@@ -97,8 +64,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useMessage } from 'naive-ui'
-import type { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
+import type { FormInst, UploadFileInfo } from 'naive-ui'
 import { uploadAPI } from '../api/config'
+import BaseUpload from '../components/common/BaseUpload.vue'
+import FormActions from '../components/common/FormActions.vue'
+import { bankFormRules } from '../validation/rulesBank'
 
 interface UploadForm {
   name: string
@@ -121,84 +91,19 @@ const isFormValid = computed(() => {
   return !!form.value.name.trim() && form.value.file.length > 0
 })
 
-/**
- * 表单校验规则
- */
-const rules: FormRules = {
-  name: [
-    { required: true, message: '题库名不能为空', trigger: 'blur' },
-    { max: 15, message: '最多 15 字', trigger: 'input' }
-  ],
-  description: [
-    { max: 30, message: '最多 30 字', trigger: 'input' }
-  ],
-  file: [
-    {
-      required: true,
-      message: '请上传文件',
-      trigger: 'change',
-      validator: (_rule: any, value: UploadFileInfo[]) => {
-        if (!value || value.length === 0) {
-          return new Error('请上传文件')
-        }
-        return true
-      }
-    }
-  ]
-}
+// 使用公共表单校验规则
+const rules = bankFormRules
+
+
 
 /**
- * 格式化文件大小
+ * 上传前校验文件（BaseUpload组件已包含基础校验，这里可以添加额外的业务逻辑）
  */
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
-/**
- * 上传前校验文件
- */
-function beforeUpload(file: UploadFileInfo) {
-  const fileName = file.file?.name || file.name || ''
-  if (!fileName) {
-    message.error('无法获取文件名')
-    return false
-  }
-
-  const allowedExtensions = ['.doc', '.docx', '.pdf', '.txt']
-  const allowedMimeTypes = [
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/pdf',
-    'text/plain'
-  ]
-
-  const fileExt = fileName.includes('.') 
-    ? '.' + fileName.split('.').pop()?.toLowerCase() 
-    : ''
-
-  const fileType = file.type || ''
-  const isExtAllowed = allowedExtensions.includes(fileExt)
-  const isMimeAllowed = allowedMimeTypes.includes(fileType)
-  const fileSize = file.file?.size ?? 0
-  const isLt20M = fileSize / 1024 / 1024 < 20
-
-  if (!isExtAllowed) {
-    message.error(`仅支持 ${allowedExtensions.join(', ')} 格式`)
-    return false
-  }
-  if (!isLt20M) {
-    message.error('文件大小不能超过 20MB')
-    return false
-  }
-  if (!isMimeAllowed) {
-    console.warn(`[MIME mismatch] 文件 ${fileName} 的 MIME 类型为 ${fileType}，但扩展名合法。`)
-  }
-
-  return true
+function handleBeforeUpload(file: UploadFileInfo) {
+  // BaseUpload组件已经处理了基础的文件类型和大小校验
+  // 这里可以添加额外的业务逻辑
+  const fileName = file.file?.name || file.name || '未知文件'
+  console.log('文件上传前处理:', fileName)
 }
 
 /**
@@ -262,7 +167,6 @@ function handleSubmit() {
   })
 }
 
-// 暴露方法供父组件调用
 defineExpose({
   submit: handleSubmit,
   reset: handleReset,
@@ -283,74 +187,12 @@ defineExpose({
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
-:deep(.n-upload-dragger) {
-  transition: all 0.3s ease;
-  border: 2px dashed #d9d9d9;
-  padding: 24px;
-  border-radius: 10px;
-  background-color: #fafafa;
-  cursor: pointer;
-}
-
-:deep(.n-upload-dragger:hover) {
-  border-color: #18a058 !important;
-  background-color: #f0fdf4;
-  transform: scale(1.02);
-}
-
-.uploaded-file {
-  padding: 16px 0;
-  text-align: center;
-  word-break: break-all;
-}
-
-.file-tag {
-  font-size: 14px;
-  max-width: 90%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.2;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  width: 100%;
-  margin-top: 12px;
-}
-
-:deep(.n-button) {
-  transition: all 0.2s ease;
-}
-
-:deep(.n-button:hover) {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-:deep(.n-button:active) {
-  transform: translateY(0);
-  box-shadow: none;
-}
-
 @media (max-width: 480px) {
   .upload-card {
     margin: 24px 12px;
     padding: 12px;
   }
 
-  .form-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .file-tag {
-    font-size: 13px;
-  }
 }
 
 </style>

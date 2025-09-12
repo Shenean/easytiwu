@@ -37,15 +37,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, h } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { MenuOption } from 'naive-ui'
 import { useWindowSize } from '@vueuse/core'
+import { mainMenuOptions } from '../config/menuOptions'
 
 const route = useRoute()
 const router = useRouter()
 
-// 当前路由名（默认 fallback）
+// 当前路由名
 const currentRouteName = computed(() => {
   return (route.name?.toString() || 'upload') as string
 })
@@ -54,28 +55,7 @@ const currentRouteName = computed(() => {
 const disabledKeys = computed(() => [currentRouteName.value])
 
 // 菜单配置项
-const menuOptions = ref<MenuOption[]>([
-  {
-    label: '上传题库',
-    key: 'upload',
-    icon: () => h('i', { class: 'i-ion-cloud-upload-outline' })
-  },
-  {
-    label: '题库列表',
-    key: 'bank',
-    icon: () => h('i', { class: 'i-ion-library-outline' })
-  },
-  {
-    label: '数据统计',
-    key: 'statistics',
-    icon: () => h('i', { class: 'i-ion-stats-chart-outline' })
-  },
-  {
-    label: '设置',
-    key: 'settings',
-    icon: () => h('i', { class: 'i-ion-settings-outline' })
-  }
-])
+const menuOptions = ref<MenuOption[]>(mainMenuOptions)
 
 // 菜单选择跳转
 const handleMenuSelect = (key: string) => {
@@ -111,13 +91,6 @@ defineExpose({
 
 <style scoped>
 .navbar {
-  background-color: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  border-radius: 16px 16px 0 0;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -125,18 +98,20 @@ defineExpose({
   padding: 0 20px;
   display: flex;
   align-items: center;
+
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+
+  transition: background-color 0.3s, box-shadow 0.3s;
   animation: navbar-fade-in 0.6s ease-out both;
 }
 
 @keyframes navbar-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .navbar-container {
@@ -146,7 +121,6 @@ defineExpose({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
 }
 
 .logo {
@@ -156,26 +130,24 @@ defineExpose({
   text-decoration: none;
   padding: 0 15px;
   letter-spacing: -0.5px;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s, transform 0.2s;
 }
-
 .logo:hover {
   color: #18a058;
   transform: scale(1.05);
 }
 
 .menu {
-  height: 100%;
-  background: transparent;
   display: flex;
   align-items: center;
+  height: 100%;
+  background: transparent;
 }
 
 :deep(.n-menu-item-content) {
   font-weight: 500;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s, transform 0.2s;
 }
-
 :deep(.n-menu-item-content:hover),
 :deep(.n-menu-item.n-menu-item--active .n-menu-item-content) {
   color: #18a058 !important;
@@ -187,9 +159,11 @@ defineExpose({
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 100%);
-  pointer-events: none;
   border-radius: 16px 16px 0 0;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
   z-index: -1;
 }
 
@@ -201,35 +175,22 @@ defineExpose({
 .btn-ripple::after {
   content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
+  left: 50%; top: 50%;
+  width: 0; height: 0;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease;
+  transition: width 0.4s, height 0.4s;
 }
 .btn-ripple:active::after {
-  width: 120%;
-  height: 120%;
+  width: 120%; height: 120%;
   transition: 0s;
 }
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 0 12px;
-    height: 56px;
-  }
-
-  .logo {
-    font-size: 20px;
-    padding: 0 8px;
-  }
-
-  .n-button {
-    padding: 6px 10px;
-  }
+  .navbar { padding: 0 12px; height: 56px; }
+  .logo   { font-size: 20px; padding: 0 8px; }
+  .n-button { padding: 6px 10px; }
 }
 </style>

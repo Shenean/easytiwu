@@ -4,9 +4,9 @@
     <div v-if="!loading && banks.length === 0" class="empty-state">
       <n-empty description="暂无题库数据">
         <template #extra>
-          <n-button type="primary" size="small" @click="fetchBanks">
+          <BaseButton type="primary" size="small" @click="fetchBanks">
             刷新数据
-          </n-button>
+          </BaseButton>
         </template>
       </n-empty>
     </div>
@@ -25,9 +25,10 @@
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
-import { useMessage, NButton, NSpace, useDialog, NEllipsis } from 'naive-ui'
+import { useMessage, NSpace, useDialog, NEllipsis } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import axios, { AxiosError } from 'axios'
+import BaseButton from '../components/common/BaseButton.vue'
 
 // 定义统一响应格式
 interface ApiResponse<T> {
@@ -104,7 +105,7 @@ const columns: DataTableColumns<QuestionBank> = [
     render(row) {
       return h(NSpace, { size: 'small' }, () => [
         h(
-            NButton,
+            BaseButton,
             {
               size: 'small',
               type: 'primary',
@@ -114,7 +115,7 @@ const columns: DataTableColumns<QuestionBank> = [
             { default: () => '全部练习' }
         ),
         h(
-            NButton,
+            BaseButton,
             {
               size: 'small',
               type: 'warning',
@@ -124,7 +125,7 @@ const columns: DataTableColumns<QuestionBank> = [
             { default: () => '错题集' }
         ),
         h(
-            NButton,
+            BaseButton,
             {
               size: 'small',
               type: 'error',

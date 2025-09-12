@@ -36,6 +36,7 @@ nbdist/
 
 # VS Code #
 .vscode/
+!**/.vscode/extensions.json
 
 # OS #
 .DS_Store
@@ -85,8 +86,14 @@ desktop.ini
 node_modules/
 .pnpm-store/
 pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 .vite/
 .eslintcache
+dist/
+dist-ssr/
 
 # Env files #
 .env
@@ -100,3 +107,8 @@ coverage/
 .nyc_output
 *.mv.db
 *.trace.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
