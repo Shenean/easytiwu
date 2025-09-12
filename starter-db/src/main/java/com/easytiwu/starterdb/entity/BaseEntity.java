@@ -2,7 +2,6 @@ package com.easytiwu.starterdb.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * 记录创建时间，自动填充
      * 使用LocalDateTime类型，适用于MySQL 8+等支持日期时间类型的数据库
@@ -29,18 +28,10 @@ public class BaseEntity implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    /**
-     * 逻辑删除标识字段
-     * 0 表示未删除
-     * 1 表示已删除
-     * 使用@TableLogic注解实现软删除功能
-     */
-    @TableLogic
-    private Integer deleted;
-
     // Getter and Setter methods
     /**
      * 获取记录创建时间
+     * 
      * @return 创建时间
      */
     public LocalDateTime getCreateTime() {
@@ -49,6 +40,7 @@ public class BaseEntity implements Serializable {
 
     /**
      * 设置记录创建时间
+     * 
      * @param createTime 创建时间
      */
     public void setCreateTime(LocalDateTime createTime) {
@@ -57,6 +49,7 @@ public class BaseEntity implements Serializable {
 
     /**
      * 获取记录最后更新时间
+     * 
      * @return 更新时间
      */
     public LocalDateTime getUpdateTime() {
@@ -65,6 +58,7 @@ public class BaseEntity implements Serializable {
 
     /**
      * 设置记录最后更新时间
+     * 
      * @param updateTime 更新时间
      */
     public void setUpdateTime(LocalDateTime updateTime) {
@@ -72,23 +66,8 @@ public class BaseEntity implements Serializable {
     }
 
     /**
-     * 获取逻辑删除标识
-     * @return 删除标识（0:未删除 1:已删除）
-     */
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    /**
-     * 设置逻辑删除标识
-     * @param deleted 删除标识（0:未删除 1:已删除）
-     */
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
-
-    /**
      * 返回对象的字符串表示，用于调试和日志
+     * 
      * @return 包含核心字段的字符串
      */
     @Override
@@ -96,7 +75,6 @@ public class BaseEntity implements Serializable {
         return "BaseEntity{" +
                 "createTime=" + createTime +
                 ", updateTime=" + updateTime +
-                ", deleted=" + deleted +
                 '}';
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * @author sheny
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.easytiwu.serviceupload"})
 public class ServiceUploadApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServiceUploadApplication.class, args);

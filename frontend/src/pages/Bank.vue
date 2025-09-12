@@ -41,9 +41,9 @@ interface QuestionBank {
   id: number
   name: string
   description: string
-  total_count: number
-  completed_count: number
-  wrong_count: number
+  totalCount: number
+  completedCount: number
+  wrongCount: number
 }
 
 // ================== 状态管理 ==================
@@ -79,19 +79,19 @@ const columns: DataTableColumns<QuestionBank> = [
   },
   {
     title: '总题数',
-    key: 'total_count',
+    key: 'totalCount',
     width: 90,
     align: 'center'
   },
   {
     title: '已完成',
-    key: 'completed_count',
+    key: 'completedCount',
     width: 90,
     align: 'center'
   },
   {
     title: '错题数',
-    key: 'wrong_count',
+    key: 'wrongCount',
     width: 90,
     align: 'center'
   },

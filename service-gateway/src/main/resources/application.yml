@@ -9,23 +9,30 @@ spring:
     gateway:
       routes:
         - id: service-upload
-          uri: http://localhost:8081   # 上传服务端口
+          uri: http://localhost:8084   # 上传服务端口
           predicates:
             - Path=/api/upload/**
           filters:
             - StripPrefix=1
 
         - id: service-bank
-          uri: http://localhost:8082   # 银行/题库服务端口
+          uri: http://localhost:8081   # 题库服务端口
           predicates:
             - Path=/api/bank/**
           filters:
             - StripPrefix=1
             
         - id: service-content
-          uri: http://localhost:8083   # 内容服务端口
+          uri: http://localhost:8082   # 内容服务端口
           predicates:
             - Path=/api/content/**
+          filters:
+            - StripPrefix=1
+            
+        - id: service-statistics
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/statistics/**
           filters:
             - StripPrefix=1
 
@@ -68,10 +75,12 @@ spring:
 # 服务配置
 service:
   upload:
-    url: http://localhost:8081
+    url: http://localhost:8084
   bank:
-    url: http://localhost:8082
+    url: http://localhost:8081
   content:
+    url: http://localhost:8082
+  statistics:
     url: http://localhost:8083
 
 logging:

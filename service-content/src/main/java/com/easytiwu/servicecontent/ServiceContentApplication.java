@@ -8,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(scanBasePackages = {
     "com.easytiwu.servicecontent",
-    "com.easytiwu.commonexception"
+    "com.easytiwu.commonexception",
+    "com.easytiwu.starterdb"
 })
 public class ServiceContentApplication {
 

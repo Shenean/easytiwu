@@ -56,7 +56,7 @@ public class DatabaseExceptionHandler {
      * SQL异常处理
      */
     @ExceptionHandler(SQLException.class)
-    public Result<Void> handleSQLException(SQLException e) {
+    public Result<Void> handleSqlException(SQLException e) {
         return Result.error(ErrorCode.INTERNAL_SERVER_ERROR, "SQL执行异常: " + e.getMessage());
     }
 

@@ -24,6 +24,7 @@
         <module>service-upload</module>
         <module>service-bank</module>
         <module>service-content</module>
+        <module>service-statistics</module>
         <module>starter-db</module>
     </modules>
 

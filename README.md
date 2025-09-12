@@ -10,9 +10,10 @@
 
 ## 模块与端口
 - service-gateway（8080）：API 网关
-- service-upload（8081）：文件上传与解析
-- service-bank（8082）：题库与题目管理
-- service-content（8083）：内容管理
+- service-bank（8081）：题库与题目管理
+- service-content（8082）：内容管理
+- service-statistics（8083）：统计服务
+- service-upload（8084）：文件上传与解析
 - frontend（3000）：前端开发服务器
 
 ## 快速开始

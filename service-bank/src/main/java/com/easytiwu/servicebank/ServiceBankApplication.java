@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author sheny
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.easytiwu.servicebank", "com.easytiwu.starterdb"})
 public class ServiceBankApplication {
 
     public static void main(String[] args) {
