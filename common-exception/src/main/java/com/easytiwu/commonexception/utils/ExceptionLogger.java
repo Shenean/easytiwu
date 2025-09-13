@@ -36,10 +36,6 @@ public class ExceptionLogger {
      */
     private static final String ERROR_CODE_KEY = "errorCode";
 
-    // 时间格式化器，用于生成追踪ID中的时间戳
-    // private static final DateTimeFormatter DATE_TIME_FORMATTER =
-    // DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
     /**
      * 记录业务异常日志
      * 
