@@ -11,48 +11,59 @@
       <!-- 统计数据内容 -->
       <div v-else-if="stats">
         <!-- 总览统计 -->
-        <n-grid :cols="2" :x-gap="16" :y-gap="16" class="overview-grid">
-          <n-grid-item>
-            <n-card embedded class="overview-card">
-              <n-statistic label="题库总数" :value="formatNumber(stats.bankTotal)" />
-            </n-card>
-          </n-grid-item>
-          <n-grid-item>
-            <n-card embedded class="overview-card">
-              <n-statistic label="题目总数" :value="formatNumber(stats.questionTotal)" />
-            </n-card>
-          </n-grid-item>
-        </n-grid>
+        <n-card class="overview-summary-card" size="small">
+          <n-grid :cols="2" :x-gap="24" :y-gap="16" class="overview-grid">
+            <n-grid-item>
+              <div class="overview-item">
+                <n-statistic label="题库总数" :value="formatNumber(stats.bankTotal)" />
+              </div>
+            </n-grid-item>
+            <n-grid-item>
+              <div class="overview-item">
+                <n-statistic label="题目总数" :value="formatNumber(stats.questionTotal)" />
+              </div>
+            </n-grid-item>
+          </n-grid>
+        </n-card>
 
         <!-- 题型统计 -->
-        <n-space vertical size="large" style="margin-top: 24px;">
-          <n-card v-for="stat in typeStats" :key="stat.type" class="type-stat-card" :title="stat.type" size="small"
-            embedded>
-            <template #header-extra>
-              <n-tag type="info" size="small">
-                {{ stat.percentage }}%
-              </n-tag>
-            </template>
-
-            <n-grid :cols="3" :x-gap="12" :y-gap="12" class="stats-grid">
-              <n-grid-item>
-                <n-statistic label="总题数" :value="stat.total" />
-              </n-grid-item>
-              <n-grid-item>
-                <n-statistic label="已完成" :value="stat.completed" />
-              </n-grid-item>
-              <n-grid-item>
-                <n-statistic label="正确率" :value="stat.accuracy + '%'" />
-              </n-grid-item>
-            </n-grid>
-
-            <div style="margin-top: 16px;">
-              <div style="margin-bottom: 8px; font-size: 14px; color: var(--n-text-color-2);">完成进度</div>
-              <n-progress type="line" :percentage="stat.percentage" :show-indicator="false" :height="8"
-                border-radius="4px" />
-            </div>
-          </n-card>
-        </n-space>
+        <div class="type-stats-section">
+          <n-grid :cols="2" :x-gap="8" :y-gap="8" class="type-stats-grid">
+            <n-grid-item v-for="stat in typeStats" :key="stat.originalType">
+              <n-card class="type-stat-card" size="small">
+                <div class="type-stat-header">
+                  <h4 class="type-title">{{ stat.type }}</h4>
+                  <n-tag type="info" size="small" class="percentage-tag">
+                    {{ stat.percentage }}%
+                  </n-tag>
+                </div>
+                
+                <div class="type-stat-content">
+                  <n-grid :cols="3" :x-gap="8" :y-gap="4" class="stats-metrics">
+                    <n-grid-item>
+                      <div class="metric-item">
+                        <div class="metric-value">{{ stat.total }}</div>
+                        <div class="metric-label">总题数</div>
+                      </div>
+                    </n-grid-item>
+                    <n-grid-item>
+                      <div class="metric-item">
+                        <div class="metric-value">{{ stat.completed }}</div>
+                        <div class="metric-label">已完成</div>
+                      </div>
+                    </n-grid-item>
+                    <n-grid-item>
+                      <div class="metric-item">
+                        <div class="metric-value">{{ stat.accuracy }}%</div>
+                        <div class="metric-label">正确率</div>
+                      </div>
+                    </n-grid-item>
+                  </n-grid>
+                </div>
+              </n-card>
+            </n-grid-item>
+          </n-grid>
+        </div>
       </div>
 
       <!-- 空状态 -->
@@ -87,6 +98,18 @@ const formatNumber = (value: number | null | undefined): string => {
   return (value ?? 0).toLocaleString()
 }
 
+// 题型字段映射
+const getTypeDisplayName = (type: string): string => {
+  const typeMap: Record<string, string> = {
+    'single': '单选题',
+    'fill_blank': '填空题',
+    'true_false': '判断题',
+    'multiple': '多选题',
+    'short_answer': '简答题'
+  }
+  return typeMap[type] || type
+}
+
 // 响应式数据
 const stats = ref<StatisticsOverview | null>(null)
 const loading = ref(false)
@@ -104,7 +127,8 @@ const typeStats = computed(() => {
     const accuracy = completed > 0 ? Math.round((correct / completed) * 100) : 0
 
     return {
-      type,
+      type: getTypeDisplayName(type),
+      originalType: type,
       total,
       completed,
       correct,
@@ -189,51 +213,127 @@ onMounted(() => {
 .statistics-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 16px;
 }
 
 .stats-card {
-  border-radius: 12px;
-  box-shadow: var(--n-box-shadow-1);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 总览统计样式 */
+.overview-summary-card {
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--n-color) 0%, var(--n-color-embedded) 100%);
   border: 1px solid var(--n-border-color);
 }
 
 .overview-grid {
-  margin-bottom: 8px;
+  margin: 0;
 }
 
-.overview-card {
+.overview-item {
   text-align: center;
-  transition: all 0.2s ease;
+  padding: 8px;
 }
 
-.overview-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--n-box-shadow-2);
+/* 题型统计区域 */
+.type-stats-section {
+  margin-top: 0;
+}
+
+.type-stats-grid {
+  margin: 0;
 }
 
 .type-stat-card {
-  transition: all 0.2s ease;
+  border: 1px solid var(--n-border-color);
+  transition: all 0.3s ease;
+  background: var(--n-color);
 }
 
 .type-stat-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--n-box-shadow-2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
-.stats-grid {
-  text-align: center;
+.type-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--n-divider-color);
 }
+
+.type-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--n-text-color-1);
+}
+
+.percentage-tag {
+  font-weight: 600;
+}
+
+.type-stat-content {
+  padding: 0;
+}
+
+.stats-metrics {
+  margin-bottom: 0;
+}
+
+.metric-item {
+  text-align: center;
+  padding: 6px 2px;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--n-primary-color);
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: var(--n-text-color-2);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+
 
 /* 统计数字样式优化 */
 :deep(.n-statistic-value) {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--n-primary-color);
+  font-size: 24px;
 }
 
 :deep(.n-statistic-label) {
   color: var(--n-text-color-2);
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* 紧凑卡片内边距 */
+:deep(.overview-summary-card .n-card__content) {
+  padding: 16px;
+}
+
+:deep(.type-stat-card .n-card__content) {
+  padding: 12px;
+}
+
+/* 进度条样式优化 */
+:deep(.n-progress .n-progress-graph .n-progress-graph-line-fill) {
+  transition: all 0.3s ease;
 }
 
 /* 加载状态样式 */
@@ -249,11 +349,57 @@ onMounted(() => {
 
   .overview-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
-  .stats-grid {
+  .overview-item {
+    padding: 8px;
+  }
+
+  .type-stats-grid {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+
+  .stats-metrics {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  .metric-item {
+    padding: 8px;
+    background: var(--n-color-embedded);
+    border-radius: 4px;
+    border: 1px solid var(--n-border-color);
+  }
+
+  .metric-value {
+    font-size: 16px;
+  }
+
+  .type-stat-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+
+  .type-title {
+    font-size: 14px;
+  }
+
+  :deep(.overview-summary-card .n-card__content) {
+    padding: 12px;
+  }
+
+  :deep(.type-stat-card .n-card__content) {
+    padding: 10px;
+  }
+
+  :deep(.n-statistic-value) {
+    font-size: 18px;
   }
 }
 
@@ -262,9 +408,57 @@ onMounted(() => {
     padding: 8px;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .overview-grid {
+    gap: 8px;
+  }
+
+  .overview-item {
+    padding: 6px;
+  }
+
+  .type-stats-grid {
     gap: 6px;
+  }
+
+  .stats-metrics {
+    gap: 6px;
+  }
+
+  .metric-item {
+    padding: 6px;
+  }
+
+  .metric-value {
+    font-size: 14px;
+  }
+
+  .metric-label {
+    font-size: 10px;
+  }
+
+  .type-title {
+    font-size: 13px;
+  }
+
+  .type-stat-header {
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+
+  :deep(.overview-summary-card .n-card__content) {
+    padding: 10px;
+  }
+
+  :deep(.type-stat-card .n-card__content) {
+    padding: 8px;
+  }
+
+  :deep(.n-statistic-value) {
+    font-size: 16px;
+  }
+
+  :deep(.n-statistic-label) {
+    font-size: 11px;
   }
 }
 </style>
