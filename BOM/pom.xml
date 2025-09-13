@@ -5,7 +5,7 @@
 
     <groupId>com.easytiwu</groupId>
     <artifactId>easytiwu-dependencies-bom</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>pom</packaging>
     <name>EasyTiwu Dependencies BOM</name>
 
@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.13</version>
+        <version>3.5.0</version>
         <relativePath/>
     </parent>
 
@@ -22,8 +22,8 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- 平台版本 -->
-        <spring-boot.version>3.3.13</spring-boot.version>
-        <spring-cloud.version>2023.0.6</spring-cloud.version>
+        <spring-boot.version>3.5.0</spring-boot.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
 
         <!-- 业务常用库版本 -->
         <poi.version>5.4.1</poi.version>
@@ -32,8 +32,8 @@
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <mysql.connector.version>8.4.0</mysql.connector.version>
         <dashscope.version>2.21.6</dashscope.version>
-        <lombok.version>1.18.30</lombok.version>
-        <resilience4j.version>2.2.0</resilience4j.version>
+        <lombok.version>1.18.34</lombok.version> <!-- 升级 -->
+        <resilience4j.version>2.3.0</resilience4j.version> <!-- 升级 -->
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
     </properties>
 
@@ -113,7 +113,7 @@
                 <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql.connector.version}</version>
             </dependency>
-            
+
             <!-- MyBatis-Spring -->
             <dependency>
                 <groupId>org.mybatis</groupId>
@@ -153,7 +153,7 @@
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>${jakarta.validation.version}</version>
             </dependency>
-            
+
             <!-- ===== 内部模块 ===== -->
             <dependency>
                 <groupId>com.easytiwu</groupId>
@@ -168,7 +168,4 @@
         </dependencies>
     </dependencyManagement>
 
-
 </project>
-
-
