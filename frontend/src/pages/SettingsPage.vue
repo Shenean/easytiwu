@@ -1,46 +1,40 @@
 <template>
   <PageContainer title="设置" card-class="settings-card" container-class="settings-container">
-      <div class="setting-section">
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-header">
-              <n-icon size="20" class="setting-icon">
-                <i class="i-ion-color-palette-outline"></i>
-              </n-icon>
-              <h3 class="setting-title">主题设置</h3>
-            </div>
-            <div class="setting-description">在亮色和暗色主题之间切换</div>
-          </div>
-          
-          <div class="theme-toggle-container">
-            <button 
-              class="theme-toggle-btn" 
-              :class="{ 'dark-mode': isDarkMode }"
-              @click="toggleTheme"
-              :aria-label="isDarkMode ? '切换到亮色主题' : '切换到暗色主题'"
-            >
-              <div class="toggle-track">
-                <div class="toggle-thumb">
-                  <n-icon size="16" class="theme-icon">
-                    <i :class="isDarkMode ? 'i-ion-moon' : 'i-ion-sunny'"></i>
-                  </n-icon>
-                </div>
-              </div>
-              <span class="theme-status">{{ isDarkMode ? '暗色主题' : '亮色主题' }}</span>
-            </button>
+    <div class="setting-section">
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-header">
+            <n-icon size="20" class="setting-icon">
+              <i class="i-ion-moon"></i>
+            </n-icon>
+            <h3 class="setting-title">暗色主题</h3>
           </div>
         </div>
-      </div>
 
-      <div class="setting-section small">
-        <div class="setting-header">
-          <n-icon size="20" class="setting-icon">
-            <i class="i-ion-settings-outline"></i>
-          </n-icon>
-          <h3 class="setting-title">其他设置</h3>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" :class="{ 'dark-mode': isDarkMode }" @click="toggleTheme"
+            :aria-label="isDarkMode ? '切换到亮色主题' : '切换到暗色主题'">
+            <div class="toggle-track">
+              <div class="toggle-thumb">
+                <n-icon size="14" class="theme-icon">
+                  <i :class="isDarkMode ? 'i-ion-moon' : 'i-ion-sunny'"></i>
+                </n-icon>
+              </div>
+            </div>
+          </button>
         </div>
-        <div class="setting-description">更多功能即将推出…</div>
       </div>
+    </div>
+
+    <div class="setting-section small">
+      <div class="setting-header">
+        <n-icon size="20" class="setting-icon">
+          <i class="i-ion-settings-outline"></i>
+        </n-icon>
+        <h3 class="setting-title">其他设置</h3>
+      </div>
+      <div class="setting-description">更多功能即将推出…</div>
+    </div>
   </PageContainer>
 </template>
 
@@ -70,7 +64,7 @@ onMounted(() => {
 function toggleTheme() {
   isDarkMode.value = !isDarkMode.value
   const newTheme: Theme = isDarkMode.value ? 'dark' : 'light'
-  
+
   localStorage.setItem('app-theme', newTheme)
   if (setGlobalTheme) setGlobalTheme(newTheme)
 
@@ -87,8 +81,8 @@ function toggleTheme() {
 
 .settings-card {
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .setting-section {
@@ -96,7 +90,10 @@ function toggleTheme() {
   border-bottom: 1px dashed var(--n-border-color);
 }
 
-.setting-section.small { border-bottom: none; padding-bottom: 12px; }
+.setting-section.small {
+  border-bottom: none;
+  padding-bottom: 12px;
+}
 
 /* 设置行布局 */
 .setting-row {
@@ -110,27 +107,27 @@ function toggleTheme() {
   flex: 1;
 }
 
-.setting-header { 
-  display: flex; 
-  align-items: center; 
-  gap: 12px; 
-  margin-bottom: 4px; 
+.setting-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
-.setting-icon { 
-  color: #18a058; 
+.setting-icon {
+  color: #18a058;
 }
 
-.setting-title { 
-  margin: 0; 
-  font-size: 16px; 
-  font-weight: 600; 
-  color: var(--n-text-color); 
+.setting-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--n-text-color);
 }
 
-.setting-description { 
-  color: var(--n-text-color-2); 
-  font-size: 13px; 
+.setting-description {
+  color: var(--n-text-color-2);
+  font-size: 13px;
   margin: 0;
 }
 
@@ -142,50 +139,43 @@ function toggleTheme() {
 .theme-toggle-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  background: var(--n-card-color);
-  border: 2px solid var(--n-border-color);
-  border-radius: 50px;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--n-text-color);
   user-select: none;
   outline: none;
 }
 
 .theme-toggle-btn:hover {
-  border-color: #18a058;
-  box-shadow: 0 4px 12px rgba(24, 160, 88, 0.15);
-  transform: translateY(-1px);
+  transform: scale(1.05);
 }
 
 .theme-toggle-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(24, 160, 88, 0.2);
+  transform: scale(0.95);
 }
 
 .toggle-track {
   position: relative;
-  width: 48px;
-  height: 24px;
+  width: 44px;
+  height: 22px;
   background: #e5e7eb;
-  border-radius: 12px;
+  border-radius: 11px;
   transition: background-color 0.3s ease;
 }
 
 .theme-toggle-btn.dark-mode .toggle-track {
-  background: #374151;
+  background: #18a058;
 }
 
 .toggle-thumb {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: white;
   border-radius: 50%;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -196,109 +186,124 @@ function toggleTheme() {
 }
 
 .theme-toggle-btn.dark-mode .toggle-thumb {
-  transform: translateX(24px);
-  background: #1f2937;
+  transform: translateX(22px);
+  background: white;
 }
 
 .theme-icon {
-  color: #fbbf24;
+  color: #18a058;
   transition: color 0.3s ease;
 }
 
 .theme-toggle-btn.dark-mode .theme-icon {
-  color: #60a5fa;
+  color: #18a058;
 }
 
-.theme-status {
-  font-weight: 500;
-  min-width: 60px;
-  text-align: left;
-}
+
 
 /* 移动端设置页面优化 */
 @media (max-width: 768px) {
   .settings-container {
-    padding: 16px;
+    padding: 12px;
+    max-width: 100%;
   }
-  
+
   .settings-card {
-    border-radius: 8px;
-    margin: 0 -4px;
+    border-radius: 12px;
+    margin: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   }
-  
+
   .setting-section {
-    padding: 12px 16px;
+    padding: 16px 20px;
   }
-  
+
   .setting-section.small {
-    padding-bottom: 8px;
+    padding: 12px 20px;
   }
-  
+
   .setting-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
   }
-  
+
   .setting-info {
-    width: 100%;
+    flex: 1;
   }
-  
+
   .setting-header {
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  
-  .setting-title {
-    font-size: 15px;
-  }
-  
-  .setting-description {
-    font-size: 12px;
-  }
-  
-  .theme-toggle-container {
-    align-self: center;
-  }
-  
-  .theme-toggle-btn {
-    padding: 10px 16px;
     gap: 10px;
-    font-size: 13px;
+    margin-bottom: 2px;
   }
-  
+
+  .setting-icon {
+    font-size: 18px;
+  }
+
+  .setting-title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .setting-description {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .theme-toggle-container {
+    flex-shrink: 0;
+  }
+
+  .theme-toggle-btn {
+    padding: 6px;
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .toggle-track {
     width: 42px;
     height: 22px;
+    border-radius: 11px;
   }
-  
+
   .toggle-thumb {
     width: 18px;
     height: 18px;
+    top: 2px;
+    left: 2px;
   }
-  
+
   .theme-toggle-btn.dark-mode .toggle-thumb {
     transform: translateX(20px);
   }
-  
+
   /* 表单组件优化 */
   :deep(.n-radio-group) {
     width: 100%;
   }
-  
+
   :deep(.n-radio) {
     width: 100%;
-    min-height: 44px;
+    min-height: 48px;
+    padding: 8px 12px;
   }
-  
+
   :deep(.n-radio__dot) {
-    transform: scale(1.2);
+    transform: scale(1.1);
   }
-  
+
   :deep(.n-card__header) {
-    padding: 16px 16px 0;
+    padding: 20px 20px 0;
   }
-  
+
   :deep(.n-card__content) {
     padding: 0;
   }
@@ -306,70 +311,124 @@ function toggleTheme() {
 
 @media (max-width: 480px) {
   .settings-container {
-    padding: 12px;
+    padding: 8px;
   }
-  
+
+  .settings-card {
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+
   .setting-section {
-    padding: 10px 12px;
+    padding: 14px 16px;
   }
-  
+
+  .setting-section.small {
+    padding: 10px 16px;
+  }
+
   .setting-row {
-    gap: 10px;
+    gap: 12px;
+    min-height: 52px;
   }
-  
-  .setting-title {
-    font-size: 14px;
-  }
-  
-  .setting-description {
-    font-size: 11px;
-  }
-  
-  .theme-toggle-btn {
-    padding: 8px 14px;
+
+  .setting-header {
     gap: 8px;
+  }
+
+  .setting-icon {
+    font-size: 16px;
+  }
+
+  .setting-title {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .setting-description {
     font-size: 12px;
   }
-  
+
+  .theme-toggle-btn {
+    padding: 4px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
   .toggle-track {
     width: 38px;
     height: 20px;
+    border-radius: 10px;
   }
-  
+
   .toggle-thumb {
     width: 16px;
     height: 16px;
+    top: 2px;
+    left: 2px;
   }
-  
+
   .theme-toggle-btn.dark-mode .toggle-thumb {
     transform: translateX(18px);
   }
-  
+
   :deep(.n-card__header) {
-    padding: 12px 12px 0;
+    padding: 16px 16px 0;
+  }
+
+  :deep(.n-radio) {
+    min-height: 44px;
+    padding: 6px 10px;
   }
 }
 
 /* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
+  .settings-container {
+    padding: 8px 16px;
+  }
+
+  .setting-section {
+    padding: 12px 20px;
+  }
+
+  .setting-row {
+    min-height: 48px;
+  }
+
   .theme-toggle-btn {
-    padding: 8px 14px;
-    gap: 8px;
+    padding: 4px;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 
 /* 触摸优化 */
 @media (hover: none) and (pointer: coarse) {
+  .theme-toggle-btn {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 6px;
+  }
+
   .theme-toggle-btn:hover {
     transform: none;
-    box-shadow: none;
-    border-color: var(--n-border-color);
+    background: transparent;
   }
-  
+
   .theme-toggle-btn:active {
-    transform: scale(0.98);
-    transition: transform 0.1s;
+    transform: scale(0.96);
+    transition: transform 0.1s ease;
+    background: rgba(24, 160, 88, 0.08);
+    border-radius: 8px;
+  }
+
+  .setting-row {
+    min-height: 56px;
+  }
+
+  .setting-section {
+    padding: 16px 20px;
   }
 }
-
 </style>

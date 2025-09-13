@@ -224,14 +224,14 @@ defineExpose({
 .banks-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   padding: 0;
 }
 
 .bank-card-item {
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #f0f0f0;
   transition: all 0.3s ease;
   position: relative;
@@ -247,45 +247,45 @@ defineExpose({
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .bank-id {
-  font-size: 12px;
+  font-size: 11px;
   color: #666;
-
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 2px 6px;
+  border-radius: 3px;
   font-weight: 500;
 }
 
 .bank-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #333;
   flex: 1;
   min-width: 0;
   word-break: break-word;
+  line-height: 1.3;
 }
 
 .bank-description {
   color: #666;
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 12px;
   word-break: break-word;
 }
 
 .bank-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 16px;
-
-  border-radius: 8px;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 6px;
 }
 
 .stat-item {
@@ -293,27 +293,29 @@ defineExpose({
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   font-weight: 500;
 }
 
 .stat-value {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #333;
 }
 
 .bank-actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .action-button {
   flex: 1;
-  min-width: 120px;
+  min-width: 100px;
+  height: 32px;
+  font-size: 13px;
 }
 
 /* 空状态提示按钮动画 */
@@ -324,6 +326,49 @@ defineExpose({
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  .banks-container {
+    gap: 10px;
+  }
+
+  .bank-card-item {
+    padding: 14px;
+    border-radius: 6px;
+  }
+
+  .bank-header {
+    margin-bottom: 6px;
+    gap: 4px;
+  }
+
+  .bank-name {
+    font-size: 15px;
+  }
+
+  .bank-description {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .bank-stats {
+    padding: 10px;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .bank-actions {
+    gap: 6px;
+  }
+
+  .action-button {
+    min-width: 80px;
+    height: 30px;
+    font-size: 12px;
+  }
+
   .bank-card {
     margin: 16px;
     border-radius: 12px;
@@ -371,6 +416,43 @@ defineExpose({
 }
 
 @media (max-width: 480px) {
+  .banks-container {
+    gap: 8px;
+  }
+
+  .bank-card-item {
+    padding: 12px;
+  }
+
+  .bank-name {
+    font-size: 14px;
+  }
+
+  .bank-description {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .bank-stats {
+    padding: 8px;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .action-button {
+    min-width: 70px;
+    height: 28px;
+    font-size: 11px;
+  }
+
   .bank-card {
     margin: 12px;
   }
