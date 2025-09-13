@@ -3,7 +3,7 @@
     <n-dialog-provider>
       <n-message-provider>
         <n-layout style="min-height: 100vh">
-          <Navbar />
+          <NavigationBar />
           <n-layout-content style="padding: 20px">
             <router-view />
           </n-layout-content>
@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, provide, watch } from 'vue'
 import { darkTheme, type GlobalThemeOverrides } from 'naive-ui'
-import Navbar from './components/Navbar.vue'
+import NavigationBar from './components/NavigationBar.vue'
 import { RouterView } from 'vue-router'
 
 // 主题状态管理

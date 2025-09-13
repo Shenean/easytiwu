@@ -92,11 +92,6 @@ defineEmits<{
   
   /* 移动端按钮优化 */
   :deep(.n-button) {
-    min-height: 44px !important;
-    min-width: 80px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
     flex: 1;
     max-width: 120px;
   }
@@ -104,13 +99,6 @@ defineEmits<{
   /* 主要按钮（提交）更突出 */
   :deep(.n-button--primary) {
     min-width: 100px;
-    box-shadow: 0 2px 8px rgba(24, 160, 88, 0.3);
-  }
-  
-  /* 触摸反馈 */
-  :deep(.n-button:active) {
-    transform: scale(0.98);
-    transition: transform 0.1s ease;
   }
 }
 
@@ -124,8 +112,6 @@ defineEmits<{
   }
   
   :deep(.n-button) {
-    min-height: 42px !important;
-    font-size: 13px;
     min-width: 70px;
     max-width: 100px;
   }
@@ -139,11 +125,6 @@ defineEmits<{
 @media (max-width: 768px) and (orientation: landscape) {
   .bottom-actions {
     padding: 8px 16px;
-  }
-  
-  :deep(.n-button) {
-    min-height: 38px !important;
-    font-size: 13px;
   }
 }
 

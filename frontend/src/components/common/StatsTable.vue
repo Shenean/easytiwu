@@ -12,9 +12,9 @@ const rows = props.rows || []
 
 const columns = [
   { title: '题型', key: 'type' },
-  { title: '总题数', key: 'count', render: (r: any) => formatNumber(r.count) },
-  { title: '已完成', key: 'completedCount', render: (r: any) => formatNumber(r.completedCount) },
-  { title: '答对数', key: 'correctCount', render: (r: any) => formatNumber(r.correctCount) },
-  { title: '正确率', key: 'accuracy', render: (r: any) => formatPercentage(r.correctCount, r.completedCount) }
+  { title: '总题数', key: 'count', render: (r: StatisticsTableRow) => formatNumber(r.count) },
+  { title: '已完成', key: 'completedCount', render: (r: StatisticsTableRow) => formatNumber(r.completedCount) },
+  { title: '答对数', key: 'correctCount', render: (r: StatisticsTableRow) => formatNumber(r.correctCount) },
+  { title: '正确率', key: 'accuracy', render: (r: StatisticsTableRow) => formatPercentage(r.correctCount, r.completedCount) }
 ] as DataTableColumns<StatisticsTableRow>
 </script>

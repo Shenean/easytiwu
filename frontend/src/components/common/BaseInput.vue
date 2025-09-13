@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from "vue"
+import { ref, watch, computed, type Component } from "vue"
 import { NInput } from "naive-ui"
 
 interface Props {
@@ -40,8 +40,8 @@ interface Props {
   showCount?: boolean
   round?: boolean
   readonly?: boolean
-  prefixIcon?: any
-  suffixIcon?: any
+  prefixIcon?: Component | string | null
+  suffixIcon?: Component | string | null
   radius?: string | number
 }
 

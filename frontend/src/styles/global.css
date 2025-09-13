@@ -61,11 +61,7 @@ button {
     margin: 8px 0 !important;
   }
   
-  /* 移动端按钮最小触摸区域 */
-  button, .n-button {
-    min-height: 44px !important;
-    min-width: 44px !important;
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -159,7 +155,6 @@ button {
 @media (max-width: 768px) {
   /* 启用硬件加速 */
   .n-card,
-  .n-button,
   .n-drawer,
   .n-modal,
   .answer-card-btn,
@@ -179,7 +174,6 @@ button {
   }
   
   /* 触摸反馈增强 */
-  .n-button:active,
   .answer-card-btn:active,
   .mobile-menu-item:active,
   .theme-item:active {
@@ -200,7 +194,6 @@ button {
   }
   
   /* 触摸目标最小尺寸 */
-  .n-button,
   .answer-card-btn,
   .mobile-menu-item,
   .theme-item {

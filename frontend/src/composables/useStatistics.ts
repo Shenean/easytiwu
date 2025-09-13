@@ -27,12 +27,12 @@ export function useStatistics() {
           throw new Error(api?.message || '获取统计数据失败')
         }
       }
-    } catch (e: any) {
-      // 简单错误归一
-      if (e.response?.status === 404) error.value = '统计服务不可用（404）'
-      else if (e.response?.status === 500) error.value = '服务器内部错误'
-      else if (e.message?.includes('Network Error') || e.code === 'ECONNREFUSED') error.value = '无法连接到服务器'
-      else error.value = e.message || '获取统计数据失败'
+    } catch (e: unknown) {
+      const error_obj = e as { response?: { status?: number }; message?: string; code?: string }
+      if (error_obj.response?.status === 404) error.value = '统计服务不可用（404）'
+      else if (error_obj.response?.status === 500) error.value = '服务器内部错误'
+      else if (error_obj.message?.includes('Network Error') || error_obj.code === 'ECONNREFUSED') error.value = '无法连接到服务器'
+      else error.value = error_obj.message || '获取统计数据失败'
     } finally {
       loading.value = false
     }

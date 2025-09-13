@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { NButton } from "naive-ui"
 import type { ButtonProps } from "naive-ui"
-import { computed } from "vue"
+import { computed, type Component } from "vue"
 
 interface Props {
   type?: ButtonProps["type"]
@@ -36,7 +36,7 @@ interface Props {
   ghost?: boolean
   round?: boolean
   circle?: boolean
-  icon?: any
+  icon?: Component | string | null
   radius?: string | number
 }
 
