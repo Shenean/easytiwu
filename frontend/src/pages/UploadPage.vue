@@ -14,8 +14,29 @@
 
       <!-- 文件上传 -->
       <n-form-item label="文件" path="file">
-        <BaseUpload v-model="form.file" :accept="['.doc', '.docx', '.pdf', '.txt']" :max-size="20" :multiple="false"
-          :max="1" @before-upload="handleBeforeUpload" @remove="handleFileRemove" />
+        <n-upload
+          v-model:file-list="form.file"
+          :accept="'.docx,.pdf,.txt'"
+          :max="1"
+          :multiple="false"
+          action="#"
+          :custom-request="handleCustomRequest"
+          @before-upload="handleBeforeUpload"
+        >
+          <n-upload-dragger>
+            <div style="margin-bottom: 12px">
+              <n-icon size="48" :depth="3">
+                <ArchiveIcon />
+              </n-icon>
+            </div>
+            <n-text style="font-size: 16px">
+              点击或者拖动文件到该区域来上传
+            </n-text>
+            <n-p depth="3" style="margin: 8px 0 0 0">
+              支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB
+            </n-p>
+          </n-upload-dragger>
+        </n-upload>
       </n-form-item>
 
       <!-- 提交操作区 -->
@@ -30,9 +51,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useMessage } from 'naive-ui'
-import type { FormInst, UploadFileInfo } from 'naive-ui'
+import type { FormInst, UploadFileInfo, UploadCustomRequestOptions } from 'naive-ui'
+import { ArchiveOutline as ArchiveIcon } from '@vicons/ionicons5'
 import { uploadAPI } from '../api/config'
-import BaseUpload from '../components/common/BaseUpload.vue'
 import FormActions from '../components/common/FormActions.vue'
 import PageContainer from '../components/common/PageContainer.vue'
 import { bankFormRules } from '../validation/rulesBank'
@@ -64,21 +85,40 @@ const rules = bankFormRules
 
 
 /**
- * 上传前校验文件（BaseUpload组件已包含基础校验，这里可以添加额外的业务逻辑）
+ * 上传前校验文件
  */
-function handleBeforeUpload(file: UploadFileInfo) {
-  // BaseUpload组件已经处理了基础的文件类型和大小校验
-  // 这里可以添加额外的业务逻辑
+function handleBeforeUpload(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
+  const file = data.file
   const fileName = file.file?.name || file.name || '未知文件'
+  
+  // 文件类型校验
+  const allowedTypes = ['.docx', '.pdf', '.txt']
+  const fileExtension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'))
+  if (!allowedTypes.includes(fileExtension)) {
+    message.error(`不支持的文件格式，请选择 ${allowedTypes.join('、')} 格式的文件`)
+    return false
+  }
+  
+  // 文件大小校验（20MB）
+  const maxSize = 20 * 1024 * 1024
+  if (file.file && file.file.size > maxSize) {
+    message.error('文件大小不能超过 20MB')
+    return false
+  }
+  
   console.log('文件上传前处理:', fileName)
+  return true
 }
 
 /**
- * 删除文件
+ * 自定义上传请求（阻止默认上传行为）
  */
-function handleFileRemove() {
-  form.value.file = []
+function handleCustomRequest(options: UploadCustomRequestOptions) {
+  // 阻止默认上传，文件将在表单提交时统一处理
+  options.onFinish()
 }
+
+
 
 /**
  * 重置表单
@@ -91,7 +131,10 @@ function handleReset() {
   }
 
   if (window.confirm('⚠️ 确定重置表单？所有数据将丢失')) {
-    form.value = { name: '', description: '', file: [] }
+    // 重置表单数据，文件列表通过v-model自动同步到BaseUpload组件
+    form.value.name = ''
+    form.value.description = ''
+    form.value.file = []
     message.info('表单已重置')
   }
 }
@@ -124,7 +167,10 @@ function handleSubmit() {
       await uploadAPI.uploadFile(formData)
 
       message.success('上传成功 🎉')
-      form.value = { name: '', description: '', file: [] }
+      // 上传成功后重置表单，文件列表通过v-model自动同步到BaseUpload组件
+      form.value.name = ''
+      form.value.description = ''
+      form.value.file = []
     } catch (err: unknown) {
       console.error('Upload error:', err)
       if (err && typeof err === 'object' && 'response' in err) {

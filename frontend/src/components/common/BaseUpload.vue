@@ -1,45 +1,52 @@
 <template>
-  <n-upload
-    v-model:file-list="fileList"
-    :max="max"
-    :multiple="multiple"
-    :default-upload="false"
-    :on-before-upload="handleBeforeUpload"
-    :on-remove="handleFileRemove"
-  >
-    <!-- 拖拽上传区域 -->
-    <n-upload-dragger v-if="fileList.length === 0">
-      <slot name="dragger">
-        <div style="margin-bottom: 12px;">
-          <n-icon size="32" color="#18a058">
+  <div class="upload-container">
+    <!-- 点击上传按钮 -->
+    <n-upload v-model:file-list="fileList" :max="max" :multiple="multiple" :default-upload="false"
+      :on-before-upload="handleBeforeUpload" :on-remove="handleFileRemove" :show-file-list="false">
+      <n-button v-if="fileList.length === 0" type="primary" size="large" class="upload-button">
+        <template #icon>
+          <n-icon>
             <i class="i-ion-cloud-upload-outline"></i>
           </n-icon>
-        </div>
-        <div>点击或拖拽文件到此处上传</div>
-        <div style="font-size: 12px; color: #999;">
-          {{ uploadTip }}
-        </div>
-      </slot>
-    </n-upload-dragger>
+        </template>
+        点击选择文件
+      </n-button>
+    </n-upload>
+
+    <!-- 上传提示信息 -->
+    <div v-if="fileList.length === 0" class="upload-tip">
+      {{ uploadTip }}
+    </div>
 
     <!-- 已上传文件展示 -->
-    <div v-else class="uploaded-file">
-      <n-tag
-        v-for="file in fileList"
-        :key="file.id || file.name"
-        type="success"
-        size="small"
-        closable
-        @close="() => handleFileRemove(file)"
-        class="file-tag"
-      >
+    <div v-if="fileList.length > 0" class="uploaded-file">
+      <n-tag v-for="file in fileList" :key="file.id || file.name" type="success" size="medium" closable
+        @close="() => handleFileRemove(file)" class="file-tag">
+        <template #icon>
+          <n-icon>
+            <i class="i-ion-document-outline"></i>
+          </n-icon>
+        </template>
         {{ file.name }}
-        <span v-if="file.file">
+        <span v-if="file.file" class="file-size">
           ({{ formatFileSize(file.file.size) }})
         </span>
       </n-tag>
+
+      <!-- 重新选择文件按钮 -->
+      <n-upload v-model:file-list="fileList" :max="max" :multiple="multiple" :default-upload="false"
+        :on-before-upload="handleBeforeUpload" :on-remove="handleFileRemove" :show-file-list="false">
+        <n-button size="small" type="default" class="reselect-button">
+          <template #icon>
+            <n-icon>
+              <i class="i-ion-refresh-outline"></i>
+            </n-icon>
+          </template>
+          重新选择
+        </n-button>
+      </n-upload>
     </div>
-  </n-upload>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -125,8 +132,8 @@ function handleBeforeUpload(file: UploadFileInfo): boolean {
   }
 
   // 获取文件扩展名
-  const fileExt = fileName.includes('.') 
-    ? '.' + fileName.split('.').pop()?.toLowerCase() 
+  const fileExt = fileName.includes('.')
+    ? '.' + fileName.split('.').pop()?.toLowerCase()
     : ''
 
   // 检查文件类型
@@ -180,41 +187,187 @@ defineExpose({
 </script>
 
 <style scoped>
-:deep(.n-upload-dragger) {
-  transition: all 0.3s ease;
-  border: 2px dashed #d9d9d9;
-  padding: 24px;
-  border-radius: 10px;
-  background-color: #fafafa;
-  cursor: pointer;
+.upload-container {
+  text-align: center;
+  padding: 20px;
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
-:deep(.n-upload-dragger:hover) {
-  border-color: #18a058 !important;
-  background-color: #f0fdf4;
-  transform: scale(1.02);
+.upload-container:hover {
+  border-color: #18a058;
+  background: #f6fffe;
+}
+
+.upload-button {
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.upload-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 160, 88, 0.15);
+}
+
+.upload-tip {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  padding: 0 16px;
 }
 
 .uploaded-file {
-  padding: 16px 0;
+  padding: 20px 16px;
   text-align: center;
   word-break: break-all;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
 }
 
 .file-tag {
   font-size: 14px;
-  max-width: 90%;
+  max-width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1.2;
+  line-height: 1.4;
   white-space: normal;
   word-wrap: break-word;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
 }
 
+.file-tag:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
 
+.file-size {
+  margin-left: 6px;
+  font-size: 12px;
+  opacity: 0.7;
+  font-weight: normal;
+}
+
+.reselect-button {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.reselect-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .upload-container {
+    padding: 16px;
+    margin: 0 4px;
+  }
+
+  .upload-button {
+    padding: 12px 16px;
+    font-size: 15px;
+    min-height: 44px;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .upload-tip {
+    font-size: 13px;
+    margin-top: 12px;
+    padding: 0 8px;
+  }
+
+  .uploaded-file {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+
+  .file-tag {
+    font-size: 13px;
+    padding: 8px 10px;
+    max-width: 95%;
+  }
+
+  .file-size {
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  .reselect-button {
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-container {
+    padding: 12px;
+    border-radius: 6px;
+  }
+
+  .upload-button {
+    padding: 10px 14px;
+    font-size: 14px;
+    min-height: 42px;
+  }
+
+  .upload-tip {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .uploaded-file {
+    padding: 12px 8px;
+    border-radius: 6px;
+  }
+
+  .file-tag {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .upload-container {
+    padding: 12px;
+  }
+
+  .upload-button {
+    min-height: 38px;
+    padding: 8px 16px;
+  }
+
+  .uploaded-file {
+    padding: 12px;
+  }
+}
 </style>
