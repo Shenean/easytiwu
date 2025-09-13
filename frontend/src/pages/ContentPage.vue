@@ -68,11 +68,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import { useMessage } from 'naive-ui'
-import { useRoute } from 'vue-router'
-import { AxiosError } from 'axios'
-import { contentAPI } from '../api/config'
+import {computed, onMounted, ref, watch} from 'vue'
+import {useMessage} from 'naive-ui'
+import {useRoute} from 'vue-router'
+import {AxiosError} from 'axios'
+import {contentAPI} from '../api/config'
 import AnswerCard from '../components/common/AnswerCard.vue'
 import QuestionActions from '../components/common/QuestionActions.vue'
 import QuestionAnswer from '../components/common/QuestionAnswer.vue'
@@ -397,6 +397,25 @@ watch(currentQuestion, () => {
 <style scoped>
 /* 页面容器样式已移至 PageContainer 组件 */
 
+/* 响应式显示控制 */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+}
+
 /* 移动端答题卡切换按钮 */
 .mobile-answer-card-toggle {
   position: fixed;
@@ -417,39 +436,54 @@ watch(currentQuestion, () => {
   font-weight: 600;
 }
 
-/* 主要内容布局 */
+/* 主要内容布局 - 桌面端响应式设计 */
 .content-layout {
   display: flex;
-  gap: 24px;
+  gap: 32px;
   max-width: 1400px;
   margin: 0 auto;
   min-height: calc(100vh - 140px);
+  padding: 0 20px;
+  position: relative;
 }
 
-/* 左侧主内容区 */
+/* 左侧主内容区 - 固定60%宽度 */
 .main-content {
-  flex: 1;
+  width: 60%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   min-width: 0;
-  max-width: 800px;
-  /* 设置最大宽度确保固定列宽 */
-}
-
-/* 右侧答题卡区域 */
-.sidebar {
-  width: 280px;
   flex-shrink: 0;
+  /* 固定宽度为页面的60% */
 }
 
-/* 题目相关样式 - 固定宽度布局 */
+/* 右侧答题卡区域 - 占用剩余空间 */
+.sidebar {
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  /* 占用剩余空间，但限制最大最小宽度 */
+}
+
+/* 题目相关样式 - 优化布局对齐 */
 .question-card,
 .answer-card {
   margin-bottom: 0;
   width: 100%;
-  /* 确保所有卡片占满容器宽度 */
   box-sizing: border-box;
+  /* 确保所有卡片占满容器宽度并保持对齐 */
+}
+
+/* 答案解析卡片与答题区对齐 */
+.answer-card {
+  margin-top: 0;
+  /* 与上方题目卡片保持一致的间距 */
 }
 
 .question-stem {
@@ -512,6 +546,42 @@ watch(currentQuestion, () => {
   /* 确保长文本不会破坏固定宽度布局 */
 }
 
+/* ===== 桌面端大屏幕优化 ===== */
+@media (min-width: 1200px) {
+  .content-layout {
+    gap: 40px;
+    padding: 0 24px;
+  }
+
+  .main-content {
+    gap: 28px;
+    width: 60%;
+    /* 保持60%宽度 */
+  }
+
+  .sidebar {
+    max-width: 380px;
+  }
+}
+
+/* ===== 中等屏幕优化 ===== */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .content-layout {
+    gap: 28px;
+    padding: 0 16px;
+  }
+
+  .main-content {
+    width: 60%;
+    /* 保持60%宽度 */
+  }
+
+  .sidebar {
+    min-width: 260px;
+    max-width: 320px;
+  }
+}
+
 /* ===== 移动端响应式设计 ===== */
 @media (max-width: 768px) {
   .page-container {
@@ -526,14 +596,25 @@ watch(currentQuestion, () => {
   .content-layout {
     flex-direction: column;
     gap: 16px;
-    padding-bottom: 100px;
+    padding: 0 12px 100px 12px;
     /* 为移动端底部按钮留更多空间 */
   }
 
   .main-content {
     gap: 16px;
+    width: 100%;
     max-width: 100%;
-    /* 移动端占满宽度 */
+    margin-right: 0;
+    /* 移动端占满宽度，重置桌面端的60%宽度设置 */
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    /* 移动端重置固定定位 */
   }
 
   .question-stem {
@@ -583,13 +664,24 @@ watch(currentQuestion, () => {
 
   .content-layout {
     gap: 12px;
-    padding-bottom: 110px;
+    padding: 0 8px 110px 8px;
   }
 
   .main-content {
     gap: 12px;
+    width: 100%;
     max-width: 100%;
-    /* 小屏幕设备占满宽度 */
+    margin-right: 0;
+    /* 小屏幕设备占满宽度，重置桌面端60%宽度设置 */
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    /* 小屏幕设备重置固定定位 */
   }
 
   .question-stem {
