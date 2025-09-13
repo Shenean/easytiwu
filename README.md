@@ -8,6 +8,10 @@
 - **数据库环境**: MySQL 8
 - **Node.js 运行环境**: 版本 22
 
+## 演示视频
+
+[点击查看演示视频](https://reurl.cc/VWllLY)
+
 ## 反馈
 
 提交 Issue 或 PR | 邮箱: shenyankm@hotmail.com | QQ 群: 622937283
