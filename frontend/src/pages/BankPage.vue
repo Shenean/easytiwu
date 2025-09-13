@@ -117,8 +117,14 @@ async function fetchBanks() {
 // ================== 操作处理 ==================
 function handlePractice(id: number) {
   try {
-    router.push({ name: 'content', params: { bankId: id.toString(), type: 'all' } })
-    message.success(`进入题库 ID: ${id} 的全部练习`)
+    const targetBank = banks.value.find(b => b.id === id)
+    const bankName = targetBank?.name || `ID: ${id}`
+    router.push({
+      name: 'content',
+      params: { bankId: id.toString(), type: 'all' },
+      query: { bankName: bankName }
+    })
+    // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
     console.error('路由跳转失败:', error)
     message.error('页面跳转失败，请稍后重试')
@@ -127,8 +133,14 @@ function handlePractice(id: number) {
 
 function handleWrongSet(id: number) {
   try {
-    router.push({ name: 'content', params: { bankId: id.toString(), type: 'wrong' } })
-    message.success(`进入题库 ID: ${id} 的错题集`)
+    const targetBank = banks.value.find(b => b.id === id)
+    const bankName = targetBank?.name || `ID: ${id}`
+    router.push({
+      name: 'content',
+      params: { bankId: id.toString(), type: 'wrong' },
+      query: { bankName: bankName }
+    })
+    // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
     console.error('路由跳转失败:', error)
     message.error('页面跳转失败，请稍后重试')
@@ -217,7 +229,6 @@ defineExpose({
 }
 
 .bank-card-item {
-  background: #fff;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -244,7 +255,7 @@ defineExpose({
 .bank-id {
   font-size: 12px;
   color: #666;
-  background: #f5f5f5;
+
   padding: 4px 8px;
   border-radius: 4px;
   font-weight: 500;
@@ -273,7 +284,7 @@ defineExpose({
   gap: 12px;
   margin-bottom: 20px;
   padding: 16px;
-  background: #fafafa;
+
   border-radius: 8px;
 }
 

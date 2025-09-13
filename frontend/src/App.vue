@@ -47,23 +47,6 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
     }
   }
 
-  if (actualTheme.value === 'dark') {
-    return {
-      ...baseOverrides,
-      common: {
-        ...baseOverrides.common,
-        bodyColor: '#1a1a1a',
-        cardColor: '#2d2d2d',
-        modalColor: '#2d2d2d',
-        popoverColor: '#2d2d2d',
-        tableHeaderColor: '#2d2d2d',
-        tableColor: '#1a1a1a',
-        inputColor: '#2d2d2d',
-        codeColor: '#2d2d2d'
-      }
-    }
-  }
-
   return baseOverrides
 })
 
@@ -88,17 +71,6 @@ const getGlobalTheme = () => {
 const applyThemeToDocument = () => {
   const theme = actualTheme.value
   document.documentElement.setAttribute('data-theme', theme)
-
-  // 更新CSS变量
-  if (theme === 'dark') {
-    document.documentElement.style.setProperty('--bg-color', '#1a1a1a')
-    document.documentElement.style.setProperty('--text-color', '#ffffff')
-    document.documentElement.style.setProperty('--border-color', '#404040')
-  } else {
-    document.documentElement.style.setProperty('--bg-color', '#ffffff')
-    document.documentElement.style.setProperty('--text-color', '#2c3e50')
-    document.documentElement.style.setProperty('--border-color', '#e0e0e0')
-  }
 }
 
 // 初始化主题
@@ -131,24 +103,21 @@ provide('getGlobalTheme', getGlobalTheme)
 <style>
 /* 全局主题样式 */
 :root {
-  --bg-color: #ffffff;
   --text-color: #2c3e50;
   --border-color: #e0e0e0;
 }
 
 [data-theme="dark"] {
-  --bg-color: #1a1a1a;
   --text-color: #ffffff;
   --border-color: #404040;
 }
 
 body {
-  background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 </style>

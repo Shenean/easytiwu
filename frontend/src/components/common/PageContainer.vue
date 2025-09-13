@@ -34,8 +34,7 @@ interface Props {
   bordered?: boolean
   /** 卡片分段样式 */
   segmented?: boolean | { content?: boolean; footer?: boolean }
-  /** 容器背景色 */
-  background?: string
+
   /** 自定义容器类名 */
   containerClass?: string
   /** 自定义卡片类名 */
@@ -54,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
   cardSize: 'large',
   bordered: true,
   segmented: true,
-  background: '#f5f5f5',
+
   containerClass: '',
   cardClass: '',
   centered: true,
@@ -92,7 +91,6 @@ const contentClass = computed(() => [
   width: 100%;
   min-height: calc(100vh - 140px);
   padding: v-bind(padding);
-  background-color: v-bind(background);
 }
 
 .page-container--centered {
@@ -203,16 +201,7 @@ const contentClass = computed(() => [
 }
 
 /* 特殊页面样式适配 */
-.page-container.statistics-container {
-  background-color: transparent;
-}
-
-.page-container.settings-container {
-  background-color: transparent;
-}
-
 .page-container.content-page {
-  background-color: #f5f5f5;
   padding: 20px;
 }
 
@@ -233,18 +222,5 @@ const contentClass = computed(() => [
   }
 }
 
-/* 深色主题适配 */
-@media (prefers-color-scheme: dark) {
-  .page-container {
-    background-color: #1a1a1a;
-  }
 
-  .page-card {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-  }
-
-  .page-card:hover {
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
-  }
-}
 </style>

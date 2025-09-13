@@ -112,8 +112,6 @@ defineExpose({
   display: flex;
   align-items: center;
 
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 16px 16px 0 0;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
@@ -157,7 +155,7 @@ defineExpose({
   display: flex;
   align-items: center;
   height: 100%;
-  background: transparent;
+
 }
 
 /* 响应式导航 */
@@ -174,8 +172,7 @@ defineExpose({
   top: 100%;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(16px);
+
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 999;
@@ -244,9 +241,7 @@ defineExpose({
   position: absolute;
   inset: 0;
   border-radius: 16px 16px 0 0;
-  background: linear-gradient(135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.05) 100%);
+
   pointer-events: none;
   z-index: -1;
 }
@@ -261,7 +256,7 @@ defineExpose({
   position: absolute;
   left: 50%; top: 50%;
   width: 0; height: 0;
-  background: rgba(0, 0, 0, 0.1);
+
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: width 0.4s, height 0.4s;

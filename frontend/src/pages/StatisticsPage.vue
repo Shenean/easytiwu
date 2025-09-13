@@ -1,5 +1,5 @@
 <template>
-  <PageContainer title="题库统计" card-class="stats-card" background="transparent" container-class="statistics-container">
+  <PageContainer title="题库统计" card-class="stats-card" container-class="statistics-container">
     <!-- 加载状态 -->
     <LoadingContainer :loading="loading" description="正在加载统计数据..." height="400px" />
 
@@ -194,7 +194,6 @@ onMounted(() => {
 
 .stats-card {
   border-radius: 12px;
-  background: var(--n-card-color);
   box-shadow: var(--n-box-shadow-1);
   border: 1px solid var(--n-border-color);
 }

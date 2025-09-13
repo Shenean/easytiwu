@@ -65,10 +65,6 @@ function jumpToQuestion(id: number) {
   border-radius: 4px;
 }
 
-.answer-card-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 /* 答题卡按钮 */
 .answer-card-btn {
   height: 40px;

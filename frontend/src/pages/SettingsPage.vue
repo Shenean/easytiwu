@@ -1,5 +1,5 @@
 <template>
-  <PageContainer title="设置" card-class="settings-card" background="transparent" container-class="settings-container">
+  <PageContainer title="设置" card-class="settings-card" container-class="settings-container">
       <div class="setting-section">
         <div class="setting-header">
           <n-icon size="20" class="setting-icon">
@@ -85,7 +85,6 @@ function handleThemeChange(theme: Theme) {
 
 .settings-card {
   border-radius: 12px;
-  background: rgba(255,255,255,0.85);
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   border: 1px solid rgba(0,0,0,0.05);
 }
@@ -129,10 +128,10 @@ function handleThemeChange(theme: Theme) {
 }
 
 /* 根据 data-variant 简洁着色 */
-.preview[data-variant="light"] { background: linear-gradient(180deg,#fff,#f6f6f8); }
-.preview[data-variant="dark"] { background: linear-gradient(180deg,#1b1b1b,#111); }
+.preview[data-variant="light"] { border: 2px solid #e0e0e0; }
+.preview[data-variant="dark"] { border: 2px solid #404040; }
 .preview[data-variant="auto"] {
-  background: linear-gradient(90deg,#fff 50%, #111 50%);
+  border: 2px solid #808080;
   position:relative;
 }
 

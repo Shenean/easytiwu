@@ -45,13 +45,11 @@ defineEmits<{
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
   border-top: 1px solid #e0e0e0;
   padding: 16px 20px;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
 }
 
 .action-buttons {

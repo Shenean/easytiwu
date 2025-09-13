@@ -1,5 +1,5 @@
 <template>
-  <n-card title="作答区" size="small" class="answer-area">
+  <div class="answer-area">
     <!-- 单选题 -->
     <div v-if="question.type === 'single'">
       <n-radio-group v-model:value="radioValue" name="single-choice" size="large">
@@ -37,13 +37,12 @@
       <n-input v-model:value="inputValue" type="textarea" placeholder="请输入你的答案" :autosize="{ minRows: 2, maxRows: 6 }"
         :disabled="false" clearable />
     </div>
-  </n-card>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import {
-  NCard,
   NRadioGroup,
   NRadio,
   NCheckboxGroup,
@@ -123,6 +122,9 @@ const inputValue = computed<string>({
 <style scoped>
 .answer-area {
   margin-bottom: 0;
+  width: 100%;
+  /* 确保答题区占满容器宽度 */
+  box-sizing: border-box;
 }
 
 /* 表单元素样式 */
@@ -130,10 +132,27 @@ const inputValue = computed<string>({
 :deep(.n-checkbox-content) {
   font-size: 15px;
   line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 :deep(.n-radio),
 :deep(.n-checkbox) {
   margin-bottom: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 确保输入框也遵循固定宽度布局 */
+:deep(.n-input) {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 选项文本换行处理 */
+:deep(.n-radio-content),
+:deep(.n-checkbox-content) {
+  max-width: 100%;
+  white-space: normal;
 }
 </style>

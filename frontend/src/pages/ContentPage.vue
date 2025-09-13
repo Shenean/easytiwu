@@ -1,5 +1,5 @@
 <template>
-  <PageContainer :show-card="false" background="#f5f5f5" container-class="content-page">
+  <PageContainer :show-card="false" container-class="content-page">
     <!-- 加载状态 -->
     <LoadingContainer v-if="loading" :loading="loading" description="正在加载题目..." height="300px" />
 
@@ -20,13 +20,17 @@
       <div class="content-layout">
         <!-- 左侧：题目区域 -->
         <div class="main-content">
-          <!-- 题干 -->
+          <!-- 题目与作答区整合卡片 -->
           <n-card :title="`第 ${currentQuestionIndex + 1} 题`" size="small" class="question-card">
+            <!-- 题目内容 -->
             <div class="question-stem" v-html="currentQuestion?.content || ''"></div>
-          </n-card>
 
-          <!-- 作答区 -->
-          <QuestionAnswer :question="currentQuestion!" v-model="localAnswer" />
+            <!-- 分割线 -->
+            <n-divider class="question-divider" />
+
+            <!-- 答题区域 -->
+            <QuestionAnswer :question="currentQuestion!" v-model="localAnswer" />
+          </n-card>
 
           <!-- 答案与解析（提交后或已作答显示） -->
           <n-card v-if="showAnswer" title="答案与解析" size="small" class="answer-card">
@@ -217,7 +221,10 @@ async function fetchQuestions() {
       if (questionList.value.length === 0) {
         message.warning(type === 'wrong' ? '暂无错题数据' : '该题库暂无题目')
       } else {
-        message.success(`成功加载 ${questionList.value.length} 道题目`)
+        // 获取题库名称和练习类型信息
+        const bankName = route.query.bankName as string || `题库 ID: ${bankId}`
+        const practiceType = type === 'wrong' ? '错题集' : '全部练习'
+        message.success(`当前题库为${bankName}-${practiceType}，共${questionList.value.length}题`)
         currentQuestionIndex.value = 0
         initLocalAnswer()
       }
@@ -396,7 +403,7 @@ watch(currentQuestion, () => {
   top: 80px;
   right: 16px;
   z-index: 999;
-  background: rgba(255, 255, 255, 0.95);
+
   border-radius: 20px;
   padding: 4px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
@@ -426,6 +433,8 @@ watch(currentQuestion, () => {
   flex-direction: column;
   gap: 20px;
   min-width: 0;
+  max-width: 800px;
+  /* 设置最大宽度确保固定列宽 */
 }
 
 /* 右侧答题卡区域 */
@@ -434,16 +443,29 @@ watch(currentQuestion, () => {
   flex-shrink: 0;
 }
 
-/* 题目相关样式 */
+/* 题目相关样式 - 固定宽度布局 */
 .question-card,
 .answer-card {
   margin-bottom: 0;
+  width: 100%;
+  /* 确保所有卡片占满容器宽度 */
+  box-sizing: border-box;
 }
 
 .question-stem {
   font-size: 16px;
   line-height: 1.6;
   color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 题目与答题区域分割线 */
+.question-divider {
+  margin: 20px 0;
+  border-color: #e8e8e8;
 }
 
 /* 为底部按钮留出空间 */
@@ -464,16 +486,18 @@ watch(currentQuestion, () => {
   align-items: center;
   height: 60vh;
   width: 100%;
-  background: white;
+
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 卡片样式优化 */
+/* 卡片样式优化 - 统一固定宽度 */
 :deep(.n-card) {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 :deep(.n-card .n-card-header) {
@@ -483,6 +507,9 @@ watch(currentQuestion, () => {
 
 :deep(.n-card .n-card-content) {
   padding: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  /* 确保长文本不会破坏固定宽度布局 */
 }
 
 /* ===== 移动端响应式设计 ===== */
@@ -505,6 +532,8 @@ watch(currentQuestion, () => {
 
   .main-content {
     gap: 16px;
+    max-width: 100%;
+    /* 移动端占满宽度 */
   }
 
   .question-stem {
@@ -559,6 +588,8 @@ watch(currentQuestion, () => {
 
   .main-content {
     gap: 12px;
+    max-width: 100%;
+    /* 小屏幕设备占满宽度 */
   }
 
   .question-stem {

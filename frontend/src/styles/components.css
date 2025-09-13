@@ -82,7 +82,6 @@
 
 /* 内容区域 */
 .content-area {
-  background: var(--n-color-card);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
@@ -198,7 +197,6 @@
 
 /* 统计卡片 */
 .stats-card {
-  background: var(--n-color-card);
   border: 1px solid var(--n-border-color);
   border-radius: 8px;
   padding: 20px;
@@ -239,7 +237,6 @@
 
 /* 答题卡片 */
 .answer-card {
-  background: var(--n-color-card);
   border: 2px solid var(--n-border-color);
   border-radius: 6px;
   padding: 8px;
@@ -255,25 +252,21 @@
 
 .answer-card:hover {
   border-color: var(--n-color-primary);
-  background: var(--n-color-primary-hover);
 }
 
 .answer-card.correct {
   border-color: var(--n-color-success);
-  background: var(--n-color-success-hover);
   color: var(--n-color-success);
 }
 
 .answer-card.incorrect {
   border-color: var(--n-color-error);
-  background: var(--n-color-error-hover);
   color: var(--n-color-error);
 }
 
 .answer-card.selected {
   border-color: var(--n-color-primary);
-  background: var(--n-color-primary);
-  color: white;
+  color: var(--n-color-primary);
 }
 
 @media (max-width: 480px) {
@@ -286,7 +279,6 @@
 
 /* 题库卡片 */
 .bank-card {
-  background: var(--n-color-card);
   border: 1px solid var(--n-border-color);
   border-radius: 8px;
   padding: 20px;
@@ -416,7 +408,6 @@
 
 /* 导航栏 */
 .navbar {
-  background: var(--n-color-card);
   border-bottom: 1px solid var(--n-border-color);
   padding: 0 20px;
   height: 60px;
@@ -574,25 +565,7 @@
   color: var(--n-text-color-3);
 }
 
-/* 背景颜色 */
-.bg-primary {
-  background-color: var(--n-color-primary);
-}
-.bg-success {
-  background-color: var(--n-color-success);
-}
-.bg-warning {
-  background-color: var(--n-color-warning);
-}
-.bg-error {
-  background-color: var(--n-color-error);
-}
-.bg-card {
-  background-color: var(--n-color-card);
-}
-.bg-body {
-  background-color: var(--n-color-body);
-}
+/* 背景颜色工具类已删除 */
 
 /* 边框 */
 .border {

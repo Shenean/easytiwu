@@ -41,7 +41,7 @@ const containerStyle = computed(() => {
   justify-content: center;
   width: 100%;
   position: relative;
-  background: transparent;
+
   transition: all 0.3s ease;
 }
 
