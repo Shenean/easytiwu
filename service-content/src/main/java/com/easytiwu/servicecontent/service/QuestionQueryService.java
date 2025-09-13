@@ -133,16 +133,20 @@ public class QuestionQueryService {
             try {
                 // 如果已经是JSON格式，解析后重新排序
                 if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-                    List<String> options = Arrays.asList(trimmed.substring(1, trimmed.length() - 1)
-                            .replaceAll("\"|", "").split(","));
-                    return objectMapper.writeValueAsString(options.stream().map(String::trim).sorted().collect(Collectors.toList()));
+                    List<String> options = Arrays.stream(trimmed.substring(1, trimmed.length() - 1)
+                            .replaceAll("\"|", "")
+                            .split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .toList();
+                    return objectMapper.writeValueAsString(options.stream().map(String::trim).sorted().toList());
                 } else {
                     // 如果是逗号分隔的格式，转换为JSON
                     List<String> options = Arrays.stream(trimmed.split(","))
                             .map(String::trim)
                             .filter(s -> !s.isEmpty())
                             .sorted()
-                            .collect(Collectors.toList());
+                            .toList();
                     return objectMapper.writeValueAsString(options);
                 }
             } catch (Exception e) {
@@ -204,13 +208,12 @@ public class QuestionQueryService {
         // JSON格式
         if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
             try {
-                return Arrays.asList(trimmed.substring(1, trimmed.length() - 1)
+                return Arrays.stream(trimmed.substring(1, trimmed.length() - 1)
                         .replaceAll("\"|", "")
                         .split(","))
-                        .stream()
                         .map(String::trim)
                         .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toList());
+                        .toList();
             } catch (Exception e) {
                 return Arrays.asList(trimmed);
             }
@@ -220,7 +223,7 @@ public class QuestionQueryService {
         return Arrays.stream(trimmed.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

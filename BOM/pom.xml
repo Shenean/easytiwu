@@ -35,6 +35,9 @@
         <lombok.version>1.18.34</lombok.version> <!-- 升级 -->
         <resilience4j.version>2.3.0</resilience4j.version> <!-- 升级 -->
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
+        
+        <!-- 日志框架版本 -->
+        <log4j2.version>2.24.3</log4j2.version>
     </properties>
 
     <dependencyManagement>
@@ -133,6 +136,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>dashscope-sdk-java</artifactId>
                 <version>${dashscope.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- ===== 熔断降级 ===== -->
@@ -152,6 +161,50 @@
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>${jakarta.validation.version}</version>
+            </dependency>
+
+            <!-- ===== 日志框架 Log4j2 ===== -->
+            <!-- 排除 Spring Boot 默认的 Logback，使用 Log4j2 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            
+            <!-- Log4j2 核心依赖 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-log4j2</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j2-impl</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            
+            <!-- Log4j2 异步日志支持 -->
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>3.4.4</version>
             </dependency>
 
             <!-- ===== 内部模块 ===== -->
