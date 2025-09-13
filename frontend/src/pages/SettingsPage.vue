@@ -1,30 +1,35 @@
 <template>
   <PageContainer title="设置" card-class="settings-card" container-class="settings-container">
       <div class="setting-section">
-        <div class="setting-header">
-          <n-icon size="20" class="setting-icon">
-            <i class="i-ion-color-palette-outline"></i>
-          </n-icon>
-          <h3 class="setting-title">主题设置</h3>
-        </div>
-
-        <div class="setting-description">选择您喜欢的应用主题</div>
-
-        <n-radio-group v-model:value="currentTheme" class="theme-group" @update:value="handleThemeChange">
-          <div class="theme-list">
-            <label
-              v-for="t in themes"
-              :key="t.value"
-              class="theme-item"
-              :class="{ selected: currentTheme === t.value }"
-            >
-              <n-radio :value="t.value" class="theme-radio">
-                <div class="preview" :data-variant="t.value" />
-                <div class="theme-label">{{ t.label }}</div>
-              </n-radio>
-            </label>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-header">
+              <n-icon size="20" class="setting-icon">
+                <i class="i-ion-color-palette-outline"></i>
+              </n-icon>
+              <h3 class="setting-title">主题设置</h3>
+            </div>
+            <div class="setting-description">在亮色和暗色主题之间切换</div>
           </div>
-        </n-radio-group>
+          
+          <div class="theme-toggle-container">
+            <button 
+              class="theme-toggle-btn" 
+              :class="{ 'dark-mode': isDarkMode }"
+              @click="toggleTheme"
+              :aria-label="isDarkMode ? '切换到亮色主题' : '切换到暗色主题'"
+            >
+              <div class="toggle-track">
+                <div class="toggle-thumb">
+                  <n-icon size="16" class="theme-icon">
+                    <i :class="isDarkMode ? 'i-ion-moon' : 'i-ion-sunny'"></i>
+                  </n-icon>
+                </div>
+              </div>
+              <span class="theme-status">{{ isDarkMode ? '暗色主题' : '亮色主题' }}</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="setting-section small">
@@ -44,35 +49,32 @@ import { ref, onMounted, inject } from 'vue'
 import { useMessage } from 'naive-ui'
 import PageContainer from '../components/common/PageContainer.vue'
 
-type Theme = 'light' | 'dark' | 'auto'
+type Theme = 'light' | 'dark'
 
 const message = useMessage()
-const currentTheme = ref<Theme>('light')
+const isDarkMode = ref(false)
 
 const setGlobalTheme = inject<(theme: Theme) => void>('setGlobalTheme')
 const getGlobalTheme = inject<() => Theme>('getGlobalTheme')
 
-const themes: { value: Theme; label: string }[] = [
-  { value: 'light', label: '浅色主题 🌞' },
-  { value: 'dark', label: '深色主题 🌙' },
-  { value: 'auto', label: '跟随系统' }
-]
-
 onMounted(() => {
+  let currentTheme: Theme
   if (getGlobalTheme) {
-    currentTheme.value = getGlobalTheme()
+    currentTheme = getGlobalTheme()
   } else {
-    currentTheme.value = (localStorage.getItem('app-theme') as Theme) || 'light'
+    currentTheme = (localStorage.getItem('app-theme') as Theme) || 'light'
   }
+  isDarkMode.value = currentTheme === 'dark'
 })
 
-function handleThemeChange(theme: Theme) {
-  currentTheme.value = theme
-  localStorage.setItem('app-theme', theme)
-  if (setGlobalTheme) setGlobalTheme(theme)
+function toggleTheme() {
+  isDarkMode.value = !isDarkMode.value
+  const newTheme: Theme = isDarkMode.value ? 'dark' : 'light'
+  
+  localStorage.setItem('app-theme', newTheme)
+  if (setGlobalTheme) setGlobalTheme(newTheme)
 
-  const names = { light: '浅色主题', dark: '深色主题', auto: '跟随系统' }
-  message.success(`已切换到 ${names[theme]}`)
+  message.success(`已切换到 ${isDarkMode.value ? '暗色主题' : '亮色主题'}`)
 }
 </script>
 
@@ -96,50 +98,122 @@ function handleThemeChange(theme: Theme) {
 
 .setting-section.small { border-bottom: none; padding-bottom: 12px; }
 
-.setting-header { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
-.setting-icon { color: #18a058; }
-.setting-title { margin:0; font-size:16px; font-weight:600; color:var(--n-text-color); }
-.setting-description { color:var(--n-text-color-2); margin-bottom:12px; font-size:13px; }
-
-/* 主题列表 */
-.theme-group { width:100%; }
-.theme-list { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
-.theme-item {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:220px;
-  cursor:pointer;
-  user-select:none;
-  padding:8px;
-  border-radius:10px;
-  transition:transform .18s, box-shadow .18s;
-}
-.theme-item:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.06); }
-
-.theme-radio { width:100%; display:flex; flex-direction:column; align-items:center; gap:8px; padding:0; }
-.preview {
-  width:100%;
-  height:96px;
-  border-radius:8px;
-  border:1px solid rgba(0,0,0,0.06);
-  box-sizing:border-box;
-  background-size:cover;
+/* 设置行布局 */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-/* 根据 data-variant 简洁着色 */
-.preview[data-variant="light"] { border: 2px solid #e0e0e0; }
-.preview[data-variant="dark"] { border: 2px solid #404040; }
-.preview[data-variant="auto"] {
-  border: 2px solid #808080;
-  position:relative;
+.setting-info {
+  flex: 1;
 }
 
-/* 选中态 */
-.theme-item.selected { outline: 3px solid rgba(24,160,88,0.12); box-shadow:0 10px 30px rgba(24,160,88,0.08); }
+.setting-header { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  margin-bottom: 4px; 
+}
 
-/* 标签 */
-.theme-label { font-size:14px; color:var(--n-text-color); font-weight:500; text-align:center; }
+.setting-icon { 
+  color: #18a058; 
+}
+
+.setting-title { 
+  margin: 0; 
+  font-size: 16px; 
+  font-weight: 600; 
+  color: var(--n-text-color); 
+}
+
+.setting-description { 
+  color: var(--n-text-color-2); 
+  font-size: 13px; 
+  margin: 0;
+}
+
+/* 主题切换按钮 */
+.theme-toggle-container {
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--n-card-color);
+  border: 2px solid var(--n-border-color);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--n-text-color);
+  user-select: none;
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  border-color: #18a058;
+  box-shadow: 0 4px 12px rgba(24, 160, 88, 0.15);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(24, 160, 88, 0.2);
+}
+
+.toggle-track {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle-btn.dark-mode .toggle-track {
+  background: #374151;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle-btn.dark-mode .toggle-thumb {
+  transform: translateX(24px);
+  background: #1f2937;
+}
+
+.theme-icon {
+  color: #fbbf24;
+  transition: color 0.3s ease;
+}
+
+.theme-toggle-btn.dark-mode .theme-icon {
+  color: #60a5fa;
+}
+
+.theme-status {
+  font-weight: 500;
+  min-width: 60px;
+  text-align: left;
+}
 
 /* 移动端设置页面优化 */
 @media (max-width: 768px) {
@@ -160,9 +234,19 @@ function handleThemeChange(theme: Theme) {
     padding-bottom: 8px;
   }
   
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .setting-info {
+    width: 100%;
+  }
+  
   .setting-header {
     gap: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   
   .setting-title {
@@ -171,30 +255,30 @@ function handleThemeChange(theme: Theme) {
   
   .setting-description {
     font-size: 12px;
-    margin-bottom: 10px;
   }
   
-  .theme-list {
+  .theme-toggle-container {
+    align-self: center;
+  }
+  
+  .theme-toggle-btn {
+    padding: 10px 16px;
     gap: 10px;
-    justify-content: space-around;
+    font-size: 13px;
   }
   
-  .theme-item {
-    width: 100px;
-    padding: 6px;
+  .toggle-track {
+    width: 42px;
+    height: 22px;
   }
   
-  .theme-radio {
-    gap: 6px;
+  .toggle-thumb {
+    width: 18px;
+    height: 18px;
   }
   
-  .preview {
-    height: 60px;
-    border-radius: 6px;
-  }
-  
-  .theme-label {
-    font-size: 12px;
+  .theme-toggle-btn.dark-mode .toggle-thumb {
+    transform: translateX(20px);
   }
   
   /* 表单组件优化 */
@@ -229,6 +313,10 @@ function handleThemeChange(theme: Theme) {
     padding: 10px 12px;
   }
   
+  .setting-row {
+    gap: 10px;
+  }
+  
   .setting-title {
     font-size: 14px;
   }
@@ -237,17 +325,24 @@ function handleThemeChange(theme: Theme) {
     font-size: 11px;
   }
   
-  .theme-item {
-    width: 90px;
-    padding: 4px;
+  .theme-toggle-btn {
+    padding: 8px 14px;
+    gap: 8px;
+    font-size: 12px;
   }
   
-  .preview {
-    height: 50px;
+  .toggle-track {
+    width: 38px;
+    height: 20px;
   }
   
-  .theme-label {
-    font-size: 11px;
+  .toggle-thumb {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .theme-toggle-btn.dark-mode .toggle-thumb {
+    transform: translateX(18px);
   }
   
   :deep(.n-card__header) {
@@ -257,28 +352,21 @@ function handleThemeChange(theme: Theme) {
 
 /* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
-  .theme-list {
-    justify-content: center;
-    gap: 12px;
-  }
-  
-  .theme-item {
-    width: 80px;
-  }
-  
-  .preview {
-    height: 45px;
+  .theme-toggle-btn {
+    padding: 8px 14px;
+    gap: 8px;
   }
 }
 
 /* 触摸优化 */
 @media (hover: none) and (pointer: coarse) {
-  .theme-item:hover {
+  .theme-toggle-btn:hover {
     transform: none;
     box-shadow: none;
+    border-color: var(--n-border-color);
   }
   
-  .theme-item:active {
+  .theme-toggle-btn:active {
     transform: scale(0.98);
     transition: transform 0.1s;
   }
