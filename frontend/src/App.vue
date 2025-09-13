@@ -46,7 +46,7 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
       primaryColorSuppl: '#36ad6a',
     }
   }
-  
+
   if (actualTheme.value === 'dark') {
     return {
       ...baseOverrides,
@@ -63,7 +63,7 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
       }
     }
   }
-  
+
   return baseOverrides
 })
 
@@ -88,7 +88,7 @@ const getGlobalTheme = () => {
 const applyThemeToDocument = () => {
   const theme = actualTheme.value
   document.documentElement.setAttribute('data-theme', theme)
-  
+
   // 更新CSS变量
   if (theme === 'dark') {
     document.documentElement.style.setProperty('--bg-color', '#1a1a1a')
@@ -106,14 +106,14 @@ onMounted(() => {
   // 从localStorage读取保存的主题
   const savedTheme = localStorage.getItem('app-theme') || 'light'
   currentTheme.value = savedTheme as 'light' | 'dark' | 'auto'
-  
+
   // 初始化系统主题检测
   updateSystemTheme()
-  
+
   // 监听系统主题变化
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
   mediaQuery.addEventListener('change', updateSystemTheme)
-  
+
   // 应用初始主题
   applyThemeToDocument()
 })

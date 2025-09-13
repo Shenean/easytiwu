@@ -4,6 +4,8 @@ import App from './App.vue'
 import 'vfonts/Lato.css'
 import 'vfonts/FiraCode.css'
 import './styles/global.css'
+import './styles/spacing.css'
+import './styles/components.css'
 import naive from 'naive-ui'
 
 // 创建应用实例

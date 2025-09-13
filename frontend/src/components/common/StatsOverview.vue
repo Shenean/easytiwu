@@ -17,5 +17,8 @@ const stats = props.stats
 </script>
 
 <style scoped>
-:deep(.n-statistic-value) { font-weight:600; color:#1890ff; }
+:deep(.n-statistic-value) {
+  font-weight: 600;
+  color: #1890ff;
+}
 </style>

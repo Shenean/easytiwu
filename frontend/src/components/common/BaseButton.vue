@@ -1,18 +1,7 @@
 <template>
-  <n-button
-    :type="type"
-    :size="size"
-    :loading="loading"
-    :disabled="disabled"
-    :secondary="secondary"
-    :tertiary="tertiary"
-    :strong="strong"
-    :ghost="ghost"
-    :round="round"
-    :circle="circle"
-    :class="customClass"
-    @click="handleClick"
-  >
+  <n-button :type="type" :size="size" :loading="loading" :disabled="disabled" :secondary="secondary"
+    :tertiary="tertiary" :strong="strong" :ghost="ghost" :round="round" :circle="circle" :class="customClass"
+    @click="handleClick">
     <template v-if="icon" #icon>
       <component :is="icon" />
     </template>

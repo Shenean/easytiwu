@@ -2,13 +2,9 @@
   <n-card title="答题卡" size="small" class="answer-card-container" :class="{ 'mobile-mode': mobileMode }">
     <n-grid :cols="mobileMode ? 5 : 4" :x-gap="mobileMode ? 6 : 8" :y-gap="mobileMode ? 6 : 8">
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
-        <BaseButton
-          :type="getCardButtonType(q)"
-          :size="mobileMode ? 'small' : getCardButtonSize"
-          @click="jumpToQuestion(q.id)"
-          class="answer-card-btn"
-          :class="{ active: q.id === currentQuestionId, 'mobile-btn': mobileMode }"
-        >
+        <BaseButton :type="getCardButtonType(q)" :size="mobileMode ? 'small' : getCardButtonSize"
+          @click="jumpToQuestion(q.id)" class="answer-card-btn"
+          :class="{ active: q.id === currentQuestionId, 'mobile-btn': mobileMode }">
           {{ index + 1 }}
         </BaseButton>
       </n-grid-item>
@@ -63,10 +59,12 @@ function jumpToQuestion(id: number) {
 .answer-card-container::-webkit-scrollbar {
   width: 6px;
 }
+
 .answer-card-container::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.15);
   border-radius: 4px;
 }
+
 .answer-card-container::-webkit-scrollbar-track {
   background: transparent;
 }
@@ -133,11 +131,11 @@ function jumpToQuestion(id: number) {
     padding: 10px 12px;
     font-size: 15px;
   }
-  
+
   .mobile-mode :deep(.n-card__content) {
     padding: 12px;
   }
-  
+
   .mobile-btn {
     height: 42px !important;
     min-width: 42px;
@@ -151,11 +149,11 @@ function jumpToQuestion(id: number) {
     padding: 8px 12px;
     font-size: 14px;
   }
-  
+
   .mobile-mode :deep(.n-card__content) {
     padding: 10px;
   }
-  
+
   .mobile-btn {
     height: 38px !important;
     min-width: 38px;

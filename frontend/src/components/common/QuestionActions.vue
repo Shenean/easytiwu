@@ -1,31 +1,16 @@
 <template>
   <div class="bottom-actions">
     <div class="action-buttons">
-      <BaseButton
-          :disabled="!hasPrev || loading"
-          @click="$emit('prev')"
-          size="large"
-          type="default"
-      >
+      <BaseButton :disabled="!hasPrev || loading" @click="$emit('prev')" size="large" type="default">
         上一题
       </BaseButton>
 
-      <BaseButton
-          :disabled="!hasNext || loading"
-          @click="$emit('next')"
-          size="large"
-          type="default"
-      >
+      <BaseButton :disabled="!hasNext || loading" @click="$emit('next')" size="large" type="default">
         下一题
       </BaseButton>
 
-      <BaseButton
-          type="primary"
-          size="large"
-          @click="$emit('submit')"
-          :disabled="!canSubmit || loading"
-          :loading="loading"
-      >
+      <BaseButton type="primary" size="large" @click="$emit('submit')" :disabled="!canSubmit || loading"
+        :loading="loading">
         {{ loading ? '提交中...' : '提交答案' }}
       </BaseButton>
     </div>
@@ -84,18 +69,18 @@ defineEmits<{
     border-top: 1px solid #e0e0e0;
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
   }
-  
+
   .action-buttons {
     gap: 12px;
     flex-wrap: wrap;
   }
-  
+
   /* 移动端按钮优化 */
   :deep(.n-button) {
     flex: 1;
     max-width: 120px;
   }
-  
+
   /* 主要按钮（提交）更突出 */
   :deep(.n-button--primary) {
     min-width: 100px;
@@ -106,16 +91,16 @@ defineEmits<{
   .bottom-actions {
     padding: 10px 12px;
   }
-  
+
   .action-buttons {
     gap: 8px;
   }
-  
+
   :deep(.n-button) {
     min-width: 70px;
     max-width: 100px;
   }
-  
+
   :deep(.n-button--primary) {
     min-width: 90px;
   }
@@ -133,13 +118,13 @@ defineEmits<{
   .bottom-actions {
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
-  
+
   @media (max-width: 768px) {
     .bottom-actions {
       padding-bottom: calc(12px + env(safe-area-inset-bottom));
     }
   }
-  
+
   @media (max-width: 480px) {
     .bottom-actions {
       padding-bottom: calc(10px + env(safe-area-inset-bottom));

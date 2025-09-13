@@ -4,12 +4,7 @@
     <div v-if="question.type === 'single'">
       <n-radio-group v-model:value="radioValue" name="single-choice" size="large">
         <n-space vertical>
-          <n-radio
-            v-for="opt in question.options"
-            :key="opt.label"
-            :value="opt.label"
-            :disabled="false"
-          >
+          <n-radio v-for="opt in question.options" :key="opt.label" :value="opt.label" :disabled="false">
             <strong>{{ opt.label }}.</strong> {{ opt.text }}
           </n-radio>
         </n-space>
@@ -20,12 +15,7 @@
     <div v-else-if="question.type === 'multiple'">
       <n-checkbox-group v-model:value="checkboxValue" size="large">
         <n-space vertical>
-          <n-checkbox
-            v-for="opt in question.options"
-            :key="opt.label"
-            :value="opt.label"
-            :disabled="false"
-          >
+          <n-checkbox v-for="opt in question.options" :key="opt.label" :value="opt.label" :disabled="false">
             <strong>{{ opt.label }}.</strong> {{ opt.text }}
           </n-checkbox>
         </n-space>
@@ -44,14 +34,8 @@
 
     <!-- 填空 / 简答 -->
     <div v-else-if="question.type === 'fill_blank' || question.type === 'short_answer'">
-      <n-input
-        v-model:value="inputValue"
-        type="textarea"
-        placeholder="请输入你的答案"
-        :autosize="{ minRows: 2, maxRows: 6 }"
-        :disabled="false"
-        clearable
-      />
+      <n-input v-model:value="inputValue" type="textarea" placeholder="请输入你的答案" :autosize="{ minRows: 2, maxRows: 6 }"
+        :disabled="false" clearable />
     </div>
   </n-card>
 </template>

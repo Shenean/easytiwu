@@ -1,19 +1,7 @@
 <template>
-  <n-input
-    v-model:value="innerValue"
-    :type="type"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :clearable="clearable"
-    :maxlength="maxlength"
-    :show-count="showCount"
-    :round="round"
-    :readonly="readonly"
-    :class="customClass"
-    @input="handleInput"
-    @blur="handleBlur"
-    @focus="handleFocus"
-  >
+  <n-input v-model:value="innerValue" :type="type" :placeholder="placeholder" :disabled="disabled"
+    :clearable="clearable" :maxlength="maxlength" :show-count="showCount" :round="round" :readonly="readonly"
+    :class="customClass" @input="handleInput" @blur="handleBlur" @focus="handleFocus">
     <!-- 前缀图标 -->
     <template v-if="prefixIcon" #prefix>
       <component :is="prefixIcon" />

@@ -1,0 +1,372 @@
+/* 统一间距工具类 */
+/* 基于 4px 基础单位的间距系统 */
+
+/* ==================== 内边距 (Padding) ==================== */
+
+/* 全方向内边距 */
+.p-0 { padding: 0; }
+.p-1 { padding: 4px; }
+.p-2 { padding: 8px; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.p-5 { padding: 20px; }
+.p-6 { padding: 24px; }
+.p-8 { padding: 32px; }
+.p-12 { padding: 48px; }
+
+/* 水平内边距 */
+.px-0 { padding-left: 0; padding-right: 0; }
+.px-1 { padding-left: 4px; padding-right: 4px; }
+.px-2 { padding-left: 8px; padding-right: 8px; }
+.px-3 { padding-left: 12px; padding-right: 12px; }
+.px-4 { padding-left: 16px; padding-right: 16px; }
+.px-5 { padding-left: 20px; padding-right: 20px; }
+.px-6 { padding-left: 24px; padding-right: 24px; }
+.px-8 { padding-left: 32px; padding-right: 32px; }
+
+/* 垂直内边距 */
+.py-0 { padding-top: 0; padding-bottom: 0; }
+.py-1 { padding-top: 4px; padding-bottom: 4px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; }
+.py-3 { padding-top: 12px; padding-bottom: 12px; }
+.py-4 { padding-top: 16px; padding-bottom: 16px; }
+.py-5 { padding-top: 20px; padding-bottom: 20px; }
+.py-6 { padding-top: 24px; padding-bottom: 24px; }
+.py-8 { padding-top: 32px; padding-bottom: 32px; }
+
+/* 单方向内边距 */
+.pt-0 { padding-top: 0; }
+.pt-1 { padding-top: 4px; }
+.pt-2 { padding-top: 8px; }
+.pt-3 { padding-top: 12px; }
+.pt-4 { padding-top: 16px; }
+.pt-5 { padding-top: 20px; }
+.pt-6 { padding-top: 24px; }
+.pt-8 { padding-top: 32px; }
+
+.pb-0 { padding-bottom: 0; }
+.pb-1 { padding-bottom: 4px; }
+.pb-2 { padding-bottom: 8px; }
+.pb-3 { padding-bottom: 12px; }
+.pb-4 { padding-bottom: 16px; }
+.pb-5 { padding-bottom: 20px; }
+.pb-6 { padding-bottom: 24px; }
+.pb-8 { padding-bottom: 32px; }
+
+.pl-0 { padding-left: 0; }
+.pl-1 { padding-left: 4px; }
+.pl-2 { padding-left: 8px; }
+.pl-3 { padding-left: 12px; }
+.pl-4 { padding-left: 16px; }
+.pl-5 { padding-left: 20px; }
+.pl-6 { padding-left: 24px; }
+.pl-8 { padding-left: 32px; }
+
+.pr-0 { padding-right: 0; }
+.pr-1 { padding-right: 4px; }
+.pr-2 { padding-right: 8px; }
+.pr-3 { padding-right: 12px; }
+.pr-4 { padding-right: 16px; }
+.pr-5 { padding-right: 20px; }
+.pr-6 { padding-right: 24px; }
+.pr-8 { padding-right: 32px; }
+
+/* ==================== 外边距 (Margin) ==================== */
+
+/* 全方向外边距 */
+.m-0 { margin: 0; }
+.m-1 { margin: 4px; }
+.m-2 { margin: 8px; }
+.m-3 { margin: 12px; }
+.m-4 { margin: 16px; }
+.m-5 { margin: 20px; }
+.m-6 { margin: 24px; }
+.m-8 { margin: 32px; }
+.m-12 { margin: 48px; }
+.m-auto { margin: auto; }
+
+/* 水平外边距 */
+.mx-0 { margin-left: 0; margin-right: 0; }
+.mx-1 { margin-left: 4px; margin-right: 4px; }
+.mx-2 { margin-left: 8px; margin-right: 8px; }
+.mx-3 { margin-left: 12px; margin-right: 12px; }
+.mx-4 { margin-left: 16px; margin-right: 16px; }
+.mx-5 { margin-left: 20px; margin-right: 20px; }
+.mx-6 { margin-left: 24px; margin-right: 24px; }
+.mx-8 { margin-left: 32px; margin-right: 32px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+/* 垂直外边距 */
+.my-0 { margin-top: 0; margin-bottom: 0; }
+.my-1 { margin-top: 4px; margin-bottom: 4px; }
+.my-2 { margin-top: 8px; margin-bottom: 8px; }
+.my-3 { margin-top: 12px; margin-bottom: 12px; }
+.my-4 { margin-top: 16px; margin-bottom: 16px; }
+.my-5 { margin-top: 20px; margin-bottom: 20px; }
+.my-6 { margin-top: 24px; margin-bottom: 24px; }
+.my-8 { margin-top: 32px; margin-bottom: 32px; }
+
+/* 单方向外边距 */
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-5 { margin-top: 20px; }
+.mt-6 { margin-top: 24px; }
+.mt-8 { margin-top: 32px; }
+.mt-12 { margin-top: 48px; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-5 { margin-bottom: 20px; }
+.mb-6 { margin-bottom: 24px; }
+.mb-8 { margin-bottom: 32px; }
+.mb-12 { margin-bottom: 48px; }
+
+.ml-0 { margin-left: 0; }
+.ml-1 { margin-left: 4px; }
+.ml-2 { margin-left: 8px; }
+.ml-3 { margin-left: 12px; }
+.ml-4 { margin-left: 16px; }
+.ml-5 { margin-left: 20px; }
+.ml-6 { margin-left: 24px; }
+.ml-8 { margin-left: 32px; }
+.ml-auto { margin-left: auto; }
+
+.mr-0 { margin-right: 0; }
+.mr-1 { margin-right: 4px; }
+.mr-2 { margin-right: 8px; }
+.mr-3 { margin-right: 12px; }
+.mr-4 { margin-right: 16px; }
+.mr-5 { margin-right: 20px; }
+.mr-6 { margin-right: 24px; }
+.mr-8 { margin-right: 32px; }
+.mr-auto { margin-right: auto; }
+
+/* ==================== 间隙 (Gap) ==================== */
+
+.gap-0 { gap: 0; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.gap-5 { gap: 20px; }
+.gap-6 { gap: 24px; }
+.gap-8 { gap: 32px; }
+
+/* 行间隙 */
+.gap-x-0 { column-gap: 0; }
+.gap-x-1 { column-gap: 4px; }
+.gap-x-2 { column-gap: 8px; }
+.gap-x-3 { column-gap: 12px; }
+.gap-x-4 { column-gap: 16px; }
+.gap-x-5 { column-gap: 20px; }
+.gap-x-6 { column-gap: 24px; }
+.gap-x-8 { column-gap: 32px; }
+
+/* 列间隙 */
+.gap-y-0 { row-gap: 0; }
+.gap-y-1 { row-gap: 4px; }
+.gap-y-2 { row-gap: 8px; }
+.gap-y-3 { row-gap: 12px; }
+.gap-y-4 { row-gap: 16px; }
+.gap-y-5 { row-gap: 20px; }
+.gap-y-6 { row-gap: 24px; }
+.gap-y-8 { row-gap: 32px; }
+
+/* ==================== 响应式间距 ==================== */
+
+/* 移动端 (max-width: 480px) */
+@media (max-width: 480px) {
+  .mobile\:p-1 { padding: 4px; }
+  .mobile\:p-2 { padding: 8px; }
+  .mobile\:p-3 { padding: 12px; }
+  .mobile\:p-4 { padding: 16px; }
+  
+  .mobile\:px-2 { padding-left: 8px; padding-right: 8px; }
+  .mobile\:px-3 { padding-left: 12px; padding-right: 12px; }
+  .mobile\:px-4 { padding-left: 16px; padding-right: 16px; }
+  
+  .mobile\:py-2 { padding-top: 8px; padding-bottom: 8px; }
+  .mobile\:py-3 { padding-top: 12px; padding-bottom: 12px; }
+  .mobile\:py-4 { padding-top: 16px; padding-bottom: 16px; }
+  
+  .mobile\:m-2 { margin: 8px; }
+  .mobile\:m-3 { margin: 12px; }
+  .mobile\:m-4 { margin: 16px; }
+  
+  .mobile\:mx-2 { margin-left: 8px; margin-right: 8px; }
+  .mobile\:mx-3 { margin-left: 12px; margin-right: 12px; }
+  .mobile\:mx-4 { margin-left: 16px; margin-right: 16px; }
+  
+  .mobile\:my-2 { margin-top: 8px; margin-bottom: 8px; }
+  .mobile\:my-3 { margin-top: 12px; margin-bottom: 12px; }
+  .mobile\:my-4 { margin-top: 16px; margin-bottom: 16px; }
+  
+  .mobile\:gap-2 { gap: 8px; }
+  .mobile\:gap-3 { gap: 12px; }
+  .mobile\:gap-4 { gap: 16px; }
+}
+
+/* 平板端 (max-width: 768px) */
+@media (max-width: 768px) {
+  .tablet\:p-3 { padding: 12px; }
+  .tablet\:p-4 { padding: 16px; }
+  .tablet\:p-5 { padding: 20px; }
+  
+  .tablet\:px-3 { padding-left: 12px; padding-right: 12px; }
+  .tablet\:px-4 { padding-left: 16px; padding-right: 16px; }
+  .tablet\:px-5 { padding-left: 20px; padding-right: 20px; }
+  
+  .tablet\:py-3 { padding-top: 12px; padding-bottom: 12px; }
+  .tablet\:py-4 { padding-top: 16px; padding-bottom: 16px; }
+  .tablet\:py-5 { padding-top: 20px; padding-bottom: 20px; }
+  
+  .tablet\:m-3 { margin: 12px; }
+  .tablet\:m-4 { margin: 16px; }
+  .tablet\:m-5 { margin: 20px; }
+  
+  .tablet\:gap-3 { gap: 12px; }
+  .tablet\:gap-4 { gap: 16px; }
+  .tablet\:gap-5 { gap: 20px; }
+}
+
+/* 桌面端 (min-width: 769px) */
+@media (min-width: 769px) {
+  .desktop\:p-4 { padding: 16px; }
+  .desktop\:p-5 { padding: 20px; }
+  .desktop\:p-6 { padding: 24px; }
+  .desktop\:p-8 { padding: 32px; }
+  
+  .desktop\:px-4 { padding-left: 16px; padding-right: 16px; }
+  .desktop\:px-5 { padding-left: 20px; padding-right: 20px; }
+  .desktop\:px-6 { padding-left: 24px; padding-right: 24px; }
+  
+  .desktop\:py-4 { padding-top: 16px; padding-bottom: 16px; }
+  .desktop\:py-5 { padding-top: 20px; padding-bottom: 20px; }
+  .desktop\:py-6 { padding-top: 24px; padding-bottom: 24px; }
+  
+  .desktop\:m-4 { margin: 16px; }
+  .desktop\:m-5 { margin: 20px; }
+  .desktop\:m-6 { margin: 24px; }
+  .desktop\:m-8 { margin: 32px; }
+  
+  .desktop\:gap-4 { gap: 16px; }
+  .desktop\:gap-5 { gap: 20px; }
+  .desktop\:gap-6 { gap: 24px; }
+  .desktop\:gap-8 { gap: 32px; }
+}
+
+/* ==================== 特殊间距类 ==================== */
+
+/* 容器间距 */
+.container-padding {
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .container-padding {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-padding {
+    padding: 12px;
+  }
+}
+
+/* 卡片间距 */
+.card-padding {
+  padding: 16px;
+}
+
+@media (max-width: 480px) {
+  .card-padding {
+    padding: 12px;
+  }
+}
+
+/* 按钮间距 */
+.button-padding {
+  padding: 8px 16px;
+}
+
+.button-padding-small {
+  padding: 6px 12px;
+}
+
+.button-padding-large {
+  padding: 12px 20px;
+}
+
+/* 表单间距 */
+.form-item-margin {
+  margin-bottom: 16px;
+}
+
+.form-section-margin {
+  margin-bottom: 24px;
+}
+
+/* 列表间距 */
+.list-item-padding {
+  padding: 12px 16px;
+}
+
+@media (max-width: 480px) {
+  .list-item-padding {
+    padding: 8px 12px;
+  }
+}
+
+/* 安全区域适配 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-bottom-small {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-bottom-large {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ==================== 使用说明 ==================== */
+
+/*
+使用示例:
+
+1. 基础间距:
+   <div class="p-4 m-2">内容</div>
+   
+2. 响应式间距:
+   <div class="p-2 tablet:p-4 desktop:p-6">内容</div>
+   
+3. 方向性间距:
+   <div class="px-4 py-2">水平16px，垂直8px</div>
+   
+4. 特殊场景:
+   <div class="container-padding">容器内容</div>
+   <div class="card-padding">卡片内容</div>
+   
+5. 安全区域:
+   <div class="safe-area-bottom">底部内容</div>
+
+间距对应关系:
+- 1 = 4px
+- 2 = 8px
+- 3 = 12px
+- 4 = 16px
+- 5 = 20px
+- 6 = 24px
+- 8 = 32px
+- 12 = 48px
+*/
