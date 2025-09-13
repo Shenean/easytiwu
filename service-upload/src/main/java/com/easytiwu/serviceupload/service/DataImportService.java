@@ -32,7 +32,7 @@ import java.util.List;
 public class DataImportService {
 
     private static final String QUESTIONS_KEY = "questions";
-    
+
     private final QuestionBankMapper bankMapper;
     private final SqlSessionFactory sqlSessionFactory;
 
@@ -234,7 +234,8 @@ public class DataImportService {
     /**
      * 处理选项并分配questionId
      */
-    private int[] processOptions(Question question, JSONArray options, List<QuestionOption> allOptions, int optionIndex) {
+    private int[] processOptions(Question question, JSONArray options, List<QuestionOption> allOptions,
+            int optionIndex) {
         int optionCount = 0;
         for (int j = 0; j < options.size(); j++) {
             JSONObject opt = options.getJSONObject(j);
@@ -244,7 +245,7 @@ public class DataImportService {
                 optionCount++;
             }
         }
-        return new int[]{optionIndex, optionCount};
+        return new int[] { optionIndex, optionCount };
     }
 
     /**

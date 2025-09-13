@@ -27,14 +27,14 @@ public class FileUploadController {
     private final DataImportService dataImportService;
 
     public FileUploadController(FileParsingService fileParsingService,
-                                LargeModelService largeModelService,
-                                DataImportService dataImportService) {
+            LargeModelService largeModelService,
+            DataImportService dataImportService) {
         this.fileParsingService = fileParsingService;
         this.largeModelService = largeModelService;
         this.dataImportService = dataImportService;
     }
 
-    @PostMapping(value="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result<String> uploadQuestionBank(
             @RequestParam("name") String name,
             @RequestParam("description") String description,
@@ -46,7 +46,8 @@ public class FileUploadController {
                 return Result.error(ErrorCode.BAD_REQUEST, "No file uploaded or file is empty.");
             }
             if (!fileParsingService.isSupportedFile(filename)) {
-                return Result.error(ErrorCode.BAD_REQUEST, "Unsupported file format. Only PDF, Word (.docx/.doc), or TXT are allowed.");
+                return Result.error(ErrorCode.BAD_REQUEST,
+                        "Unsupported file format. Only PDF, Word (.docx/.doc), or TXT are allowed.");
             }
 
             // 2. Parse file to extract text content
@@ -55,7 +56,8 @@ public class FileUploadController {
 
             // 3. Call large model service to get questions JSON
             String questionsJson = largeModelService.generateQuestionsJson(textContent);
-            logger.info("Received JSON output from LLM (length={} chars). Starting import to DB.", questionsJson.length());
+            logger.info("Received JSON output from LLM (length={} chars). Starting import to DB.",
+                    questionsJson.length());
 
             // 4. Import the questions into database
             dataImportService.importQuestionsFromJson(name, description, questionsJson);
