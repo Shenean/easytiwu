@@ -6,26 +6,26 @@ import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.ApiException;
-import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.exception.InputRequiredException;
+import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.protocol.ConnectionConfigurations;
 import com.alibaba.dashscope.utils.Constants;
+import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.exception.BusinessException;
 import com.easytiwu.commonexception.exception.SystemException;
-import com.easytiwu.commonexception.enums.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import jakarta.annotation.PostConstruct;
-import org.springframework.core.io.ClassPathResource;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 
 /**
  * 调用 Qwen 大模型，将题目文本转为 JSON
@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class LargeModelService {
     private static final Logger logger = LoggerFactory.getLogger(LargeModelService.class);
-    // Circuit breaker name
     private static final String QWEN_CB = "qwenService";
 
     private final Generation generationClient;
@@ -64,6 +63,10 @@ public class LargeModelService {
             configureConnectionPool(connectTimeoutSeconds, readTimeoutSeconds);
         } catch (Exception e) {
             logger.error("Failed to initialize connection pool: {}", e.getMessage(), e);
+            // 添加详细的日志记录
+            logger.error("Connection pool initialization failed with error: {}, StackTrace: {}", 
+                         e.getMessage(), 
+                         Arrays.toString(e.getStackTrace()));
             // 不重新抛出异常，避免影响服务启动
         }
     }
@@ -77,7 +80,7 @@ public class LargeModelService {
                     .connectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
                     .readTimeout(Duration.ofSeconds(readTimeoutSeconds))
                     .writeTimeout(Duration.ofSeconds(60))
-                    .connectionIdleTimeout(Duration.ofSeconds(300))
+                    .connectionIdleTimeout(Duration.ofSeconds(45))
                     .connectionPoolSize(32)
                     .maximumAsyncRequests(32)
                     .maximumAsyncRequestsPerHost(32)
@@ -86,7 +89,6 @@ public class LargeModelService {
                     connectTimeoutSeconds, readTimeoutSeconds);
         } catch (Exception e) {
             LoggerFactory.getLogger(LargeModelService.class).error("Failed to configure DashScope connection pool: {}", e.getMessage(), e);
-            // 在静态方法中不抛出异常，避免影响服务启动
         }
     }
 
@@ -119,13 +121,11 @@ public class LargeModelService {
 
         GenerationParam param = GenerationParam.builder()
                 .apiKey(dashscopeApiKey)
-                .model("qwen3-max-preview")
+                .model("qwen-flash")
                 .messages(Arrays.asList(systemMsg, userMsg))
-                .resultFormat(GenerationParam.ResultFormat.TEXT)
                 .temperature(0.1f)
-                .topP(0.9)
-                .maxTokens(65536)
-                .seed(12345)
+                .topP(0.8)
+                .maxTokens(16384)
                 .build();
 
         logger.info("Calling Qwen model API with DashScope...");
@@ -139,11 +139,11 @@ public class LargeModelService {
         } catch (NoApiKeyException e) {
             String errorMsg = "缺少API密钥";
             logger.error("{}: {}", errorMsg, e.getMessage(), e);
-            throw BusinessException.of(ErrorCode.UNAUTHORIZED, errorMsg);
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, e);
         } catch (InputRequiredException e) {
             String errorMsg = "缺少必要输入参数";
             logger.error("{}: {}", errorMsg, e.getMessage(), e);
-            throw BusinessException.of(ErrorCode.PARAM_MISSING, errorMsg);
+            throw new BusinessException(ErrorCode.PARAM_MISSING, e);
         } catch (Exception e) {
             String errorMsg = String.format("调用大模型服务时发生未知错误: %s", e.getMessage());
             logger.error(errorMsg, e);
@@ -156,36 +156,25 @@ public class LargeModelService {
             throw BusinessException.of(ErrorCode.BUSINESS_ERROR, errorMsg);
         }
 
-        String output = result.getOutput().getText();
-        logger.debug("LLM raw output: {}", output);
+        String output = result.getOutput().getText().trim();
+        String[] lines = output.split("\n");
 
-        // --- 内联清洗逻辑 ---
-        String candidate = output.trim();
-        if (!candidate.startsWith("{") && !candidate.startsWith("[")) {
-            candidate = candidate.replaceAll("(?s)```json", "")
-                    .replaceAll("(?s)```", "")
-                    .trim();
-            logger.debug("LLM cleaned output: {}", candidate);
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            try {
+                objectMapper.readTree(line);
+            } catch (Exception e) {
+                throw BusinessException.of(
+                        ErrorCode.PARAM_FORMAT_ERROR,
+                        String.format("第 %d 行不是合法 JSON: %s", i + 1, line)
+                );
+            }
         }
 
-        // --- JSON 真正校验 ---
-        try {
-            objectMapper.readTree(candidate);
-        } catch (Exception e) {
-            String errorMsg = String.format("大模型返回的数据格式不正确: %s", e.getMessage());
-            logger.error(errorMsg, e);
-            throw BusinessException.of(ErrorCode.PARAM_FORMAT_ERROR, errorMsg);
-        }
+        return output;
+    }
 
-        return candidate;
-    }
-    
-    /**
-     * Circuit breaker fallback method
-     * 返回一个最小 JSON，保证前端拿到结构
-     */
-    public String fallbackQuestionsJson(String textContent, Throwable ex) {
-        logger.error("Qwen API call failed or timed out for text content: {}", textContent, ex);
-        return "[]";
-    }
 }

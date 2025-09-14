@@ -3,6 +3,10 @@ package com.easytiwu.serviceupload.service;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.easytiwu.commonexception.enums.ErrorCode;
+import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.commonexception.exception.ParameterException;
+import com.easytiwu.commonexception.exception.SystemException;
 import com.easytiwu.serviceupload.entity.Question;
 import com.easytiwu.serviceupload.entity.QuestionBank;
 import com.easytiwu.serviceupload.entity.QuestionOption;
@@ -10,28 +14,27 @@ import com.easytiwu.serviceupload.mapper.QuestionBankMapper;
 import com.easytiwu.serviceupload.mapper.QuestionMapper;
 import com.easytiwu.serviceupload.mapper.QuestionOptionMapper;
 import com.easytiwu.serviceupload.util.ValidateJson;
-import com.easytiwu.commonexception.exception.BusinessException;
-import com.easytiwu.commonexception.exception.ParameterException;
-import com.easytiwu.commonexception.exception.SystemException;
-import com.easytiwu.commonexception.enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 题目数据导入服务（专为 JSONL 格式优化）
+ * 输入示例：
+ * {"content": "...", "type": "...", ...}
+ * {"content": "...", "type": "...", ...}
+ *
  * @author sheny
  */
 @Slf4j
 @Service
 public class DataImportService {
-
-    private static final String QUESTIONS_KEY = "questions";
 
     private final QuestionBankMapper bankMapper;
     private final SqlSessionFactory sqlSessionFactory;
@@ -42,44 +45,67 @@ public class DataImportService {
     private static final int BATCH_SIZE = 1000;
 
     public DataImportService(QuestionBankMapper bankMapper,
-            SqlSessionFactory sqlSessionFactory) {
+                             SqlSessionFactory sqlSessionFactory) {
         this.bankMapper = bankMapper;
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    /**
+     * 从 JSONL 字符串导入题目
+     */
     @Transactional(rollbackFor = Exception.class)
     public void importQuestionsFromJson(String bankName, String bankDesc, String questionsJson) {
-        JSONObject root;
+        JSONArray arr = new JSONArray();
 
         try {
             String clean = questionsJson.trim();
-
-            if (clean.startsWith("[")) {
-                JSONArray arr = JSON.parseArray(clean);
-                root = new JSONObject();
-                root.put(QUESTIONS_KEY, arr);
-            } else {
-                root = JSON.parseObject(clean);
+            if (clean.isEmpty()) {
+                throw new ParameterException(ErrorCode.PARAM_INVALID, "题目数据为空", null);
             }
+
+            String[] lines = clean.split("\n");
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i].trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+
+                parseAndAddJsonObject(arr, line, i);
+            }
+
+            if (arr.isEmpty()) {
+                throw new ParameterException(ErrorCode.PARAM_INVALID, "题目列表为空", null);
+            }
+
+            log.info("Starting import process for {} questions", arr.size());
+
+            // === 创建题库 ===
+            QuestionBank bank = createQuestionBank(bankName, bankDesc);
+
+            // === 批量导入题目和选项 ===
+            batchImportQuestions(bank.getId(), arr);
+
+            log.info("Import finished successfully. bankId={}, questions={}", bank.getId(), arr.size());
+
+        } catch (ParameterException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("Failed to parse LLM JSON response", e);
-            throw BusinessException.of(ErrorCode.PARAM_INVALID, "LLM JSON 无法解析");
+            log.error("Failed to parse or import JSONL data", e);
+            throw BusinessException.of(ErrorCode.PARAM_INVALID, "题目数据格式错误");
         }
+    }
 
-        JSONArray arr = root.getJSONArray(QUESTIONS_KEY);
-        if (arr == null || arr.isEmpty()) {
-            throw ParameterException.of(ErrorCode.PARAM_INVALID, QUESTIONS_KEY, arr);
+    /**
+     * 解析单行JSON并添加到数组中
+     */
+    private void parseAndAddJsonObject(JSONArray arr, String line, int lineIndex) {
+        try {
+            JSONObject obj = JSON.parseObject(line);
+            arr.add(obj);
+        } catch (Exception e) {
+            throw new ParameterException(ErrorCode.PARAM_FORMAT_ERROR,
+                    String.format("第 %d 行不是合法 JSON: %s", lineIndex + 1, line), null);
         }
-
-        log.info("Starting import process for {} questions", arr.size());
-
-        // === 创建题库 ===
-        QuestionBank bank = createQuestionBank(bankName, bankDesc);
-
-        // === 批量导入题目和选项 ===
-        batchImportQuestions(bank.getId(), arr);
-
-        log.info("Import finished successfully. bankId={}, questions={}", bank.getId(), arr.size());
     }
 
     /**
@@ -118,7 +144,7 @@ public class DataImportService {
                 Question question = buildQuestion(bankId, q);
                 questionBatch.add(question);
 
-                // 收集选项数据（稍后批量插入）
+                // 收集选项数据（仅单选/多选题）
                 JSONArray options = q.getJSONArray("options");
                 if (options != null && ("single".equals(question.getType()) || "multiple".equals(question.getType()))) {
                     List<QuestionOption> questionOptions = buildQuestionOptions(options);
@@ -130,10 +156,10 @@ public class DataImportService {
             }
         }
 
-        // 执行批量插入
+        // 执行批量插入题目
         batchInsertQuestions(questionBatch);
 
-        // 为选项设置正确的questionId并批量插入
+        // 为选项设置正确的 questionId 并批量插入
         if (!optionBatch.isEmpty()) {
             assignQuestionIdsToOptions(questionBatch, optionBatch, questionsArray);
             batchInsertOptions(optionBatch);
@@ -159,6 +185,9 @@ public class DataImportService {
      * 构建题目选项列表
      */
     private List<QuestionOption> buildQuestionOptions(JSONArray options) {
+        if (options == null) {
+            return new ArrayList<>();
+        }
         List<QuestionOption> questionOptions = new ArrayList<>();
         for (int j = 0; j < options.size(); j++) {
             JSONObject opt = options.getJSONObject(j);
@@ -188,7 +217,6 @@ public class DataImportService {
             for (int i = 0; i < questions.size(); i++) {
                 mapper.insert(questions.get(i));
 
-                // 每达到批次大小或最后一批时提交
                 if ((i + 1) % BATCH_SIZE == 0 || i == questions.size() - 1) {
                     sqlSession.flushStatements();
                     log.debug("Batch inserted {} questions", Math.min(i + 1, BATCH_SIZE));
@@ -204,10 +232,10 @@ public class DataImportService {
     }
 
     /**
-     * 为选项分配正确的questionId
+     * 为选项分配正确的 questionId
      */
     private void assignQuestionIdsToOptions(List<Question> questions, List<QuestionOption> allOptions,
-            JSONArray questionsArray) {
+                                            JSONArray questionsArray) {
         int optionIndex = 0;
 
         for (int i = 0; i < questions.size(); i++) {
@@ -232,10 +260,10 @@ public class DataImportService {
     }
 
     /**
-     * 处理选项并分配questionId
+     * 处理选项并分配 questionId
      */
     private int[] processOptions(Question question, JSONArray options, List<QuestionOption> allOptions,
-            int optionIndex) {
+                                 int optionIndex) {
         int optionCount = 0;
         for (int j = 0; j < options.size(); j++) {
             JSONObject opt = options.getJSONObject(j);
@@ -245,7 +273,7 @@ public class DataImportService {
                 optionCount++;
             }
         }
-        return new int[] { optionIndex, optionCount };
+        return new int[]{optionIndex, optionCount};
     }
 
     /**
@@ -262,7 +290,6 @@ public class DataImportService {
             for (int i = 0; i < options.size(); i++) {
                 mapper.insert(options.get(i));
 
-                // 每达到批次大小或最后一批时提交
                 if ((i + 1) % BATCH_SIZE == 0 || i == options.size() - 1) {
                     sqlSession.flushStatements();
                     log.debug("Batch inserted {} options", Math.min(i + 1, BATCH_SIZE));
