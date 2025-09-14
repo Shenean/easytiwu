@@ -1,0 +1,364 @@
+/**
+ * 响应式断点 Mixin 系统
+ * 统一管理所有媒体查询，消除重复定义
+ */
+
+/* ===== 断点常量定义 ===== */
+:root {
+  /* 标准断点 */
+  --breakpoint-xs: 480px;   /* 超小屏幕 */
+  --breakpoint-sm: 640px;   /* 小屏幕 */
+  --breakpoint-md: 768px;   /* 中等屏幕 (平板) */
+  --breakpoint-lg: 1024px;  /* 大屏幕 (桌面) */
+  --breakpoint-xl: 1280px;  /* 超大屏幕 */
+  --breakpoint-2xl: 1536px; /* 2K屏幕 */
+  
+  /* 项目特定断点 */
+  --breakpoint-mobile: 768px;     /* 移动端上限 */
+  --breakpoint-tablet: 1200px;    /* 平板端上限 */
+  --breakpoint-desktop: 1600px;   /* 桌面端上限 */
+}
+
+/* ===== 基础断点 Mixin ===== */
+
+/* 超小屏幕 (手机竖屏) */
+@define-mixin xs {
+  @media (max-width: calc(var(--breakpoint-xs) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 小屏幕及以上 */
+@define-mixin sm-up {
+  @media (min-width: var(--breakpoint-sm)) {
+    @mixin-content;
+  }
+}
+
+/* 小屏幕范围 */
+@define-mixin sm-only {
+  @media (min-width: var(--breakpoint-sm)) and (max-width: calc(var(--breakpoint-md) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 中等屏幕及以上 */
+@define-mixin md-up {
+  @media (min-width: var(--breakpoint-md)) {
+    @mixin-content;
+  }
+}
+
+/* 中等屏幕范围 */
+@define-mixin md-only {
+  @media (min-width: var(--breakpoint-md)) and (max-width: calc(var(--breakpoint-lg) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 大屏幕及以上 */
+@define-mixin lg-up {
+  @media (min-width: var(--breakpoint-lg)) {
+    @mixin-content;
+  }
+}
+
+/* 大屏幕范围 */
+@define-mixin lg-only {
+  @media (min-width: var(--breakpoint-lg)) and (max-width: calc(var(--breakpoint-xl) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 超大屏幕及以上 */
+@define-mixin xl-up {
+  @media (min-width: var(--breakpoint-xl)) {
+    @mixin-content;
+  }
+}
+
+/* 超大屏幕范围 */
+@define-mixin xl-only {
+  @media (min-width: var(--breakpoint-xl)) and (max-width: calc(var(--breakpoint-2xl) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 2K屏幕及以上 */
+@define-mixin xxl-up {
+  @media (min-width: var(--breakpoint-2xl)) {
+    @mixin-content;
+  }
+}
+
+/* ===== 语义化断点 Mixin ===== */
+
+/* 移动端 (768px 以下) */
+@define-mixin mobile {
+  @media (max-width: calc(var(--breakpoint-mobile) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 移动端横屏 */
+@define-mixin mobile-landscape {
+  @media (max-width: calc(var(--breakpoint-mobile) - 1px)) and (orientation: landscape) {
+    @mixin-content;
+  }
+}
+
+/* 移动端竖屏 */
+@define-mixin mobile-portrait {
+  @media (max-width: calc(var(--breakpoint-mobile) - 1px)) and (orientation: portrait) {
+    @mixin-content;
+  }
+}
+
+/* 平板端 (768px - 1200px) */
+@define-mixin tablet {
+  @media (min-width: var(--breakpoint-mobile)) and (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 平板端横屏 */
+@define-mixin tablet-landscape {
+  @media (min-width: var(--breakpoint-mobile)) and (max-width: calc(var(--breakpoint-tablet) - 1px)) and (orientation: landscape) {
+    @mixin-content;
+  }
+}
+
+/* 平板端竖屏 */
+@define-mixin tablet-portrait {
+  @media (min-width: var(--breakpoint-mobile)) and (max-width: calc(var(--breakpoint-tablet) - 1px)) and (orientation: portrait) {
+    @mixin-content;
+  }
+}
+
+/* 桌面端 (1200px 以上) */
+@define-mixin desktop {
+  @media (min-width: var(--breakpoint-tablet)) {
+    @mixin-content;
+  }
+}
+
+/* 大桌面端 (1600px 以上) */
+@define-mixin desktop-large {
+  @media (min-width: var(--breakpoint-desktop)) {
+    @mixin-content;
+  }
+}
+
+/* ===== 组合断点 Mixin ===== */
+
+/* 移动端和平板端 (1200px 以下) */
+@define-mixin mobile-and-tablet {
+  @media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 平板端和桌面端 (768px 以上) */
+@define-mixin tablet-and-desktop {
+  @media (min-width: var(--breakpoint-mobile)) {
+    @mixin-content;
+  }
+}
+
+/* 小屏设备 (平板以下) */
+@define-mixin small-devices {
+  @media (max-width: calc(var(--breakpoint-lg) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 大屏设备 (桌面以上) */
+@define-mixin large-devices {
+  @media (min-width: var(--breakpoint-lg)) {
+    @mixin-content;
+  }
+}
+
+/* ===== 特殊场景 Mixin ===== */
+
+/* 高分辨率屏幕 */
+@define-mixin retina {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @mixin-content;
+  }
+}
+
+/* 触摸设备 */
+@define-mixin touch {
+  @media (hover: none) and (pointer: coarse) {
+    @mixin-content;
+  }
+}
+
+/* 鼠标设备 */
+@define-mixin mouse {
+  @media (hover: hover) and (pointer: fine) {
+    @mixin-content;
+  }
+}
+
+/* 减少动画偏好 */
+@define-mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @mixin-content;
+  }
+}
+
+/* 深色主题偏好 */
+@define-mixin dark-theme {
+  @media (prefers-color-scheme: dark) {
+    @mixin-content;
+  }
+}
+
+/* 浅色主题偏好 */
+@define-mixin light-theme {
+  @media (prefers-color-scheme: light) {
+    @mixin-content;
+  }
+}
+
+/* ===== 容器查询 Mixin (实验性) ===== */
+
+/* 容器宽度查询 */
+@define-mixin container-sm {
+  @container (min-width: 320px) {
+    @mixin-content;
+  }
+}
+
+@define-mixin container-md {
+  @container (min-width: 640px) {
+    @mixin-content;
+  }
+}
+
+@define-mixin container-lg {
+  @container (min-width: 1024px) {
+    @mixin-content;
+  }
+}
+
+/* ===== 使用示例 ===== */
+
+/*
+使用方法：
+
+.component {
+  padding: var(--spacing-4);
+  
+  @include mobile {
+    padding: var(--spacing-3);
+  }
+  
+  @include tablet {
+    padding: var(--spacing-4);
+    display: flex;
+  }
+  
+  @include desktop {
+    padding: var(--spacing-5);
+    max-width: 1200px;
+  }
+  
+  @include retina {
+    border-width: 0.5px;
+  }
+  
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.responsive-grid {
+  display: grid;
+  gap: var(--spacing-4);
+  grid-template-columns: 1fr;
+  
+  @include sm-up {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include md-up {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @include lg-up {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.navigation {
+  @include mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  @include tablet-and-desktop {
+    position: static;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+*/
+
+/* ===== 断点调试工具 ===== */
+
+/* 开发环境下显示当前断点 */
+.breakpoint-debug {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: var(--color-modal-backdrop);
+  color: white;
+  padding: var(--spacing-2);
+  font-size: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.breakpoint-debug::after {
+  content: 'XS';
+  
+  @include sm-up {
+    content: 'SM';
+  }
+  
+  @include md-up {
+    content: 'MD';
+  }
+  
+  @include lg-up {
+    content: 'LG';
+  }
+  
+  @include xl-up {
+    content: 'XL';
+  }
+  
+  @include xxl-up {
+    content: 'XXL';
+  }
+}
+
+/* ===== 迁移映射 ===== */
+
+/* 旧的媒体查询映射到新的 Mixin */
+/*
+迁移对照表：
+
+旧写法 -> 新写法
+@media (max-width: 768px) -> @include mobile
+@media (max-width: 768px) and (orientation: landscape) -> @include mobile-landscape
+@media (min-width: 769px) and (max-width: 1200px) -> @include tablet
+@media (min-width: 1201px) -> @include desktop
+@media (max-width: 1200px) -> @include mobile-and-tablet
+@media (min-width: 769px) -> @include tablet-and-desktop
+*/

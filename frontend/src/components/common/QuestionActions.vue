@@ -45,31 +45,31 @@ defineEmits<{
   bottom: 0;
   left: 0;
   right: 0;
-  border-top: 1px solid #e0e0e0;
-  padding: 16px 20px;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  border-top: var(--border-default);
+  padding: var(--spacing-4) var(--spacing-5);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-index-sticky);
   backdrop-filter: blur(10px);
+  background-color: var(--color-surface);
 }
 
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  max-width: 1400px;
+  gap: var(--spacing-4);
+  max-width: var(--max-width-7xl);
   margin: 0 auto;
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
   .bottom-actions {
-    padding: 12px 16px;
-    border-top: 1px solid #e0e0e0;
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+    padding: var(--spacing-3) var(--spacing-4);
+    box-shadow: var(--shadow-xl);
   }
 
   .action-buttons {
-    gap: 12px;
+    gap: var(--spacing-3);
     flex-wrap: wrap;
   }
 
@@ -87,11 +87,11 @@ defineEmits<{
 
 @media (max-width: 480px) {
   .bottom-actions {
-    padding: 10px 12px;
+    padding: var(--spacing-2) var(--spacing-3);
   }
 
   .action-buttons {
-    gap: 8px;
+    gap: var(--spacing-2);
   }
 
   :deep(.n-button) {
@@ -107,25 +107,25 @@ defineEmits<{
 /* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
   .bottom-actions {
-    padding: 8px 16px;
+    padding: var(--spacing-2) var(--spacing-4);
   }
 }
 
 /* 安全区域适配（iPhone X等） */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .bottom-actions {
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--spacing-4) + env(safe-area-inset-bottom));
   }
 
   @media (max-width: 768px) {
     .bottom-actions {
-      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      padding-bottom: calc(var(--spacing-3) + env(safe-area-inset-bottom));
     }
   }
 
   @media (max-width: 480px) {
     .bottom-actions {
-      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      padding-bottom: calc(var(--spacing-2) + env(safe-area-inset-bottom));
     }
   }
 }

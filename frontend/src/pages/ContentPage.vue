@@ -395,8 +395,6 @@ watch(currentQuestion, () => {
 </script>
 
 <style scoped>
-/* 页面容器样式已移至 PageContainer 组件 */
-
 /* 响应式显示控制 */
 .desktop-only {
   display: block;
@@ -419,13 +417,14 @@ watch(currentQuestion, () => {
 /* 移动端答题卡切换按钮 */
 .mobile-answer-card-toggle {
   position: fixed;
-  top: 80px;
+  top: var(--spacing-20);
+  /* 80px */
   right: 16px;
   z-index: 999;
 
   border-radius: 20px;
   padding: 4px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-card-light);
   backdrop-filter: blur(10px);
 }
 
@@ -441,6 +440,7 @@ watch(currentQuestion, () => {
   display: flex;
   gap: 32px;
   max-width: 1400px;
+  /* 350 * 4px */
   margin: 0 auto;
   min-height: calc(100vh - 140px);
   padding: 0 20px;
@@ -462,7 +462,9 @@ watch(currentQuestion, () => {
 .sidebar {
   flex: 1;
   min-width: 280px;
-  max-width: 350px;
+  /* 70 * 4px */
+  max-width: 352px;
+  /* 88 * 4px */
   position: sticky;
   top: 20px;
   height: fit-content;
@@ -487,9 +489,9 @@ watch(currentQuestion, () => {
 }
 
 .question-stem {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   line-height: 1.6;
-  color: #333;
+  color: var(--color-text-primary);
   word-wrap: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
@@ -498,18 +500,18 @@ watch(currentQuestion, () => {
 
 /* 题目与答题区域分割线 */
 .question-divider {
-  margin: 20px 0;
-  border-color: #e8e8e8;
+  margin: var(--spacing-5) 0;
+  border-color: var(--color-border-secondary);
 }
 
 /* 为底部按钮留出空间 */
 .content-layout {
-  padding-bottom: 80px;
+  padding-bottom: var(--spacing-20);
 }
 
 /* 通用样式 */
 .mb-4 {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
 }
 
 /* 加载和空状态 */
@@ -521,26 +523,34 @@ watch(currentQuestion, () => {
   height: 60vh;
   width: 100%;
 
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-xs);
 }
 
 /* 卡片样式优化 - 统一固定宽度 */
 :deep(.n-card) {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-unified-shadow);
   border: none;
-  width: 100%;
+  width: var(--card-standard-width);
+  max-width: var(--card-content-max-width);
+  margin: 0 auto;
   box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+:deep(.n-card:hover) {
+  box-shadow: var(--card-unified-shadow-hover);
 }
 
 :deep(.n-card .n-card-header) {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--card-padding-desktop) var(--card-padding-desktop) var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-light);
+  font-weight: 600;
 }
 
 :deep(.n-card .n-card-content) {
-  padding: 20px;
+  padding: var(--card-padding-desktop);
   word-wrap: break-word;
   overflow-wrap: break-word;
   /* 确保长文本不会破坏固定宽度布局 */
@@ -549,26 +559,30 @@ watch(currentQuestion, () => {
 /* ===== 桌面端大屏幕优化 ===== */
 @media (min-width: 1200px) {
   .content-layout {
-    gap: 40px;
-    padding: 0 24px;
+    gap: var(--spacing-10);
+    /* 40px */
+    padding: 0 var(--spacing-6);
   }
 
   .main-content {
-    gap: 28px;
+    gap: var(--spacing-7);
+    /* 28px */
     width: 60%;
     /* 保持60%宽度 */
   }
 
   .sidebar {
-    max-width: 380px;
+    max-width: var(--spacing-95);
+    /* 95 * 4px */
   }
 }
 
 /* ===== 中等屏幕优化 ===== */
 @media (min-width: 769px) and (max-width: 1199px) {
   .content-layout {
-    gap: 28px;
-    padding: 0 16px;
+    gap: var(--spacing-7);
+    /* 28px */
+    padding: 0 var(--spacing-4);
   }
 
   .main-content {
@@ -577,31 +591,34 @@ watch(currentQuestion, () => {
   }
 
   .sidebar {
-    min-width: 260px;
-    max-width: 320px;
+    min-width: var(--spacing-65);
+    /* 65 * 4px */
+    max-width: var(--spacing-80);
+    /* 80 * 4px */
   }
 }
 
 /* ===== 移动端响应式设计 ===== */
 @media (max-width: 768px) {
   .page-container {
-    padding: 12px 8px;
+    padding: var(--container-responsive-padding-mobile);
   }
 
   .mobile-answer-card-toggle {
-    top: 70px;
-    right: 12px;
+    top: var(--spacing-18);
+    /* 72px */
+    right: var(--spacing-3);
   }
 
   .content-layout {
     flex-direction: column;
-    gap: 16px;
-    padding: 0 12px 100px 12px;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-3) var(--spacing-25) var(--spacing-3);
     /* 为移动端底部按钮留更多空间 */
   }
 
   .main-content {
-    gap: 16px;
+    gap: var(--spacing-md);
     width: 100%;
     max-width: 100%;
     margin-right: 0;
@@ -618,18 +635,23 @@ watch(currentQuestion, () => {
   }
 
   .question-stem {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
   }
 
   /* 移动端卡片优化 */
+  :deep(.n-card) {
+    box-shadow: var(--card-unified-shadow-tablet);
+    max-width: var(--card-max-width-tablet);
+  }
+
   :deep(.n-card .n-card-header) {
-    padding: 12px 16px;
-    font-size: 14px;
+    padding: var(--card-padding-tablet) var(--card-padding-tablet) var(--spacing-3);
+    font-size: var(--font-size-sm);
   }
 
   :deep(.n-card .n-card-content) {
-    padding: 16px;
+    padding: var(--card-padding-tablet);
   }
 
   /* 移动端抽屉样式 */
@@ -638,37 +660,39 @@ watch(currentQuestion, () => {
   }
 
   :deep(.n-drawer .n-drawer-header) {
-    padding: 16px;
-    border-bottom: 1px solid #f0f0f0;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border-tertiary);
   }
 
   :deep(.n-drawer .n-drawer-body) {
-    padding: 16px;
+    padding: var(--spacing-md);
   }
 }
 
 @media (max-width: 480px) {
   .page-container {
-    padding: 8px 4px;
+    padding: var(--container-responsive-padding-small);
   }
 
   .mobile-answer-card-toggle {
-    top: 65px;
-    right: 8px;
+    top: var(--spacing-16);
+    /* 64px */
+    right: var(--spacing-2);
   }
 
   .answer-card-btn {
-    font-size: 11px;
-    padding: 6px 10px;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-2) var(--spacing-3);
+    /* 8px 12px */
   }
 
   .content-layout {
-    gap: 12px;
-    padding: 0 8px 110px 8px;
+    gap: var(--spacing-3);
+    padding: 0 var(--spacing-2) var(--spacing-28) var(--spacing-2);
   }
 
   .main-content {
-    gap: 12px;
+    gap: var(--spacing-3);
     width: 100%;
     max-width: 100%;
     margin-right: 0;
@@ -685,16 +709,21 @@ watch(currentQuestion, () => {
   }
 
   .question-stem {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
+  }
+
+  :deep(.n-card) {
+    box-shadow: var(--card-unified-shadow-mobile);
+    max-width: var(--card-max-width-mobile);
   }
 
   :deep(.n-card .n-card-header) {
-    padding: 10px 12px;
-    font-size: 13px;
+    padding: var(--card-padding-mobile) var(--card-padding-mobile) var(--spacing-3);
+    font-size: var(--font-size-sm);
   }
 
   :deep(.n-card .n-card-content) {
-    padding: 12px;
+    padding: var(--card-padding-mobile);
   }
 }
 </style>

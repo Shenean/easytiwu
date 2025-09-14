@@ -1,3 +1,9 @@
+/* 全局样式文件 */
+/* 导入统一的断点和颜色系统 */
+@import "./breakpoints.css";
+@import "./colors.css";
+@import "./spacing-constants.css";
+
 /* ===== 移动端优化全局样式 ===== */
 
 /* 禁用双击缩放，消除 300ms 延迟 */
@@ -8,7 +14,7 @@
 
 /* 基础响应式设置 */
 html {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   -webkit-text-size-adjust: 100%; /* 防止iOS字体缩放 */
   -ms-text-size-adjust: 100%;
 }
@@ -23,7 +29,7 @@ body {
 
 /* 移动端滚动优化 */
 * {
-  -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+  -webkit-overflow-scrolling: touch;
 }
 
 input,
@@ -44,34 +50,34 @@ button {
 /* 响应式容器 */
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--container-max-width-xl); /* 1400px */
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 var(--spacing-md);
 }
 
 /* 移动端媒体查询 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   html {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .container {
-    padding: 0 12px;
+    padding: 0 var(--spacing-3);
   }
 
   /* 移动端卡片间距优化 */
   .n-card {
-    margin: 8px 0 !important;
+    margin: var(--spacing-2) 0 !important;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   html {
-    font-size: 13px;
+    font-size: var(--font-size-xs);
   }
 
   .container {
-    padding: 0 8px;
+    padding: 0 var(--spacing-2);
   }
 }
 
@@ -89,66 +95,66 @@ button {
 }
 
 /* 移动端表格优化 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .n-data-table {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .n-data-table th,
   .n-data-table td {
-    padding: 8px 4px !important;
+    padding: var(--spacing-2) var(--spacing-1) !important; /* 8px 4px */
   }
 }
 
 /* 移动端表单优化 */
 @media (max-width: 768px) {
   .n-form-item {
-    margin-bottom: 16px;
+    margin-bottom: var(--spacing-4);
   }
 
   .n-form-item-label {
-    padding-bottom: 4px;
+    padding-bottom: var(--spacing-1); /* 4px */
   }
 
   .n-input {
-    font-size: 16px !important; /* 防止iOS缩放 */
+    font-size: var(--font-size-base) !important; /* 防止iOS缩放 */
   }
 }
 
 /* 移动端导航优化 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .n-layout-header {
-    padding: 0 12px;
+    padding: 0 var(--spacing-3);
   }
 
   .n-menu-item {
-    padding: 0 8px !important;
+    padding: 0 var(--spacing-2) !important;
   }
 }
 
 /* 移动端模态框优化 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .n-modal {
-    margin: 16px !important;
+    margin: var(--spacing-md) !important;
   }
 
   .n-card.n-modal {
-    max-height: calc(100vh - 32px) !important;
+    max-height: calc(100vh - var(--spacing-8)) !important;
   }
 }
 
 /* 移动端加载状态优化 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .n-spin {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 }
 
 /* 移动端消息提示优化 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .n-message {
-    max-width: calc(100vw - 32px) !important;
-    margin: 0 16px;
+    max-width: calc(100vw - var(--spacing-8)) !important;
+    margin: 0 var(--spacing-md);
   }
 }
 
@@ -198,15 +204,15 @@ button {
   .answer-card-btn,
   .mobile-menu-item,
   .theme-item {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: var(--spacing-11); /* 44px */
+    min-width: var(--spacing-11); /* 44px */
   }
 
   /* 防止意外缩放 */
   input,
   textarea,
   select {
-    font-size: 16px !important;
+    font-size: var(--font-size-base) !important;
   }
 }
 

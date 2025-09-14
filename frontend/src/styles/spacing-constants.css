@@ -1,0 +1,210 @@
+/* 间距系统常量定义 */
+/* 基于4px基础单位的标准化间距系统 */
+
+:root {
+  /* 基础间距单位 */
+  --spacing-base: 4px;
+
+  /* 标准间距值 (4px倍数) */
+  --spacing-0: 0;
+  --spacing-1: 4px; /* 1 * 4px */
+  --spacing-2: 8px; /* 2 * 4px */
+  --spacing-3: 12px; /* 3 * 4px */
+  --spacing-4: 16px; /* 4 * 4px */
+  --spacing-5: 20px; /* 5 * 4px */
+  --spacing-6: 24px; /* 6 * 4px */
+  --spacing-7: 28px; /* 7 * 4px */
+  --spacing-8: 32px; /* 8 * 4px */
+  --spacing-9: 36px; /* 9 * 4px */
+  --spacing-10: 40px; /* 10 * 4px */
+  --spacing-11: 44px; /* 11 * 4px */
+  --spacing-12: 48px; /* 12 * 4px */
+  --spacing-13: 52px; /* 13 * 4px */
+  --spacing-14: 56px; /* 14 * 4px */
+  --spacing-15: 60px; /* 15 * 4px */
+  --spacing-16: 64px; /* 16 * 4px */
+  --spacing-17: 68px; /* 17 * 4px */
+  --spacing-18: 72px; /* 18 * 4px */
+  --spacing-19: 76px; /* 19 * 4px */
+  --spacing-20: 80px; /* 20 * 4px */
+  --spacing-22: 88px; /* 22 * 4px */
+  --spacing-24: 96px; /* 24 * 4px */
+  --spacing-25: 100px; /* 25 * 4px */
+  --spacing-28: 112px; /* 28 * 4px */
+  --spacing-30: 120px; /* 30 * 4px */
+  --spacing-32: 128px; /* 32 * 4px */
+  --spacing-35: 140px; /* 35 * 4px */
+  --spacing-38: 152px; /* 38 * 4px */
+  --spacing-40: 160px; /* 40 * 4px */
+  --spacing-44: 176px; /* 44 * 4px */
+  --spacing-48: 192px; /* 48 * 4px */
+  --spacing-50: 200px; /* 50 * 4px */
+  --spacing-56: 224px; /* 56 * 4px */
+  --spacing-60: 240px; /* 60 * 4px */
+  --spacing-64: 256px; /* 64 * 4px */
+  --spacing-65: 260px; /* 65 * 4px */
+  --spacing-70: 280px; /* 70 * 4px */
+  --spacing-75: 300px; /* 75 * 4px */
+  --spacing-80: 320px; /* 80 * 4px */
+  --spacing-95: 380px; /* 95 * 4px */
+  --spacing-100: 400px; /* 100 * 4px */
+  --spacing-138: 552px; /* 138 * 4px */
+  --spacing-150: 600px; /* 150 * 4px */
+  --spacing-160: 640px; /* 160 * 4px */
+  --spacing-163: 652px; /* 163 * 4px */
+  --spacing-250: 1000px; /* 250 * 4px */
+
+  /* 语义化间距 */
+  --spacing-xs: var(--spacing-1); /* 4px - 极小间距 */
+  --spacing-sm: var(--spacing-2); /* 8px - 小间距 */
+  --spacing-md: var(--spacing-4); /* 16px - 中等间距 */
+  --spacing-lg: var(--spacing-6); /* 24px - 大间距 */
+  --spacing-xl: var(--spacing-8); /* 32px - 超大间距 */
+  --spacing-2xl: var(--spacing-12); /* 48px - 特大间距 */
+
+  /* 组件专用间距 */
+  --button-padding-sm: var(--spacing-1) var(--spacing-3); /* 4px 12px */
+  --button-padding-md: var(--spacing-2) var(--spacing-4); /* 8px 16px */
+  --button-padding-lg: var(--spacing-3) var(--spacing-5); /* 12px 20px */
+
+  --card-padding-sm: var(--spacing-3); /* 12px */
+  --card-padding-md: var(--spacing-4); /* 16px */
+  --card-padding-lg: var(--spacing-6); /* 24px */
+
+  --container-padding-sm: var(--spacing-3); /* 12px */
+  --container-padding-md: var(--spacing-4); /* 16px */
+  --container-padding-lg: var(--spacing-5); /* 20px */
+
+  --form-item-margin: var(--spacing-4); /* 16px */
+  --form-section-margin: var(--spacing-6); /* 24px */
+
+  --list-item-padding: var(--spacing-3) var(--spacing-4); /* 12px 16px */
+
+  /* 响应式断点 */
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-wide: 1200px;
+}
+
+/* 工具类 - 使用CSS变量 */
+.spacing-xs {
+  gap: var(--spacing-xs);
+}
+.spacing-sm {
+  gap: var(--spacing-sm);
+}
+.spacing-md {
+  gap: var(--spacing-md);
+}
+.spacing-lg {
+  gap: var(--spacing-lg);
+}
+.spacing-xl {
+  gap: var(--spacing-xl);
+}
+.spacing-2xl {
+  gap: var(--spacing-2xl);
+}
+
+/* 内边距工具类 - 使用CSS变量 */
+.p-xs {
+  padding: var(--spacing-xs);
+}
+.p-sm {
+  padding: var(--spacing-sm);
+}
+.p-md {
+  padding: var(--spacing-md);
+}
+.p-lg {
+  padding: var(--spacing-lg);
+}
+.p-xl {
+  padding: var(--spacing-xl);
+}
+.p-2xl {
+  padding: var(--spacing-2xl);
+}
+
+/* 外边距工具类 - 使用CSS变量 */
+.m-xs {
+  margin: var(--spacing-xs);
+}
+.m-sm {
+  margin: var(--spacing-sm);
+}
+.m-md {
+  margin: var(--spacing-md);
+}
+.m-lg {
+  margin: var(--spacing-lg);
+}
+.m-xl {
+  margin: var(--spacing-xl);
+}
+.m-2xl {
+  margin: var(--spacing-2xl);
+}
+
+/* 组件专用类 */
+.button-spacing-sm {
+  padding: var(--button-padding-sm);
+}
+.button-spacing-md {
+  padding: var(--button-padding-md);
+}
+.button-spacing-lg {
+  padding: var(--button-padding-lg);
+}
+
+.card-spacing-sm {
+  padding: var(--card-padding-sm);
+}
+.card-spacing-md {
+  padding: var(--card-padding-md);
+}
+.card-spacing-lg {
+  padding: var(--card-padding-lg);
+}
+
+.container-spacing-sm {
+  padding: var(--container-padding-sm);
+}
+.container-spacing-md {
+  padding: var(--container-padding-md);
+}
+.container-spacing-lg {
+  padding: var(--container-padding-lg);
+}
+
+/* 使用说明 */
+/*
+使用指南:
+
+1. 优先使用CSS变量而不是硬编码值:
+   ❌ padding: 16px;
+   ✅ padding: var(--spacing-4);
+   ✅ padding: var(--spacing-md);
+
+2. 使用语义化变量名:
+   ✅ padding: var(--card-padding-md);
+   ✅ margin-bottom: var(--form-item-margin);
+
+3. 响应式设计:
+   @media (max-width: 768px) {
+     .container {
+       padding: var(--container-padding-sm);
+     }
+   }
+
+4. 组件内使用:
+   .my-button {
+     padding: var(--button-padding-md);
+   }
+
+5. 标准化间距系统:
+   - 所有间距值都是4px的倍数
+   - 使用语义化命名提高可读性
+   - 避免使用非标准的小数倍数值
+*/

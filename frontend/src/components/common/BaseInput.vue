@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, type Component } from "vue"
-import { NInput } from "naive-ui"
+import {type Component, computed, ref, watch} from "vue"
+import {NInput} from "naive-ui"
 
 interface Props {
   modelValue?: string
@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false,
   prefixIcon: null,
   suffixIcon: null,
-  radius: "8px"
+  radius: "var(--input-border-radius)"
 })
 
 const emit = defineEmits<{
@@ -81,5 +81,17 @@ const customClass = computed(() => ({
 <style scoped>
 .base-input {
   border-radius: v-bind("props.radius");
+  transition: var(--transition-fast);
+}
+
+.base-input:focus-within {
+  box-shadow: 0 0 0 var(--input-focus-ring-width) var(--input-focus-ring-color);
+}
+
+/* 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  .base-input {
+    transition: none;
+  }
 }
 </style>

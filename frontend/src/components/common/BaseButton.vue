@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
   round: false,
   circle: false,
   icon: null,
-  radius: "8px"
+  radius: "var(--button-border-radius)"
 })
 
 const customClass = computed(() => ({
@@ -62,16 +62,32 @@ function handleClick(event: MouseEvent) {
 <style scoped>
 .base-button {
   border-radius: v-bind("props.radius");
-  transition: all 0.2s ease;
+  transition: var(--transition-base);
+  font-weight: var(--button-font-weight);
 }
 
 .base-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(calc(-1 * var(--spacing-1)));
+  box-shadow: var(--shadow-md);
 }
 
 .base-button:active {
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: var(--shadow-none);
+}
+
+/* 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  .base-button {
+    transition: none;
+  }
+  
+  .base-button:hover {
+    transform: none;
+  }
+  
+  .base-button:active {
+    transform: none;
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <n-card title="答题卡" size="small" class="answer-card-container" :class="{ 'mobile-mode': mobileMode }">
-    <n-grid :cols="mobileMode ? 5 : 4" :x-gap="mobileMode ? 6 : 8" :y-gap="mobileMode ? 6 : 8">
+    <n-grid :cols="mobileMode ? 5 : 8" :x-gap="mobileMode ? 8 : 12" :y-gap="mobileMode ? 8 : 12">
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
         <BaseButton :type="getCardButtonType(q)" :size="mobileMode ? 'small' : getCardButtonSize"
           @click="jumpToQuestion(q.id)" class="answer-card-btn"
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import BaseButton from './BaseButton.vue'
+import {NGrid, NGridItem} from 'naive-ui'
 
 interface Question {
   id: number
@@ -49,32 +50,32 @@ function jumpToQuestion(id: number) {
 <style scoped>
 .answer-card-container {
   position: sticky;
-  top: 20px;
-  max-height: calc(100vh - 200px);
+  top: var(--spacing-5);
+  max-height: calc(100vh - var(--spacing-50));
   overflow-y: auto;
-  border-radius: 10px;
+  border-radius: var(--border-radius-md);
 }
 
 /* 自定义滚动条 */
 .answer-card-container::-webkit-scrollbar {
-  width: 6px;
+  width: var(--spacing-2);
 }
 
 .answer-card-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
+  background-color: var(--color-black-15);
+  border-radius: var(--border-radius-sm);
 }
 
 /* 答题卡按钮 */
 .answer-card-btn {
-  height: 40px;
+  height: var(--spacing-10);
   width: 100%;
 }
 
 /* 当前题目高亮（蓝色边框） */
 .answer-card-btn.active {
-  border: 2px solid #1890ff !important;
-  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.25);
+  border: var(--spacing-1) solid var(--color-info) !important;
+  box-shadow: 0 0 0 var(--spacing-1) var(--color-info-25);
 }
 
 /* 移动端模式样式 */
@@ -86,22 +87,22 @@ function jumpToQuestion(id: number) {
 }
 
 .mobile-mode :deep(.n-card__header) {
-  padding: 12px 16px;
-  font-size: 16px;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
   font-weight: 600;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .mobile-mode :deep(.n-card__content) {
-  padding: 16px;
+  padding: var(--spacing-4);
 }
 
 .mobile-btn {
-  height: 44px !important;
-  min-width: 44px;
-  font-size: 14px;
+  height: var(--spacing-11) !important;
+  min-width: var(--spacing-11);
+  font-size: var(--font-size-base);
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   touch-action: manipulation;
 }
 
@@ -111,7 +112,7 @@ function jumpToQuestion(id: number) {
 }
 
 .mobile-btn.active {
-  box-shadow: 0 0 0 2px #18a058, 0 2px 8px rgba(24, 160, 88, 0.3);
+  box-shadow: 0 0 0 var(--spacing-1) var(--color-primary), var(--shadow-focus-ring);
   transform: scale(1.02);
 }
 
@@ -124,36 +125,36 @@ function jumpToQuestion(id: number) {
 
 @media (max-width: 480px) {
   .mobile-mode :deep(.n-card__header) {
-    padding: 10px 12px;
-    font-size: 15px;
+    padding: var(--spacing-3) var(--spacing-3);
+    font-size: var(--font-size-sm);
   }
 
   .mobile-mode :deep(.n-card__content) {
-    padding: 12px;
+    padding: var(--spacing-3);
   }
 
   .mobile-btn {
-    height: 42px !important;
-    min-width: 42px;
-    font-size: 13px;
+    height: var(--spacing-11) !important;
+    min-width: var(--spacing-11);
+    font-size: var(--font-size-sm);
   }
 }
 
 /* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
   .mobile-mode :deep(.n-card__header) {
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-base);
   }
 
   .mobile-mode :deep(.n-card__content) {
-    padding: 10px;
+    padding: var(--spacing-3);
   }
 
   .mobile-btn {
-    height: 38px !important;
-    min-width: 38px;
-    font-size: 12px;
+    height: var(--spacing-10) !important;
+    min-width: var(--spacing-10);
+    font-size: var(--font-size-xs);
   }
 }
 </style>

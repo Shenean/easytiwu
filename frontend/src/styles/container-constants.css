@@ -1,0 +1,95 @@
+/* 容器尺寸系统常量定义 */
+/* 统一管理页面容器的尺寸配置 */
+
+:root {
+  /* 容器最大宽度定义 */
+  --container-max-width-xs: 480px;   /* 超小容器 */
+  --container-max-width-sm: 768px;   /* 小容器 */
+  --container-max-width-md: 1080px;  /* 中等容器 (默认) */
+  --container-max-width-lg: 1200px;  /* 大容器 */
+  --container-max-width-xl: 1400px;  /* 超大容器 */
+  --container-max-width-full: 100%;  /* 全宽容器 */
+  
+  /* 默认容器配置 */
+  --container-default-max-width: var(--container-max-width-md);
+  
+  /* 容器内边距配置 */
+  --container-padding-mobile: var(--spacing-2) var(--spacing-2);     /* 8px 8px */
+  --container-padding-tablet: var(--spacing-4) var(--spacing-3);     /* 16px 12px */
+  --container-padding-desktop: var(--spacing-5) var(--spacing-6);    /* 20px 24px */
+  --container-padding-large: var(--spacing-12) var(--spacing-6);     /* 48px 24px */
+  
+  /* 默认容器内边距 */
+  --container-default-padding: var(--spacing-5); /* 20px */
+  
+  /* 响应式容器内边距 */
+  --container-responsive-padding-mobile: var(--spacing-2) var(--spacing-2);   /* 8px 8px */
+  --container-responsive-padding-small: var(--spacing-3) var(--spacing-2);    /* 12px 8px */
+  --container-responsive-padding-tablet: var(--spacing-8) var(--spacing-5);   /* 32px 20px */
+  --container-responsive-padding-desktop: var(--spacing-12) var(--spacing-6); /* 48px 24px */
+  
+  /* 卡片容器配置 */
+  --card-border-radius-mobile: 8px;
+  --card-border-radius-tablet: 12px;
+  --card-border-radius-desktop: 16px;
+  
+  /* 默认卡片圆角 */
+  --card-default-border-radius: var(--card-border-radius-desktop);
+  
+  /* 卡片阴影配置 */
+  --card-shadow-light: 0 6px 18px rgba(0, 0, 0, 0.06);
+  --card-shadow-medium: 0 10px 28px rgba(0, 0, 0, 0.08);
+  --card-shadow-mobile: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --card-shadow-tablet: 0 4px 12px rgba(0, 0, 0, 0.08);
+  
+  /* 默认卡片阴影 */
+  --card-default-shadow: var(--card-shadow-light);
+  --card-default-shadow-hover: var(--card-shadow-medium);
+  
+  /* 页面最小高度配置 */
+  --page-min-height-desktop: calc(100vh - 140px);
+  --page-min-height-tablet: calc(100vh - 120px);
+  --page-min-height-mobile: calc(100vh - 100px);
+  
+  /* 默认页面最小高度 */
+  --page-default-min-height: var(--page-min-height-desktop);
+}
+
+/* 容器尺寸工具类 */
+.container-xs { max-width: var(--container-max-width-xs); }
+.container-sm { max-width: var(--container-max-width-sm); }
+.container-md { max-width: var(--container-max-width-md); }
+.container-lg { max-width: var(--container-max-width-lg); }
+.container-xl { max-width: var(--container-max-width-xl); }
+.container-full { max-width: var(--container-max-width-full); }
+
+/* 响应式容器工具类 */
+.container-responsive {
+  padding: var(--container-default-padding);
+}
+
+@media (min-width: 1200px) {
+  .container-responsive {
+    padding: var(--container-responsive-padding-desktop);
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 769px) {
+  .container-responsive {
+    padding: var(--container-responsive-padding-tablet);
+  }
+}
+
+@media (max-width: 768px) {
+  .container-responsive {
+    padding: var(--container-responsive-padding-mobile);
+    min-height: var(--page-min-height-tablet);
+  }
+}
+
+@media (max-width: 480px) {
+  .container-responsive {
+    padding: var(--container-responsive-padding-small);
+    min-height: var(--page-min-height-mobile);
+  }
+}

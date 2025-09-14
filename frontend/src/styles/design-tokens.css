@@ -1,0 +1,402 @@
+/**
+ * 设计令牌 (Design Tokens)
+ * 统一的样式变量系统，支持全面的样式变量化重构
+ */
+
+:root {
+  /* ===== 字体系统 ===== */
+  
+  /* 字体族 */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-family-serif: Georgia, 'Times New Roman', Times, serif;
+  
+  /* 字体大小 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  --font-size-5xl: 48px;
+  --font-size-6xl: 60px;
+  
+  /* 字体权重 */
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  
+  /* 行高 */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  
+  /* 字母间距 */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+  
+  /* ===== 颜色系统 ===== */
+  
+  /* 主色调 */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  
+  /* 成功色 */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  
+  /* 警告色 */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  
+  /* 错误色 */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+  
+  /* 中性色 */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  
+  /* 语义化颜色 */
+  --color-background: var(--color-gray-50);
+  --color-surface: #ffffff;
+  --color-border: var(--color-gray-200);
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-inverse: #ffffff;
+  
+  /* ===== 边框系统 ===== */
+  
+  /* 边框宽度 */
+  --border-width-0: 0;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
+  
+  /* 边框样式 */
+  --border-style-solid: solid;
+  --border-style-dashed: dashed;
+  --border-style-dotted: dotted;
+  --border-style-none: none;
+  
+  /* 圆角 */
+  --border-radius-none: 0;
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-radius-2xl: 16px;
+  --border-radius-3xl: 24px;
+  --border-radius-full: 9999px;
+  
+  /* 组合边框 */
+  --border-default: var(--border-width-1) var(--border-style-solid) var(--color-border);
+  --border-primary: var(--border-width-1) var(--border-style-solid) var(--color-primary-500);
+  --border-success: var(--border-width-1) var(--border-style-solid) var(--color-success-500);
+  --border-warning: var(--border-width-1) var(--border-style-solid) var(--color-warning-500);
+  --border-error: var(--border-width-1) var(--border-style-solid) var(--color-error-500);
+  
+  /* ===== 阴影系统 ===== */
+  
+  /* 基础阴影 */
+  --shadow-xs: 0 1px 2px 0 var(--color-black-05);
+  --shadow-sm: 0 1px 3px 0 var(--color-black-10), 0 1px 2px 0 var(--color-black-06);
+  --shadow-md: 0 4px 6px -1px var(--color-black-10), 0 2px 4px -1px var(--color-black-06);
+  --shadow-lg: 0 10px 15px -3px var(--color-black-10), 0 4px 6px -2px var(--color-black-05);
+  --shadow-xl: 0 20px 25px -5px var(--color-black-10), 0 10px 10px -5px var(--color-black-04);
+  --shadow-2xl: 0 25px 50px -12px var(--color-black-25);
+  --shadow-inner: inset 0 2px 4px 0 var(--color-black-06);
+  --shadow-none: none;
+  
+  /* 卡片专用阴影 */
+  --shadow-card-light: 0 6px 18px var(--color-black-06);
+  --shadow-card-medium: 0 10px 28px var(--color-black-08);
+  --shadow-card-mobile: 0 2px 8px var(--color-black-06);
+  --shadow-card-tablet: 0 4px 12px var(--color-black-08);
+  
+  /* 特殊用途阴影 */
+  --shadow-focus-ring: 0 0 0 var(--spacing-1) var(--color-primary-30);
+  --shadow-dark-overlay: 0 var(--spacing-2) var(--spacing-6) rgba(0, 0, 0, 0.4);
+  
+  /* 彩色阴影 */
+  --shadow-primary: 0 4px 14px 0 rgba(14, 165, 233, 0.15);
+  --shadow-success: 0 4px 14px 0 rgba(34, 197, 94, 0.15);
+  --shadow-warning: 0 4px 14px 0 rgba(245, 158, 11, 0.15);
+  --shadow-error: 0 4px 14px 0 rgba(239, 68, 68, 0.15);
+  
+  /* ===== 过渡动画 ===== */
+  
+  /* 过渡时长 */
+  --transition-duration-75: 75ms;
+  --transition-duration-100: 100ms;
+  --transition-duration-150: 150ms;
+  --transition-duration-200: 200ms;
+  --transition-duration-300: 300ms;
+  --transition-duration-500: 500ms;
+  --transition-duration-700: 700ms;
+  --transition-duration-1000: 1000ms;
+  
+  /* 过渡函数 */
+  --transition-timing-linear: linear;
+  --transition-timing-ease: ease;
+  --transition-timing-ease-in: ease-in;
+  --transition-timing-ease-out: ease-out;
+  --transition-timing-ease-in-out: ease-in-out;
+  --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* 常用过渡组合 */
+  --transition-fast: all var(--transition-duration-150) var(--transition-timing-ease-out);
+  --transition-base: all var(--transition-duration-200) var(--transition-timing-ease-out);
+  --transition-slow: all var(--transition-duration-300) var(--transition-timing-ease-out);
+  
+  /* ===== Z-Index 层级 ===== */
+  
+  --z-index-hide: -1;
+  --z-index-auto: auto;
+  --z-index-base: 0;
+  --z-index-docked: 10;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1100;
+  --z-index-banner: 1200;
+  --z-index-overlay: 1300;
+  --z-index-modal: 1400;
+  --z-index-popover: 1500;
+  --z-index-skiplink: 1600;
+  --z-index-toast: 1700;
+  --z-index-tooltip: 1800;
+  
+  /* ===== 尺寸系统 ===== */
+  
+  /* 宽度 */
+  --width-xs: 320px;
+  --width-sm: 384px;
+  --width-md: 448px;
+  --width-lg: 512px;
+  --width-xl: 576px;
+  --width-2xl: 672px;
+  --width-3xl: 768px;
+  --width-4xl: 896px;
+  --width-5xl: 1024px;
+  --width-6xl: 1152px;
+  --width-7xl: 1280px;
+  
+  /* 高度 */
+  --height-xs: 320px;
+  --height-sm: 384px;
+  --height-md: 448px;
+  --height-lg: 512px;
+  --height-xl: 576px;
+  --height-2xl: 672px;
+  
+  /* 最大宽度 */
+  --max-width-xs: 20rem;    /* 320px */
+  --max-width-sm: 24rem;    /* 384px */
+  --max-width-md: 28rem;    /* 448px */
+  --max-width-lg: 32rem;    /* 512px */
+  --max-width-xl: 36rem;    /* 576px */
+  --max-width-2xl: 42rem;   /* 672px */
+  --max-width-3xl: 48rem;   /* 768px */
+  --max-width-4xl: 56rem;   /* 896px */
+  --max-width-5xl: 64rem;   /* 1024px */
+  --max-width-6xl: 72rem;   /* 1152px */
+  --max-width-7xl: 80rem;   /* 1280px */
+  --max-width-full: 100%;
+  --max-width-screen-sm: 640px;
+  --max-width-screen-md: 768px;
+  --max-width-screen-lg: 1024px;
+  --max-width-screen-xl: 1280px;
+  --max-width-screen-2xl: 1536px;
+  
+  /* ===== 组件特定变量 ===== */
+  
+  /* 按钮 */
+  --button-height-sm: 32px;
+  --button-height-md: 40px;
+  --button-height-lg: 48px;
+  --button-min-width: 64px;
+  --button-border-radius: var(--border-radius-md);
+  --button-font-weight: var(--font-weight-medium);
+  
+  /* 输入框 */
+  --input-height-sm: 32px;
+  --input-height-md: 40px;
+  --input-height-lg: 48px;
+  --input-border-radius: var(--border-radius-md);
+  --input-border-width: var(--border-width-1);
+  --input-focus-ring-width: 2px;
+  --input-focus-ring-color: rgba(14, 165, 233, 0.2);
+  
+  /* 卡片 */
+  --card-border-radius: var(--border-radius-lg);
+  --card-border-width: var(--border-width-1);
+  --card-shadow: var(--shadow-sm);
+  --card-shadow-hover: var(--shadow-md);
+  --card-default-shadow: var(--shadow-card-light);
+  --card-default-shadow-hover: var(--shadow-card-medium);
+  --card-shadow-tablet: var(--shadow-card-tablet);
+  --card-shadow-mobile: var(--shadow-card-mobile);
+  
+  /* 卡片宽度约束 */
+  --card-max-width-mobile: 100%;
+  --card-max-width-tablet: var(--max-width-2xl);   /* 672px */
+  --card-max-width-desktop: var(--max-width-4xl);  /* 896px */
+  --card-standard-width: 100%;
+  --card-content-max-width: var(--max-width-3xl);  /* 768px */
+  
+  /* 统一卡片阴影效果 */
+  --card-unified-shadow: var(--shadow-card-light);
+  --card-unified-shadow-hover: var(--shadow-card-medium);
+  --card-unified-shadow-mobile: var(--shadow-card-mobile);
+  --card-unified-shadow-tablet: var(--shadow-card-tablet);
+  
+  /* 卡片内边距 */
+  --card-padding-sm: var(--spacing-4);
+  --card-padding-md: var(--spacing-6);
+  --card-padding-lg: var(--spacing-8);
+  --card-padding-mobile: var(--spacing-4);
+  --card-padding-tablet: var(--spacing-5);
+  --card-padding-desktop: var(--spacing-6);
+  
+  /* 模态框 */
+  --modal-border-radius: var(--border-radius-xl);
+  --modal-shadow: var(--shadow-2xl);
+  --modal-backdrop-color: rgba(0, 0, 0, 0.5);
+  
+  /* 导航 */
+  --nav-height: 64px;
+  --nav-item-padding: var(--spacing-3) var(--spacing-4);
+  --nav-item-border-radius: var(--border-radius-md);
+  
+  /* 侧边栏 */
+  --sidebar-width: 256px;
+  --sidebar-width-collapsed: 64px;
+  
+  /* 表格 */
+  --table-cell-padding: var(--spacing-3) var(--spacing-4);
+  --table-header-height: 48px;
+  --table-row-height: 56px;
+  
+  /* ===== 响应式变量 ===== */
+  
+  /* 容器内边距 */
+  --container-padding-mobile: var(--spacing-4);
+  --container-padding-tablet: var(--spacing-6);
+  --container-padding-desktop: var(--spacing-8);
+  
+  /* 栅格间距 */
+  --grid-gap-mobile: var(--spacing-4);
+  --grid-gap-tablet: var(--spacing-6);
+  --grid-gap-desktop: var(--spacing-8);
+  
+  /* 字体大小响应式 */
+  --font-size-h1-mobile: var(--font-size-2xl);
+  --font-size-h1-desktop: var(--font-size-4xl);
+  --font-size-h2-mobile: var(--font-size-xl);
+  --font-size-h2-desktop: var(--font-size-3xl);
+  --font-size-h3-mobile: var(--font-size-lg);
+  --font-size-h3-desktop: var(--font-size-2xl);
+}
+
+/* ===== 深色主题变量 ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 深色主题颜色覆盖 */
+    --color-background: var(--color-gray-900);
+    --color-surface: var(--color-gray-800);
+    --color-border: var(--color-gray-700);
+    --color-text-primary: var(--color-gray-100);
+    --color-text-secondary: var(--color-gray-300);
+    --color-text-muted: var(--color-gray-500);
+    --color-text-inverse: var(--color-gray-900);
+    
+    /* 深色主题阴影 */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ===== 高对比度主题变量 ===== */
+@media (prefers-contrast: high) {
+  :root {
+    --border-width-1: 2px;
+    --border-width-2: 3px;
+    --color-border: var(--color-gray-900);
+    --input-focus-ring-width: 3px;
+  }
+}
+
+/* ===== 减少动画偏好 ===== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-duration-75: 0ms;
+    --transition-duration-100: 0ms;
+    --transition-duration-150: 0ms;
+    --transition-duration-200: 0ms;
+    --transition-duration-300: 0ms;
+    --transition-duration-500: 0ms;
+    --transition-duration-700: 0ms;
+    --transition-duration-1000: 0ms;
+  }
+}

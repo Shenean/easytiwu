@@ -41,15 +41,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import {
-  NRadioGroup,
-  NRadio,
-  NCheckboxGroup,
-  NCheckbox,
-  NInput,
-  NSpace
-} from 'naive-ui'
+import {computed} from 'vue'
+import {NCheckbox, NCheckboxGroup, NInput, NRadio, NRadioGroup, NSpace} from 'naive-ui'
 
 /** 类型声明 */
 interface Question {
@@ -130,7 +123,7 @@ const inputValue = computed<string>({
 /* 表单元素样式 */
 :deep(.n-radio-content),
 :deep(.n-checkbox-content) {
-  font-size: 15px;
+  font-size: var(--font-size-sm);
   line-height: 1.5;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -138,7 +131,7 @@ const inputValue = computed<string>({
 
 :deep(.n-radio),
 :deep(.n-checkbox) {
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
   width: 100%;
   box-sizing: border-box;
 }

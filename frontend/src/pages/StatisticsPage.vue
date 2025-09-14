@@ -12,7 +12,12 @@
       <div v-else-if="stats">
         <!-- 总览统计 -->
         <n-card class="overview-summary-card" size="small">
-          <n-grid :cols="2" :x-gap="24" :y-gap="16" class="overview-grid">
+          <n-grid 
+            :cols="overviewGridCols"
+            :x-gap="24"
+            :y-gap="24"
+            class="overview-grid"
+          >
             <n-grid-item>
               <div class="overview-item">
                 <n-statistic label="题库总数" :value="formatNumber(stats.bankTotal)" />
@@ -28,7 +33,12 @@
 
         <!-- 题型统计 -->
         <div class="type-stats-section">
-          <n-grid :cols="2" :x-gap="8" :y-gap="8" class="type-stats-grid">
+          <n-grid 
+            :cols="typeStatsGridCols"
+            :x-gap="16"
+            :y-gap="16"
+            class="type-stats-grid"
+          >
             <n-grid-item v-for="stat in typeStats" :key="stat.originalType">
               <n-card class="type-stat-card" size="small">
                 <div class="type-stat-header">
@@ -39,7 +49,12 @@
                 </div>
                 
                 <div class="type-stat-content">
-                  <n-grid :cols="3" :x-gap="8" :y-gap="4" class="stats-metrics">
+                  <n-grid 
+                    :cols="metricsGridCols"
+                    :x-gap="16"
+                    :y-gap="8"
+                    class="stats-metrics"
+                  >
                     <n-grid-item>
                       <div class="metric-item">
                         <div class="metric-value">{{ stat.total }}</div>
@@ -80,18 +95,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import {computed, onMounted, ref} from 'vue'
+import {NGrid, NGridItem} from 'naive-ui'
 
-import { statisticsAPI } from '../api/config'
+import {statisticsAPI} from '../api/config'
 import BaseButton from '../components/common/BaseButton.vue'
 import LoadingContainer from '../components/common/LoadingContainer.vue'
 import EmptyState from '../components/common/EmptyState.vue'
 import PageContainer from '../components/common/PageContainer.vue'
-import type {
-  StatisticsOverview,
-  ApiResponse,
-  TypeStats
-} from '../types/statistics'
+import {useBreakpoints} from '../composables/useBreakpoints'
+import type {ApiResponse, StatisticsOverview, TypeStats} from '../types/statistics'
 
 // 数字格式化函数，防御性处理null/undefined
 const formatNumber = (value: number | null | undefined): string => {
@@ -114,6 +127,26 @@ const getTypeDisplayName = (type: string): string => {
 const stats = ref<StatisticsOverview | null>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
+
+// 响应式布局
+const { isMobile, isTablet } = useBreakpoints()
+
+// 网格列数计算
+const overviewGridCols = computed(() => {
+  if (isMobile.value) return 1
+  return 2
+})
+
+const typeStatsGridCols = computed(() => {
+  if (isMobile.value) return 1
+  if (isTablet.value) return 2
+  return 3
+})
+
+const metricsGridCols = computed(() => {
+  if (isMobile.value) return 1
+  return 3
+})
 
 // 题型统计卡片数据
 const typeStats = computed(() => {
@@ -211,22 +244,43 @@ onMounted(() => {
 
 <style scoped>
 .statistics-container {
-  max-width: 1000px;
+  max-width: var(--container-max-width-md);
   margin: 0 auto;
-  padding: 16px;
+  padding: var(--spacing-md);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stats-card {
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--card-border-radius-desktop);
+  box-shadow: var(--card-shadow-medium);
+  border: none;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  transition: box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.stats-card:hover {
+  box-shadow: var(--card-shadow-medium);
 }
 
 /* 总览统计样式 */
 .overview-summary-card {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
   background: linear-gradient(135deg, var(--n-color) 0%, var(--n-color-embedded) 100%);
-  border: 1px solid var(--n-border-color);
+  border: none;
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-unified-shadow);
+  width: var(--card-standard-width);
+  max-width: var(--card-content-max-width);
+  margin: 0 auto var(--spacing-md) auto;
+  transition: box-shadow 0.3s ease;
+}
+
+.overview-summary-card:hover {
+  box-shadow: var(--card-unified-shadow-hover);
 }
 
 .overview-grid {
@@ -235,7 +289,7 @@ onMounted(() => {
 
 .overview-item {
   text-align: center;
-  padding: 8px;
+  padding: var(--spacing-2);
 }
 
 /* 题型统计区域 */
@@ -248,28 +302,32 @@ onMounted(() => {
 }
 
 .type-stat-card {
-  border: 1px solid var(--n-border-color);
+  border: none;
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-unified-shadow);
   transition: all 0.3s ease;
   background: var(--n-color);
+  width: var(--card-standard-width);
+  margin: 0 auto;
 }
 
 .type-stat-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  box-shadow: var(--card-unified-shadow-hover);
+  transform: translateY(calc(-1 * var(--spacing-1)));
 }
 
 .type-stat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  margin-bottom: var(--spacing-3);
+  padding-bottom: var(--spacing-2);
   border-bottom: 1px solid var(--n-divider-color);
 }
 
 .type-title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--n-text-color-1);
 }
@@ -288,19 +346,19 @@ onMounted(() => {
 
 .metric-item {
   text-align: center;
-  padding: 6px 2px;
+  padding: var(--spacing-2) var(--spacing-1); /* 8px 4px */
 }
 
 .metric-value {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--n-primary-color);
-  margin-bottom: 2px;
+  margin-bottom: var(--spacing-1); /* 4px */
   line-height: 1.1;
 }
 
 .metric-label {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--n-text-color-2);
   font-weight: 500;
   line-height: 1.2;
@@ -312,23 +370,23 @@ onMounted(() => {
 :deep(.n-statistic-value) {
   font-weight: 700;
   color: var(--n-primary-color);
-  font-size: 24px;
+  font-size: var(--font-size-2xl);
 }
 
 :deep(.n-statistic-label) {
   color: var(--n-text-color-2);
   font-weight: 600;
-  font-size: 13px;
-  margin-bottom: 4px;
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--spacing-1);
 }
 
 /* 紧凑卡片内边距 */
 :deep(.overview-summary-card .n-card__content) {
-  padding: 16px;
+  padding: var(--card-padding-desktop);
 }
 
 :deep(.type-stat-card .n-card__content) {
-  padding: 12px;
+  padding: var(--card-padding-md);
 }
 
 /* 进度条样式优化 */
@@ -338,127 +396,189 @@ onMounted(() => {
 
 /* 加载状态样式 */
 :deep(.n-spin-content) {
-  min-height: 200px;
+  min-height: var(--spacing-50); /* 50 * 4px */
 }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .statistics-container {
-    padding: 12px;
+    padding: var(--container-responsive-padding-tablet);
+    max-width: 100%;
+  }
+
+  .stats-card {
+    border-radius: var(--card-border-radius-tablet);
+    box-shadow: var(--card-shadow-tablet);
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 360px) {
+  .statistics-container {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+
+  .stats-card {
+    border-radius: var(--spacing-2);
+  }
+
+  .overview-summary-card,
+  .type-stat-card {
+    padding: var(--spacing-2);
+  }
+
+  .grid {
+    gap: var(--spacing-2);
+  }
+
+  .metric-item {
+    padding: var(--spacing-2);
+  }
+}
+
+/* 平板端布局优化 */
+@media (max-width: var(--breakpoint-tablet)) {
+  .overview-summary-card {
+    width: 100%;
+    box-shadow: var(--card-shadow-tablet);
+  }
+
+  .type-stat-card {
+    width: 100%;
+    box-shadow: var(--card-shadow-tablet);
   }
 
   .overview-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--spacing-3);
   }
 
   .overview-item {
-    padding: 8px;
+    padding: var(--spacing-2);
   }
 
   .type-stats-grid {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: var(--spacing-2);
   }
 
   .stats-metrics {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: var(--spacing-2);
     margin-bottom: 0;
   }
 
   .metric-item {
-    padding: 8px;
+    padding: var(--spacing-2);
     background: var(--n-color-embedded);
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
     border: 1px solid var(--n-border-color);
   }
 
   .metric-value {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .type-stat-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    margin-bottom: 8px;
-    padding-bottom: 6px;
+    gap: var(--spacing-2); /* 8px */
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-2);
   }
 
   .type-title {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   :deep(.overview-summary-card .n-card__content) {
-    padding: 12px;
+    padding: var(--spacing-3);
   }
 
   :deep(.type-stat-card .n-card__content) {
-    padding: 10px;
+    padding: var(--spacing-3);
   }
 
   :deep(.n-statistic-value) {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   .statistics-container {
-    padding: 8px;
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .stats-card {
+    border-radius: var(--spacing-2);
+    box-shadow: var(--card-shadow-medium);
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .overview-summary-card {
+    width: 100%;
+    box-shadow: var(--card-shadow-medium);
+  }
+
+  .type-stat-card {
+    width: 100%;
+    box-shadow: var(--card-shadow-medium);
   }
 
   .overview-grid {
-    gap: 8px;
+    gap: var(--spacing-2);
   }
 
   .overview-item {
-    padding: 6px;
+    padding: var(--spacing-2);
   }
 
   .type-stats-grid {
-    gap: 6px;
+    gap: var(--spacing-2);
   }
 
   .stats-metrics {
-    gap: 6px;
+    gap: var(--spacing-2);
   }
 
   .metric-item {
-    padding: 6px;
+    padding: var(--spacing-2);
   }
 
   .metric-value {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .metric-label {
-    font-size: 10px;
+    font-size: var(--font-size-xs);
   }
 
   .type-title {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .type-stat-header {
-    margin-bottom: 6px;
-    padding-bottom: 4px;
+    margin-bottom: var(--spacing-2); /* 8px */
+    padding-bottom: var(--spacing-1); /* 4px */
   }
 
   :deep(.overview-summary-card .n-card__content) {
-    padding: 10px;
+    padding: var(--spacing-2);
   }
 
   :deep(.type-stat-card .n-card__content) {
-    padding: 8px;
+    padding: var(--spacing-2);
   }
 
   :deep(.n-statistic-value) {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   :deep(.n-statistic-label) {
-    font-size: 11px;
+    font-size: var(--font-size-xs);
   }
 }
 </style>

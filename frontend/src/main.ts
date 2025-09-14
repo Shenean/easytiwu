@@ -1,11 +1,9 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import router from './router'
 import App from './App.vue'
 import 'vfonts/Lato.css'
 import 'vfonts/FiraCode.css'
-import './styles/global.css'
-import './styles/spacing.css'
-import './styles/components.css'
+import './styles/index.css'
 import naive from 'naive-ui'
 
 // 创建应用实例

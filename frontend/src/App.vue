@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, provide, watch } from 'vue'
-import { darkTheme, type GlobalThemeOverrides } from 'naive-ui'
+import {computed, onMounted, provide, ref, watch} from 'vue'
+import {darkTheme, type GlobalThemeOverrides} from 'naive-ui'
 import NavigationBar from './components/NavigationBar.vue'
-import { RouterView } from 'vue-router'
+import {RouterView} from 'vue-router'
 
 // 主题状态管理
 const currentTheme = ref<'light' | 'dark' | 'auto'>('light')
@@ -103,13 +103,13 @@ provide('getGlobalTheme', getGlobalTheme)
 <style>
 /* 全局主题样式 */
 :root {
-  --text-color: #2c3e50;
-  --border-color: #e0e0e0;
+  --text-color: var(--color-text-primary);
+  --border-color: var(--color-border-primary);
 }
 
 [data-theme="dark"] {
-  --text-color: #ffffff;
-  --border-color: #404040;
+  --text-color: var(--color-text-inverse);
+  --border-color: var(--color-border-primary);
 }
 
 body {

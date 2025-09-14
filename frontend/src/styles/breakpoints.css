@@ -1,0 +1,162 @@
+/* 统一断点常量文件 */
+/* 解决项目中媒体查询重复定义的问题 */
+
+:root {
+  /* 断点定义 */
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1200px;
+  --breakpoint-large: 1400px;
+  
+  /* 容器最大宽度 */
+  --container-max-width: 1400px; /* 350 * 4px */
+  --container-medium-width: 1200px; /* 300 * 4px */
+  --container-small-width: 896px; /* 224 * 4px */
+}
+
+/* 断点混合类 - 提供常用的媒体查询 */
+
+/* 移动端优先的断点 */
+@media (max-width: 479px) {
+  .mobile-only {
+    display: block;
+  }
+  .tablet-up {
+    display: none;
+  }
+  .desktop-up {
+    display: none;
+  }
+}
+
+/* 平板端断点 */
+@media (min-width: 480px) and (max-width: 767px) {
+  .mobile-only {
+    display: none;
+  }
+  .tablet-only {
+    display: block;
+  }
+  .desktop-up {
+    display: none;
+  }
+}
+
+/* 桌面端断点 */
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+  .tablet-only {
+    display: none;
+  }
+  .desktop-up {
+    display: block;
+  }
+}
+
+/* 常用媒体查询类 */
+@media (max-width: var(--breakpoint-mobile)) {
+  .responsive-container {
+    padding: var(--spacing-4); /* 16px */
+    margin: var(--spacing-2); /* 8px */
+  }
+  
+  .responsive-text {
+    font-size: var(--font-size-sm);
+  }
+  
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3); /* 12px */
+  }
+}
+
+@media (max-width: var(--breakpoint-tablet)) {
+  .responsive-container {
+    padding: var(--spacing-5); /* 20px */
+    margin: var(--spacing-3); /* 12px */
+  }
+  
+  .responsive-text {
+    font-size: var(--font-size-sm);
+  }
+  
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4); /* 16px */
+  }
+}
+
+@media (min-width: var(--breakpoint-desktop)) {
+  .responsive-container {
+    padding: var(--spacing-6); /* 24px */
+    margin: var(--spacing-4); /* 16px */
+    max-width: var(--container-max-width);
+  }
+  
+  .responsive-text {
+    font-size: var(--font-size-base);
+  }
+  
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-5); /* 20px */
+  }
+}
+
+@media (min-width: var(--breakpoint-large)) {
+  .responsive-container {
+    padding: var(--spacing-8); /* 32px */
+  }
+  
+  .responsive-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6); /* 24px */
+  }
+}
+
+/* 特殊媒体查询 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .landscape-compact {
+    padding: var(--spacing-2); /* 8px */
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .touch-friendly {
+    min-height: var(--spacing-11);
+    min-width: var(--spacing-11);
+    padding: var(--spacing-3); /* 12px */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .auto-dark {
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-dark);
+  }
+}
+
+@media (prefers-contrast: high) {
+  .high-contrast {
+    border-width: var(--border-width-2);
+    outline-width: var(--border-width-2);
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .retina {
+    /* 高分辨率屏幕优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

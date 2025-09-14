@@ -6,12 +6,26 @@
         <slot name="headerExtra" />
       </template>
 
-      <slot />
+      <!-- 网格布局模式 -->
+      <n-grid v-if="useGrid" :cols="gridCols" :x-gap="gridXGap" :y-gap="gridYGap" :responsive="gridResponsive">
+        <slot />
+      </n-grid>
+      <!-- 普通布局模式 -->
+      <div v-else>
+        <slot />
+      </div>
     </n-card>
 
-    <!-- 无卡片模式，直接渲染内容 -->
+    <!-- 无卡片模式 -->
     <div v-else :class="contentClass">
-      <slot />
+      <!-- 网格布局模式 -->
+      <n-grid v-if="useGrid" :cols="gridCols" :x-gap="gridXGap" :y-gap="gridYGap" :responsive="gridResponsive">
+        <slot />
+      </n-grid>
+      <!-- 普通布局模式 -->
+      <div v-else>
+        <slot />
+      </div>
     </div>
   </div>
 </template>
@@ -43,13 +57,24 @@ interface Props {
   centered?: boolean
   /** 响应式断点 */
   responsive?: boolean
+
+  /** 是否使用网格布局 */
+  useGrid?: boolean
+  /** 网格列数配置 */
+  gridCols?: number | string
+  /** 网格水平间距 */
+  gridXGap?: number
+  /** 网格垂直间距 */
+  gridYGap?: number
+  /** 网格响应式配置 */
+  gridResponsive?: 'self' | 'screen'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   showCard: true,
-  maxWidth: '1080px',
-  padding: '20px',
+  maxWidth: 'var(--container-default-max-width)',
+  padding: 'var(--container-default-padding)',
   cardSize: 'large',
   bordered: true,
   segmented: true,
@@ -57,7 +82,13 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   cardClass: '',
   centered: true,
-  responsive: true
+  responsive: true,
+
+  useGrid: false,
+  gridCols: 'auto',
+  gridXGap: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--spacing-4').trim()),
+  gridYGap: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--spacing-4').trim()),
+  gridResponsive: 'self'
 })
 
 // 计算容器样式类
@@ -89,7 +120,7 @@ const contentClass = computed(() => [
 <style scoped>
 .page-container {
   width: 100%;
-  min-height: calc(100vh - 140px);
+  min-height: var(--page-default-min-height);
   padding: v-bind(padding);
 }
 
@@ -100,16 +131,17 @@ const contentClass = computed(() => [
 }
 
 .page-card {
-  width: 100%;
+  width: var(--card-standard-width);
   max-width: v-bind(maxWidth);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
+  box-shadow: var(--card-unified-shadow);
+  border-radius: var(--card-border-radius);
   transition: box-shadow 0.3s ease;
   margin: 0 auto;
+  border: none;
 }
 
 .page-card:hover {
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-unified-shadow-hover);
 }
 
 .page-content {
@@ -129,23 +161,23 @@ const contentClass = computed(() => [
 
   /* 桌面端 */
   @media (min-width: 1200px) {
-    padding: 48px 24px;
+    padding: var(--container-responsive-padding-desktop);
   }
 
   /* 平板端 */
   @media (max-width: 1199px) and (min-width: 769px) {
-    padding: 32px 20px;
+    padding: var(--container-responsive-padding-tablet);
   }
 
   /* 移动端 */
   @media (max-width: 768px) {
-    padding: 16px 12px;
-    min-height: calc(100vh - 120px);
+    padding: var(--container-responsive-padding-mobile);
+    min-height: var(--page-min-height-tablet);
   }
 
   @media (max-width: 480px) {
-    padding: 12px 8px;
-    min-height: calc(100vh - 100px);
+    padding: var(--container-responsive-padding-small);
+    min-height: var(--page-min-height-mobile);
   }
 }
 
@@ -153,56 +185,62 @@ const contentClass = computed(() => [
 
   /* 移动端卡片优化 */
   @media (max-width: 768px) {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin: 0 -4px;
+    max-width: var(--card-max-width-tablet);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-unified-shadow-tablet);
+    margin: 0 calc(-1 * var(--spacing-1));
   }
 
   @media (max-width: 480px) {
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    margin: 0 -4px;
+    max-width: var(--card-max-width-mobile);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-unified-shadow-mobile);
+    margin: 0 calc(-1 * var(--spacing-1));
   }
 }
 
 /* 卡片内容区域优化 */
 :deep(.n-card__header) {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--card-padding-desktop) var(--card-padding-desktop) var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-light);
   font-weight: 600;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
 }
 
 :deep(.n-card__content) {
-  padding: 24px;
+  padding: var(--card-padding-desktop);
+  max-width: var(--card-content-max-width);
+  margin: 0 auto;
 }
 
 /* 移动端卡片内容优化 */
 @media (max-width: 768px) {
   :deep(.n-card__header) {
-    padding: 16px 20px 12px;
-    font-size: 16px;
+    padding: var(--card-padding-tablet) var(--card-padding-tablet) var(--spacing-3);
+    font-size: var(--font-size-base);
   }
 
   :deep(.n-card__content) {
-    padding: 20px;
+    padding: var(--card-padding-tablet);
+    max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   :deep(.n-card__header) {
-    padding: 12px 16px 10px;
-    font-size: 15px;
+    padding: var(--card-padding-mobile) var(--card-padding-mobile) var(--spacing-3);
+    font-size: var(--font-size-sm);
   }
 
   :deep(.n-card__content) {
-    padding: 16px;
+    padding: var(--card-padding-mobile);
+    max-width: 100%;
   }
 }
 
 /* 特殊页面样式适配 */
 .page-container.content-page {
-  padding: 20px;
+  padding: var(--spacing-5);
 }
 
 /* 动画效果 */
@@ -213,7 +251,7 @@ const contentClass = computed(() => [
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(var(--spacing-5));
   }
 
   to {

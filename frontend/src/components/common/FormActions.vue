@@ -37,8 +37,16 @@ const emit = defineEmits<{
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--spacing-3);
   width: 100%;
-  margin-top: 12px;
+  margin-top: var(--form-item-margin);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .form-actions {
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-3);
+  }
 }
 </style>

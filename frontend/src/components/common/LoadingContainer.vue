@@ -50,21 +50,21 @@ const containerStyle = computed(() => {
 }
 
 :deep(.n-spin-description) {
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: var(--spacing-3);
+  font-size: var(--font-size-base);
   color: var(--n-text-color-2);
   font-weight: 500;
 }
 
 @media (max-width: 768px) {
   .loading-container {
-    min-height: 150px;
-    padding: 20px;
+    min-height: var(--spacing-38);
+    padding: var(--spacing-5);
   }
 
   :deep(.n-spin-description) {
-    font-size: 13px;
-    margin-top: 10px;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-3);
   }
 }
 
@@ -75,7 +75,7 @@ const containerStyle = computed(() => {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(var(--spacing-3));
   }
 
   to {

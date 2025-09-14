@@ -12,15 +12,14 @@
         </div>
 
         <div class="theme-toggle-container">
-          <button class="theme-toggle-btn" :class="{ 'dark-mode': isDarkMode }" @click="toggleTheme"
-            :aria-label="isDarkMode ? '切换到亮色主题' : '切换到暗色主题'">
-            <div class="toggle-track">
-              <div class="toggle-thumb">
-                <n-icon size="14" class="theme-icon">
-                  <i :class="isDarkMode ? 'i-ion-moon' : 'i-ion-sunny'"></i>
-                </n-icon>
-              </div>
+          <button class="theme-toggle-btn" :class="`theme-${currentTheme}`" @click="toggleTheme"
+            :aria-label="getThemeLabel()">
+            <div class="theme-icon-container">
+              <n-icon size="18" class="theme-icon">
+                <i :class="getThemeIcon()"></i>
+              </n-icon>
             </div>
+            <span class="theme-text">{{ getThemeText() }}</span>
           </button>
         </div>
       </div>
@@ -39,60 +38,95 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, inject } from 'vue'
-import { useMessage } from 'naive-ui'
+import {inject, onMounted, ref} from 'vue'
+import {useMessage} from 'naive-ui'
 import PageContainer from '../components/common/PageContainer.vue'
 
-type Theme = 'light' | 'dark'
+type Theme = 'light' | 'dark' | 'system'
 
 const message = useMessage()
-const isDarkMode = ref(false)
+const currentTheme = ref<Theme>('system')
 
 const setGlobalTheme = inject<(theme: Theme) => void>('setGlobalTheme')
 const getGlobalTheme = inject<() => Theme>('getGlobalTheme')
 
 onMounted(() => {
-  let currentTheme: Theme
   if (getGlobalTheme) {
-    currentTheme = getGlobalTheme()
+    currentTheme.value = getGlobalTheme()
   } else {
-    currentTheme = (localStorage.getItem('app-theme') as Theme) || 'light'
+    currentTheme.value = (localStorage.getItem('app-theme') as Theme) || 'system'
   }
-  isDarkMode.value = currentTheme === 'dark'
 })
 
 function toggleTheme() {
-  isDarkMode.value = !isDarkMode.value
-  const newTheme: Theme = isDarkMode.value ? 'dark' : 'light'
+  const themeOrder: Theme[] = ['light', 'dark', 'system']
+  const currentIndex = themeOrder.indexOf(currentTheme.value)
+  const nextIndex = (currentIndex + 1) % themeOrder.length
+  currentTheme.value = themeOrder[nextIndex]
 
-  localStorage.setItem('app-theme', newTheme)
-  if (setGlobalTheme) setGlobalTheme(newTheme)
+  localStorage.setItem('app-theme', currentTheme.value)
+  if (setGlobalTheme) setGlobalTheme(currentTheme.value)
 
-  message.success(`已切换到 ${isDarkMode.value ? '暗色主题' : '亮色主题'}`)
+  message.success(`已切换到 ${getThemeText()}`)
+}
+
+function getThemeText(): string {
+  const themeTexts = {
+    light: '亮色主题',
+    dark: '暗色主题',
+    system: '跟随系统'
+  }
+  return themeTexts[currentTheme.value]
+}
+
+function getThemeIcon(): string {
+  const themeIcons = {
+    light: 'i-ion-sunny',
+    dark: 'i-ion-moon',
+    system: 'i-ion-desktop-outline'
+  }
+  return themeIcons[currentTheme.value]
+}
+
+function getThemeLabel(): string {
+  const themeOrder: Theme[] = ['light', 'dark', 'system']
+  const currentIndex = themeOrder.indexOf(currentTheme.value)
+  const nextIndex = (currentIndex + 1) % themeOrder.length
+  const nextTheme = themeOrder[nextIndex]
+  const nextThemeText = {
+    light: '亮色主题',
+    dark: '暗色主题',
+    system: '跟随系统'
+  }[nextTheme]
+  return `切换到${nextThemeText}`
 }
 </script>
 
 <style scoped>
 .settings-container {
-  max-width: 900px;
+  max-width: var(--container-max-width-sm);
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--spacing-5);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .settings-card {
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--card-border-radius-desktop);
+  box-shadow: var(--card-shadow-medium);
+  border: 1px solid var(--color-black-05);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .setting-section {
-  padding: 16px 20px;
+  padding: var(--spacing-4) var(--spacing-5);
   border-bottom: 1px dashed var(--n-border-color);
 }
 
 .setting-section.small {
   border-bottom: none;
-  padding-bottom: 12px;
+  padding-bottom: var(--spacing-3);
 }
 
 /* 设置行布局 */
@@ -100,7 +134,7 @@ function toggleTheme() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .setting-info {
@@ -110,24 +144,24 @@ function toggleTheme() {
 .setting-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 4px;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-1);
 }
 
 .setting-icon {
-  color: #18a058;
+  color: var(--color-primary);
 }
 
 .setting-title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--n-text-color);
 }
 
 .setting-description {
   color: var(--n-text-color-2);
-  font-size: 13px;
+  font-size: var(--font-size-xs);
   margin: 0;
 }
 
@@ -139,95 +173,168 @@ function toggleTheme() {
 .theme-toggle-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 4px;
-  background: transparent;
-  border: none;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--spacing-3);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+  justify-content: flex-start;
+}
+
+.theme-toggle-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .theme-toggle-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle-btn:hover::before {
+  opacity: 1;
 }
 
 .theme-toggle-btn:active {
-  transform: scale(0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.toggle-track {
-  position: relative;
-  width: 44px;
-  height: 22px;
-  background: #e5e7eb;
-  border-radius: 11px;
-  transition: background-color 0.3s ease;
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
-.theme-toggle-btn.dark-mode .toggle-track {
-  background: #18a058;
-}
-
-.toggle-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
-  background: white;
-  border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.theme-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: var(--spacing-8);
+  height: var(--spacing-8);
+  border-radius: var(--spacing-2);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
-.theme-toggle-btn.dark-mode .toggle-thumb {
-  transform: translateX(22px);
-  background: white;
+.theme-text {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--n-text-color);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+/* 不同主题状态的样式 */
+.theme-toggle-btn.theme-light .theme-icon-container {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.theme-toggle-btn.theme-dark .theme-icon-container {
+  background: linear-gradient(135deg, #4a5568, #2d3748);
+  border-color: rgba(74, 85, 104, 0.3);
+  box-shadow: 0 2px 8px rgba(74, 85, 104, 0.2);
+}
+
+.theme-toggle-btn.theme-system .theme-icon-container {
+  background: linear-gradient(135deg, var(--color-primary), rgba(var(--color-primary-rgb), 0.8));
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.2);
 }
 
 .theme-icon {
-  color: #18a058;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
-.theme-toggle-btn.dark-mode .theme-icon {
-  color: #18a058;
+.theme-toggle-btn.theme-light .theme-icon {
+  color: #b45309;
+}
+
+.theme-toggle-btn.theme-dark .theme-icon {
+  color: #e2e8f0;
+}
+
+.theme-toggle-btn.theme-system .theme-icon {
+  color: white;
+}
+
+/* 暗色主题下的按钮样式 */
+@media (prefers-color-scheme: dark) {
+  .theme-toggle-btn {
+    background: rgba(40, 40, 40, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .theme-toggle-btn::before {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  }
+
+  .theme-toggle-btn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .theme-text {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .theme-icon-container {
+    background: rgba(60, 60, 60, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
 
 
 /* 移动端设置页面优化 */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .settings-container {
-    padding: 12px;
+    padding: var(--container-responsive-padding-tablet);
     max-width: 100%;
   }
 
   .settings-card {
-    border-radius: 12px;
+    border-radius: var(--card-border-radius-tablet);
     margin: 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--card-shadow-tablet);
   }
 
   .setting-section {
-    padding: 16px 20px;
+    padding: var(--spacing-4) var(--spacing-5);
   }
 
   .setting-section.small {
-    padding: 12px 20px;
+    padding: var(--spacing-3) var(--spacing-5);
   }
 
   .setting-row {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    min-height: 56px;
+    gap: var(--spacing-4);
+    min-height: var(--spacing-14);
   }
 
   .setting-info {
@@ -235,24 +342,24 @@ function toggleTheme() {
   }
 
   .setting-header {
-    gap: 10px;
-    margin-bottom: 2px;
+    gap: var(--spacing-3); /* 12px */
+    margin-bottom: var(--spacing-1); /* 4px */
   }
 
   .setting-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .setting-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 500;
     line-height: 1.4;
   }
 
   .setting-description {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     line-height: 1.4;
-    margin-top: 2px;
+    margin-top: var(--spacing-1); /* 4px */
   }
 
   .theme-toggle-container {
@@ -260,29 +367,19 @@ function toggleTheme() {
   }
 
   .theme-toggle-btn {
-    padding: 6px;
-    min-width: 48px;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: var(--spacing-2) var(--spacing-3);
+    min-width: 100px;
+    min-height: var(--spacing-12);
+    gap: var(--spacing-2);
   }
 
-  .toggle-track {
-    width: 42px;
-    height: 22px;
-    border-radius: 11px;
+  .theme-icon-container {
+    width: var(--spacing-7);
+    height: var(--spacing-7);
   }
 
-  .toggle-thumb {
-    width: 18px;
-    height: 18px;
-    top: 2px;
-    left: 2px;
-  }
-
-  .theme-toggle-btn.dark-mode .toggle-thumb {
-    transform: translateX(20px);
+  .theme-text {
+    font-size: var(--font-size-xs);
   }
 
   /* 表单组件优化 */
@@ -292,8 +389,8 @@ function toggleTheme() {
 
   :deep(.n-radio) {
     width: 100%;
-    min-height: 48px;
-    padding: 8px 12px;
+    min-height: var(--spacing-12); /* 48px */
+    padding: var(--spacing-2) var(--spacing-3);
   }
 
   :deep(.n-radio__dot) {
@@ -301,7 +398,7 @@ function toggleTheme() {
   }
 
   :deep(.n-card__header) {
-    padding: 20px 20px 0;
+    padding: var(--spacing-5) var(--spacing-5) 0;
   }
 
   :deep(.n-card__content) {
@@ -309,106 +406,119 @@ function toggleTheme() {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   .settings-container {
-    padding: 8px;
+    padding: var(--container-responsive-padding-mobile);
   }
 
   .settings-card {
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border-radius: var(--card-border-radius-mobile);
+    box-shadow: var(--card-shadow-mobile);
   }
 
   .setting-section {
-    padding: 14px 16px;
+    padding: var(--spacing-4) var(--spacing-4); /* 16px 16px */
   }
 
   .setting-section.small {
-    padding: 10px 16px;
+    padding: var(--spacing-3) var(--spacing-4); /* 12px 16px */
   }
 
   .setting-row {
-    gap: 12px;
-    min-height: 52px;
+    gap: var(--spacing-3);
+    min-height: var(--spacing-13); /* 52px */
   }
 
   .setting-header {
-    gap: 8px;
+    gap: var(--spacing-2);
   }
 
   .setting-icon {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .setting-title {
-    font-size: 15px;
+    font-size: var(--font-size-base);
     font-weight: 500;
   }
 
   .setting-description {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .theme-toggle-btn {
-    padding: 4px;
-    min-width: 44px;
-    min-height: 44px;
+    padding: var(--spacing-2);
+    min-width: 90px;
+    min-height: var(--spacing-11);
+    gap: var(--spacing-2);
   }
 
-  .toggle-track {
-    width: 38px;
-    height: 20px;
-    border-radius: 10px;
+  .theme-icon-container {
+    width: var(--spacing-6);
+    height: var(--spacing-6);
   }
 
-  .toggle-thumb {
-    width: 16px;
-    height: 16px;
-    top: 2px;
-    left: 2px;
-  }
-
-  .theme-toggle-btn.dark-mode .toggle-thumb {
-    transform: translateX(18px);
+  .theme-text {
+    font-size: var(--font-size-xs);
   }
 
   :deep(.n-card__header) {
-    padding: 16px 16px 0;
+    padding: var(--spacing-4) var(--spacing-4) 0;
   }
 
   :deep(.n-radio) {
-    min-height: 44px;
-    padding: 6px 10px;
+    min-height: var(--spacing-11);
+    padding: var(--spacing-2) var(--spacing-3); /* 8px 12px */
   }
 }
 
 /* 横屏模式优化 */
-@media (max-width: 768px) and (orientation: landscape) {
+@media (max-width: var(--breakpoint-tablet)) and (orientation: landscape) {
   .settings-container {
-    padding: 8px 16px;
+    padding: var(--spacing-2) var(--spacing-4);
   }
 
   .setting-section {
-    padding: 12px 20px;
+    padding: var(--spacing-3) var(--spacing-5);
   }
 
   .setting-row {
-    min-height: 48px;
+    min-height: var(--spacing-12);
   }
 
   .theme-toggle-btn {
-    padding: 4px;
-    min-width: 44px;
-    min-height: 44px;
+    padding: var(--spacing-1);
+    min-width: var(--spacing-11);
+    min-height: var(--spacing-11);
+  }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 360px) {
+  .settings-container {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+
+  .settings-card {
+    border-radius: var(--spacing-2);
+  }
+
+  .setting-section {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .setting-row {
+    min-height: var(--spacing-10);
+    padding: var(--spacing-2) 0;
   }
 }
 
 /* 触摸优化 */
 @media (hover: none) and (pointer: coarse) {
   .theme-toggle-btn {
-    min-width: 48px;
-    min-height: 48px;
-    padding: 6px;
+    min-width: var(--spacing-12);
+    min-height: var(--spacing-12);
+    padding: var(--spacing-2);
   }
 
   .theme-toggle-btn:hover {
@@ -419,16 +529,16 @@ function toggleTheme() {
   .theme-toggle-btn:active {
     transform: scale(0.96);
     transition: transform 0.1s ease;
-    background: rgba(24, 160, 88, 0.08);
-    border-radius: 8px;
+    background: var(--color-primary-08);
+    border-radius: var(--border-radius-md);
   }
 
   .setting-row {
-    min-height: 56px;
+    min-height: var(--spacing-14);
   }
 
   .setting-section {
-    padding: 16px 20px;
+    padding: var(--spacing-4) var(--spacing-5);
   }
 }
 </style>

@@ -17,15 +17,15 @@
         <n-upload v-model:file-list="form.file" :accept="'.docx,.pdf,.txt'" :max="1" :multiple="false" action="#"
           :custom-request="handleCustomRequest" @before-upload="handleBeforeUpload">
           <n-upload-dragger>
-            <div style="margin-bottom: 12px">
+            <div style="margin-bottom: var(--spacing-3)">
               <n-icon size="48" :depth="3">
                 <ArchiveIcon />
               </n-icon>
             </div>
-            <n-text style="font-size: 16px">
+            <n-text style="font-size: var(--font-size-base)">
               点击或者拖动文件到该区域来上传
             </n-text>
-            <n-p depth="3" style="margin: 8px 0 0 0">
+            <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
               支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB
             </n-p>
           </n-upload-dragger>
@@ -187,41 +187,41 @@ defineExpose({
 
 <style scoped>
 .upload-card {
-  max-width: 640px;
-  margin: 40px auto;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
+  max-width: var(--spacing-160); /* 160 * 4px */
+  margin: var(--spacing-10) auto;
+  box-shadow: var(--shadow-card-light);
+  border-radius: var(--spacing-4);
   transition: box-shadow 0.3s ease;
 }
 
 .upload-card:hover {
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card-medium);
 }
 
 /* 移动端表单优化 */
 @media (max-width: 768px) {
   .upload-card {
-    margin: 16px;
+    margin: var(--spacing-4);
     max-width: none;
   }
 
   /* 表单项移动端优化 */
   :deep(.n-form-item-label) {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   :deep(.n-input) {
-    font-size: 16px !important;
-    min-height: 44px;
+    font-size: var(--font-size-base) !important;
+    min-height: var(--spacing-11); /* 44px */
   }
 
   :deep(.n-input__input-el) {
-    font-size: 16px !important;
+    font-size: var(--font-size-base) !important;
   }
 
   :deep(.n-input__textarea-el) {
-    font-size: 16px !important;
+    font-size: var(--font-size-base) !important;
   }
 
 
@@ -229,16 +229,16 @@ defineExpose({
 
 @media (max-width: 480px) {
   .upload-card {
-    margin: 12px;
+    margin: var(--spacing-3);
     border-radius: 12px;
   }
 
   :deep(.n-form-item-label) {
-    font-size: 13px;
+    font-size: var(--font-size-xs);
   }
 
   :deep(.n-input) {
-    min-height: 42px;
+    min-height: var(--spacing-11); /* 44px */
   }
 
 
@@ -247,11 +247,11 @@ defineExpose({
 /* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
   .upload-card {
-    margin: 8px;
+    margin: var(--spacing-2);
   }
 
   :deep(.n-input) {
-    min-height: 38px;
+    min-height: var(--spacing-10); /* 40px */
   }
 
 

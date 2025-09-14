@@ -1,0 +1,250 @@
+/* 统一颜色系统变量文件 */
+/* 解决项目中颜色值重复定义的问题 */
+
+:root {
+  /* 主题色系 */
+  --color-primary: #18a058;
+  --color-primary-hover: #36ad6a;
+  --color-primary-active: #0c7a43;
+  --color-primary-light: #4ade80;
+  --color-primary-lighter: #86efac;
+  --color-primary-lightest: #dcfce7;
+  
+  /* 文本颜色 */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #999999;
+  --color-text-quaternary: #cccccc;
+  --color-text-disabled: #d9d9d9;
+  --color-text-inverse: #ffffff;
+  
+  /* 背景颜色 */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #f1f3f4;
+  --color-bg-quaternary: #e8eaed;
+  --color-bg-disabled: #f5f5f5;
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* 边框颜色 */
+  --color-border-primary: #e0e0e0;
+  --color-border-secondary: #e8e8e8;
+  --color-border-tertiary: #f0f0f0;
+  --color-border-focus: var(--color-primary);
+  --color-border-error: #ff4d4f;
+  --color-border-warning: #faad14;
+  --color-border-success: var(--color-primary);
+  
+  /* 状态颜色 */
+  --color-success: #52c41a;
+  --color-success-light: #b7eb8f;
+  --color-success-lighter: #f6ffed;
+  
+  --color-warning: #faad14;
+  --color-warning-light: #ffe58f;
+  --color-warning-lighter: #fffbe6;
+  
+  --color-error: #ff4d4f;
+  --color-error-light: #ffccc7;
+  --color-error-lighter: #fff2f0;
+  
+  --color-info: #1890ff;
+  --color-info-light: #91d5ff;
+  --color-info-lighter: #e6f7ff;
+  
+  /* 阴影颜色 */
+  --color-shadow-light: rgba(0, 0, 0, 0.04);
+  --color-shadow-medium: rgba(0, 0, 0, 0.08);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.12);
+  --color-shadow-intense: rgba(0, 0, 0, 0.16);
+  
+  /* 透明度变体颜色 */
+  --color-white-98: rgba(255, 255, 255, 0.98);
+  --color-white-10: rgba(255, 255, 255, 0.1);
+  --color-white-05: rgba(255, 255, 255, 0.05);
+  --color-black-15: rgba(0, 0, 0, 0.15);
+  --color-black-05: rgba(0, 0, 0, 0.05);
+  --color-black-06: rgba(0, 0, 0, 0.06);
+  --color-black-08: rgba(0, 0, 0, 0.08);
+  --color-black-10: rgba(0, 0, 0, 0.1);
+  
+  /* 主色调透明度变体 */
+  --color-primary-10: rgba(24, 160, 88, 0.1);
+  --color-primary-12: rgba(24, 160, 88, 0.12);
+  --color-primary-15: rgba(24, 160, 88, 0.15);
+  --color-primary-18: rgba(24, 160, 88, 0.18);
+  --color-primary-20: rgba(24, 160, 88, 0.2);
+  --color-primary-25: rgba(24, 144, 255, 0.25);
+  --color-primary-30: rgba(24, 160, 88, 0.3);
+  --color-primary-08: rgba(24, 160, 88, 0.08);
+  
+  /* 信息色透明度变体 */
+  --color-info-25: rgba(24, 144, 255, 0.25);
+  
+  /* 文本颜色透明度变体 */
+  --color-text-90: rgba(51, 54, 57, 0.9);
+  --color-text-white-90: rgba(255, 255, 255, 0.9);
+  
+  /* 深色背景色 */
+  --color-bg-dark: rgba(16, 16, 20, 0.95);
+  --color-bg-dark-98: rgba(16, 16, 20, 0.98);
+  
+  /* 边框颜色透明度变体 */
+  --color-border-white-10: rgba(255, 255, 255, 0.1);
+  --color-border-white-08: rgba(255, 255, 255, 0.08);
+  
+  /* 模态背景 */
+  --color-modal-backdrop: rgba(0, 0, 0, 0.8);
+  
+  /* 灰色系 */
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  
+  /* 链接颜色 */
+  --color-link: var(--color-primary);
+  --color-link-hover: var(--color-primary-hover);
+  --color-link-active: var(--color-primary-active);
+  --color-link-visited: #722ed1;
+}
+
+/* 深色主题颜色 */
+:root[data-theme="dark"] {
+  /* 主题色系 - 深色模式下稍微调亮 */
+  --color-primary: #4ade80;
+  --color-primary-hover: #22c55e;
+  --color-primary-active: #16a34a;
+  
+  /* 文本颜色 - 深色模式 */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+  --color-text-quaternary: #6b7280;
+  --color-text-disabled: #4b5563;
+  --color-text-inverse: #000000;
+  
+  /* 背景颜色 - 深色模式 */
+  --color-bg-primary: #1f2937;
+  --color-bg-secondary: #374151;
+  --color-bg-tertiary: #4b5563;
+  --color-bg-quaternary: #6b7280;
+  --color-bg-disabled: #374151;
+  --color-bg-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* 边框颜色 - 深色模式 */
+  --color-border-primary: #404040;
+  --color-border-secondary: #525252;
+  --color-border-tertiary: #737373;
+  
+  /* 阴影颜色 - 深色模式 */
+  --color-shadow-light: rgba(0, 0, 0, 0.2);
+  --color-shadow-medium: rgba(0, 0, 0, 0.3);
+  --color-shadow-heavy: rgba(0, 0, 0, 0.4);
+  --color-shadow-intense: rgba(0, 0, 0, 0.5);
+}
+
+/* 自动深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* 主题色系 */
+    --color-primary: #4ade80;
+    --color-primary-hover: #22c55e;
+    --color-primary-active: #16a34a;
+    
+    /* 文本颜色 */
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #d1d5db;
+    --color-text-tertiary: #9ca3af;
+    --color-text-quaternary: #6b7280;
+    --color-text-disabled: #4b5563;
+    --color-text-inverse: #000000;
+    
+    /* 背景颜色 */
+    --color-bg-primary: #1f2937;
+    --color-bg-secondary: #374151;
+    --color-bg-tertiary: #4b5563;
+    --color-bg-quaternary: #6b7280;
+    --color-bg-disabled: #374151;
+    --color-bg-overlay: rgba(0, 0, 0, 0.7);
+    
+    /* 边框颜色 */
+    --color-border-primary: #404040;
+    --color-border-secondary: #525252;
+    --color-border-tertiary: #737373;
+    
+    /* 阴影颜色 */
+    --color-shadow-light: rgba(0, 0, 0, 0.2);
+    --color-shadow-medium: rgba(0, 0, 0, 0.3);
+    --color-shadow-heavy: rgba(0, 0, 0, 0.4);
+    --color-shadow-intense: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text-primary: #000000;
+    --color-text-secondary: #333333;
+    --color-border-primary: #000000;
+    --color-border-secondary: #333333;
+  }
+  
+  :root[data-theme="dark"],
+  :root:not([data-theme]) {
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #cccccc;
+    --color-border-primary: #ffffff;
+    --color-border-secondary: #cccccc;
+  }
+}
+
+/* 颜色工具类 */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+.text-info { color: var(--color-info); }
+
+.bg-primary { background-color: var(--color-bg-primary); }
+.bg-secondary { background-color: var(--color-bg-secondary); }
+.bg-tertiary { background-color: var(--color-bg-tertiary); }
+.bg-success { background-color: var(--color-success-lighter); }
+.bg-warning { background-color: var(--color-warning-lighter); }
+.bg-error { background-color: var(--color-error-lighter); }
+.bg-info { background-color: var(--color-info-lighter); }
+
+.border-primary { border-color: var(--color-border-primary); }
+.border-secondary { border-color: var(--color-border-secondary); }
+.border-success { border-color: var(--color-success); }
+.border-warning { border-color: var(--color-warning); }
+.border-error { border-color: var(--color-error); }
+.border-info { border-color: var(--color-info); }
+
+/* 主题色相关的工具类 */
+.theme-primary {
+  color: var(--color-primary);
+}
+
+.theme-primary-bg {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.theme-primary-border {
+  border-color: var(--color-primary);
+}
+
+.theme-primary-hover:hover {
+  color: var(--color-primary-hover);
+}
+
+.theme-primary-bg-hover:hover {
+  background-color: var(--color-primary-hover);
+}

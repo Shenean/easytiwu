@@ -113,8 +113,8 @@ const handleAction = () => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 200px;
-  padding: 32px 16px;
+  min-height: var(--spacing-50);
+  padding: var(--spacing-8) var(--spacing-4);
   text-align: center;
 }
 
@@ -123,50 +123,50 @@ const handleAction = () => {
 }
 
 .empty-state--small {
-  min-height: 120px;
-  padding: 20px 12px;
+  min-height: var(--spacing-30);
+  padding: var(--spacing-5) var(--spacing-3);
 }
 
 .empty-state--medium {
-  min-height: 200px;
-  padding: 32px 16px;
+  min-height: var(--spacing-50);
+  padding: var(--spacing-8) var(--spacing-4);
 }
 
 .empty-state--large {
-  min-height: 300px;
-  padding: 48px 24px;
+  min-height: var(--spacing-75);
+  padding: var(--spacing-12) var(--spacing-6);
 }
 
 .empty-state__content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  max-width: 400px;
+  gap: var(--spacing-4);
+  max-width: var(--spacing-100);
 }
 
 .empty-state__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
 }
 
 .custom-icon {
-  width: 64px;
-  height: 64px;
+  width: var(--spacing-16);
+  height: var(--spacing-16);
   color: var(--n-text-color-3);
 }
 
 .empty-state__description {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .empty-state__title {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 600;
   color: var(--n-text-color-1);
   line-height: 1.4;
@@ -174,7 +174,7 @@ const handleAction = () => {
 
 .empty-state__text {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-size-base);
   color: var(--n-text-color-2);
   line-height: 1.5;
   word-break: break-word;
@@ -182,100 +182,100 @@ const handleAction = () => {
 
 .empty-state__actions {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-3);
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 8px;
+  margin-top: var(--spacing-2);
 }
 
 /* 小尺寸样式调整 */
 .empty-state--small .empty-state__content {
-  gap: 12px;
+  gap: var(--spacing-3);
 }
 
 .empty-state--small .custom-icon {
-  width: 48px;
-  height: 48px;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
 }
 
 .empty-state--small .empty-state__title {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 .empty-state--small .empty-state__text {
-  font-size: 13px;
+  font-size: var(--font-size-sm);
 }
 
 /* 大尺寸样式调整 */
 .empty-state--large .empty-state__content {
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .empty-state--large .custom-icon {
-  width: 80px;
-  height: 80px;
+  width: var(--spacing-20);
+  height: var(--spacing-20);
 }
 
 .empty-state--large .empty-state__title {
-  font-size: 20px;
+  font-size: var(--font-size-xl);
 }
 
 .empty-state--large .empty-state__text {
-  font-size: 15px;
+  font-size: var(--font-size-lg);
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
   .empty-state {
-    min-height: 160px;
-    padding: 24px 12px;
+    min-height: var(--spacing-40);
+    padding: var(--spacing-6) var(--spacing-3);
   }
 
   .empty-state__content {
-    gap: 12px;
-    max-width: 300px;
+    gap: var(--spacing-3);
+    max-width: var(--spacing-75);
   }
 
   .custom-icon {
-    width: 48px;
-    height: 48px;
+    width: var(--spacing-12);
+    height: var(--spacing-12);
   }
 
   .empty-state__title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .empty-state__text {
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .empty-state__actions {
-    gap: 8px;
+    gap: var(--spacing-2);
   }
 }
 
 @media (max-width: 480px) {
   .empty-state {
-    min-height: 140px;
-    padding: 20px 8px;
+    min-height: var(--spacing-35);
+    padding: var(--spacing-5) var(--spacing-2);
   }
 
   .empty-state__content {
-    gap: 10px;
-    max-width: 280px;
+    gap: var(--spacing-3);
+    max-width: var(--spacing-70);
   }
 
   .custom-icon {
-    width: 40px;
-    height: 40px;
+    width: var(--spacing-10);
+    height: var(--spacing-10);
   }
 
   .empty-state__title {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   .empty-state__text {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -287,7 +287,7 @@ const handleAction = () => {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(var(--spacing-5));
   }
 
   to {

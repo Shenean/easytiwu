@@ -1,5 +1,5 @@
 <template>
-  <PageContainer title="题库列表" max-width="1080px" card-class="bank-card">
+  <PageContainer title="题库列表" card-class="bank-card">
     <!-- 空状态占位 -->
     <EmptyState v-if="!loading && banks.length === 0" description="暂无题库数据" icon-type="folder"
       :show-default-action="true" action-text="刷新数据" action-type="primary" action-size="small" @action="fetchBanks" />
@@ -16,20 +16,26 @@
           {{ bank.description }}
         </div>
 
-        <div class="bank-stats">
-          <div class="stat-item">
-            <div class="stat-label">总题数</div>
-            <div class="stat-value">{{ bank.totalCount }}</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">已完成</div>
-            <div class="stat-value">{{ bank.completedCount }}</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">错题数</div>
-            <div class="stat-value">{{ bank.wrongCount }}</div>
-          </div>
-        </div>
+        <n-grid :cols="3" :x-gap="8" :y-gap="8" class="bank-stats">
+          <n-grid-item>
+            <div class="stat-item">
+              <div class="stat-label">总题数</div>
+              <div class="stat-value">{{ bank.totalCount }}</div>
+            </div>
+          </n-grid-item>
+          <n-grid-item>
+            <div class="stat-item">
+              <div class="stat-label">已完成</div>
+              <div class="stat-value">{{ bank.completedCount }}</div>
+            </div>
+          </n-grid-item>
+          <n-grid-item>
+            <div class="stat-item">
+              <div class="stat-label">错题数</div>
+              <div class="stat-value">{{ bank.wrongCount }}</div>
+            </div>
+          </n-grid-item>
+        </n-grid>
 
         <div class="bank-actions">
           <BaseButton type="primary" size="medium" class="action-button" @click="handlePractice(bank.id)"
@@ -51,13 +57,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useMessage, useDialog } from 'naive-ui'
-import { useRouter } from 'vue-router'
-import axios, { AxiosError } from 'axios'
+import {onMounted, ref} from 'vue'
+import {NGrid, NGridItem, useDialog, useMessage} from 'naive-ui'
+import {useRouter} from 'vue-router'
+import axios, {AxiosError} from 'axios'
 import BaseButton from '../components/common/BaseButton.vue'
 import EmptyState from '../components/common/EmptyState.vue'
 import PageContainer from '../components/common/PageContainer.vue'
+
 
 // 定义统一响应格式
 interface ApiResponse<T> {
@@ -82,6 +89,9 @@ const dialog = useDialog()
 const router = useRouter()
 const banks = ref<QuestionBank[]>([])
 const loading = ref(false)
+
+
+
 
 
 
@@ -203,7 +213,7 @@ defineExpose({
 /* 页面容器样式已移至 PageContainer 组件 */
 
 .empty-state {
-  padding: 48px 0;
+  padding: var(--spacing-12) 0;
   text-align: center;
   animation: fadeIn 0.5s ease-out;
 }
@@ -211,7 +221,7 @@ defineExpose({
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(var(--spacing-2));
   }
 
   to {
@@ -224,40 +234,50 @@ defineExpose({
 .banks-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-3);
   padding: 0;
 }
 
 .bank-card-item {
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f0f0f0;
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding-desktop);
+  box-shadow: var(--card-unified-shadow);
+  border: none;
   position: relative;
   overflow: hidden;
+  width: var(--card-standard-width);
+  max-width: var(--card-content-max-width);
+  margin: 0 auto;
+  transition: box-shadow 0.3s ease;
+}
+
+.bank-card-item:hover {
+  box-shadow: var(--card-unified-shadow-hover);
 }
 
 .bank-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--spacing-2);
+  /* 8px */
 }
 
 .bank-id {
-  font-size: 11px;
-  color: #666;
-  padding: 2px 6px;
-  border-radius: 3px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-1) var(--spacing-2);
+  /* 4px 8px */
+  border-radius: var(--border-radius-xs);
   font-weight: 500;
 }
 
 .bank-name {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   flex: 1;
   min-width: 0;
   word-break: break-word;
@@ -265,21 +285,19 @@ defineExpose({
 }
 
 .bank-description {
-  color: #666;
-  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
   line-height: 1.4;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-3);
   word-break: break-word;
 }
 
 .bank-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 14px;
-  padding: 12px;
-  background: #fafafa;
-  border-radius: 6px;
+  margin-bottom: var(--spacing-4);
+  /* 16px */
+  padding: var(--spacing-3);
+  background: var(--color-bg-soft);
+  border-radius: var(--border-radius-sm);
 }
 
 .stat-item {
@@ -287,242 +305,266 @@ defineExpose({
 }
 
 .stat-label {
-  font-size: 11px;
-  color: #999;
-  margin-bottom: 3px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-1);
+  /* 4px */
   font-weight: 500;
 }
 
 .stat-value {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 700;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .bank-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-2);
   flex-wrap: wrap;
 }
 
 .action-button {
   flex: 1;
-  min-width: 100px;
-  height: 32px;
-  font-size: 13px;
+  min-width: var(--spacing-25);
+  height: var(--spacing-8);
+  font-size: var(--font-size-sm);
 }
 
 /* 空状态提示按钮动画 */
 :deep(.n-empty .n-button) {
   animation: fadeIn 0.3s ease 0.2s backwards;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 /* 移动端适配 */
 @media (max-width: 768px) {
   .banks-container {
-    gap: 10px;
+    gap: var(--spacing-3);
+    /* 12px */
   }
 
   .bank-card-item {
-    padding: 14px;
-    border-radius: 6px;
+    padding: var(--card-padding-tablet);
+    border-radius: var(--card-border-radius);
+    width: var(--card-tablet-width);
+    box-shadow: var(--card-tablet-shadow);
   }
 
   .bank-header {
-    margin-bottom: 6px;
-    gap: 4px;
+    margin-bottom: var(--spacing-2);
+    /* 8px */
+    gap: var(--spacing-1);
   }
 
   .bank-name {
-    font-size: 15px;
+    font-size: var(--font-size-base);
   }
 
   .bank-description {
-    font-size: 12px;
-    margin-bottom: 10px;
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-3);
+    /* 12px */
   }
 
   .bank-stats {
-    padding: 10px;
-    gap: 6px;
-    margin-bottom: 12px;
+    padding: var(--spacing-3);
+    /* 12px */
+    gap: var(--spacing-2);
+    /* 8px */
+    margin-bottom: var(--spacing-3);
   }
 
   .stat-value {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .bank-actions {
-    gap: 6px;
+    gap: var(--spacing-2);
+    /* 8px */
   }
 
   .action-button {
-    min-width: 80px;
-    height: 30px;
-    font-size: 12px;
+    min-width: var(--spacing-20);
+    /* 80px */
+    height: var(--spacing-8);
+    /* 32px */
+    font-size: var(--font-size-xs);
   }
 
   .bank-card {
-    margin: 16px;
-    border-radius: 12px;
+    margin: var(--spacing-4);
+    border-radius: var(--border-radius-lg);
   }
 
   .table-container {
-    margin: 0 -16px;
+    margin: 0 calc(-1 * var(--spacing-4));
     border-radius: 0;
     border-left: none;
     border-right: none;
   }
 
   .mobile-table {
-    font-size: 14px;
-    min-width: 650px;
+    font-size: var(--font-size-sm);
+    min-width: var(--spacing-163);
+    /* 652px */
   }
 
   :deep(.n-data-table-th) {
-    padding: 10px 8px !important;
-    font-size: 13px;
+    padding: var(--spacing-3) var(--spacing-2) !important;
+    /* 12px 8px */
+    font-size: var(--font-size-xs);
     white-space: nowrap;
   }
 
   :deep(.n-data-table-td) {
-    padding: 12px 8px !important;
-    font-size: 13px;
+    padding: var(--spacing-3) var(--spacing-2) !important;
+    font-size: var(--font-size-xs);
     vertical-align: middle;
   }
 
   :deep(.action-btn) {
-    min-width: 50px;
-    padding: 6px 8px;
-    font-size: 11px;
-    margin: 0 2px;
+    min-width: var(--spacing-13);
+    padding: var(--spacing-2) var(--spacing-2);
+    /* 8px 8px */
+    font-size: var(--font-size-xs);
+    margin: 0 var(--spacing-1);
   }
 
   .empty-state {
-    padding: 40px 20px;
+    padding: var(--spacing-10) var(--spacing-5);
   }
 
   /* 优化表格行高 */
   :deep(.n-data-table-tr) {
-    min-height: 60px;
+    min-height: var(--spacing-15);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   .banks-container {
-    gap: 8px;
+    gap: var(--spacing-2);
   }
 
   .bank-card-item {
-    padding: 12px;
+    padding: var(--card-padding-mobile);
+    width: var(--card-mobile-width);
+    box-shadow: var(--card-mobile-shadow);
   }
 
   .bank-name {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .bank-description {
-    font-size: 11px;
-    margin-bottom: 8px;
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-2);
   }
 
   .bank-stats {
-    padding: 8px;
-    gap: 4px;
-    margin-bottom: 10px;
+    padding: var(--spacing-2);
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-3);
   }
 
   .stat-label {
-    font-size: 10px;
+    font-size: var(--font-size-xs);
   }
 
   .stat-value {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .action-button {
-    min-width: 70px;
-    height: 28px;
-    font-size: 11px;
+    min-width: var(--spacing-17);
+    height: var(--spacing-7);
+    font-size: var(--font-size-xs);
   }
 
   .bank-card {
-    margin: 12px;
+    margin: var(--spacing-3);
+    width: var(--card-mobile-width);
+    box-shadow: var(--card-mobile-shadow);
   }
 
   .mobile-table {
-    font-size: 13px;
-    min-width: 600px;
+    font-size: var(--font-size-xs);
+    min-width: var(--spacing-150);
+    /* 600px */
   }
 
   :deep(.n-data-table-th) {
-    padding: 8px 6px !important;
-    font-size: 12px;
+    padding: var(--spacing-2) var(--spacing-2) !important;
+    font-size: var(--font-size-xs);
   }
 
   :deep(.n-data-table-td) {
-    padding: 10px 6px !important;
-    font-size: 12px;
+    padding: var(--spacing-3) var(--spacing-2) !important;
+    font-size: var(--font-size-xs);
   }
 
   :deep(.action-btn) {
-    min-width: 45px;
-    padding: 4px 6px;
-    font-size: 10px;
-    margin: 0 1px;
+    min-width: var(--spacing-11);
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
+    margin: 0 var(--spacing-1);
   }
 
   .empty-state {
-    padding: 30px 16px;
+    padding: var(--spacing-8) var(--spacing-md);
   }
 
   /* 进一步优化小屏幕表格 */
   :deep(.n-data-table-tr) {
-    min-height: 55px;
+    min-height: var(--spacing-14);
   }
 }
 
 /* 超小屏幕优化 */
 @media (max-width: 360px) {
   .bank-card {
-    margin: 8px;
+    margin: var(--spacing-2);
+    width: var(--card-mobile-width);
+    box-shadow: var(--card-mobile-shadow);
   }
 
   .mobile-table {
-    min-width: 550px;
+    min-width: var(--spacing-138);
+    /* 552px */
   }
 
   :deep(.action-btn) {
-    min-width: 40px;
-    padding: 3px 5px;
-    font-size: 9px;
+    min-width: var(--spacing-10);
+    padding: var(--spacing-1) var(--spacing-1);
+    font-size: var(--font-size-2xs);
   }
 
   :deep(.n-data-table-th),
   :deep(.n-data-table-td) {
-    padding: 6px 4px !important;
-    font-size: 11px;
+    padding: var(--spacing-2) var(--spacing-1) !important;
+    font-size: var(--font-size-xs);
   }
 }
 
 /* 横屏模式优化 */
 @media (max-height: 500px) and (orientation: landscape) {
   .bank-card {
-    margin: 8px 16px;
+    margin: var(--spacing-2) var(--spacing-4);
+    width: var(--card-tablet-width);
+    box-shadow: var(--card-tablet-shadow);
   }
 
   .empty-state {
-    padding: 20px;
+    padding: var(--spacing-5);
   }
 
   :deep(.n-data-table-tr) {
-    min-height: 45px;
+    min-height: var(--spacing-11);
   }
 
   :deep(.n-data-table-th),
   :deep(.n-data-table-td) {
-    padding: 6px 8px !important;
+    padding: var(--spacing-2) var(--spacing-2) !important;
   }
 }
 </style>
