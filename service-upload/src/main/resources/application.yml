@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/easytiwu?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
-    password: 123456
+    password: ${DB_PASSWORD:your_secure_password_here}
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -40,6 +40,5 @@ mybatis-plus:
 llm:
   dashscope:
     api-key: sk-282b5b70ba484626baa755e617b3e7d4
-    # DashScope API 超时配置（单位：秒）
     read-timeout: 300
     connect-timeout: 120

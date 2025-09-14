@@ -125,7 +125,7 @@ public class LargeModelService {
                 .messages(Arrays.asList(systemMsg, userMsg))
                 .temperature(0.1f)
                 .topP(0.8)
-                .maxTokens(16384)
+                .maxTokens(30000)
                 .build();
 
         logger.info("Calling Qwen model API with DashScope...");
