@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { NSpin } from 'naive-ui'
+import {computed} from 'vue'
+import {NSpin} from 'naive-ui'
 
 interface Props {
   loading: boolean
@@ -61,7 +61,7 @@ const containerStyle = computed(() => {
     min-height: 150px;
     padding: 20px;
   }
-  
+
   :deep(.n-spin-description) {
     font-size: 13px;
     margin-top: 10px;
@@ -77,6 +77,7 @@ const containerStyle = computed(() => {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

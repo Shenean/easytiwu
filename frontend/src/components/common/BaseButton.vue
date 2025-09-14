@@ -10,9 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { NButton } from "naive-ui"
-import type { ButtonProps } from "naive-ui"
-import { computed, type Component } from "vue"
+import type {ButtonProps} from "naive-ui"
+import {NButton} from "naive-ui"
+import {type Component, computed} from "vue"
 
 interface Props {
   type?: ButtonProps["type"]
@@ -49,7 +49,7 @@ const customClass = computed(() => ({
 }))
 
 const emit = defineEmits<{
-  (e: "click", event: MouseEvent): void
+  click: [MouseEvent]
 }>()
 
 function handleClick(event: MouseEvent) {

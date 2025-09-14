@@ -33,11 +33,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import type { MenuOption } from 'naive-ui'
-import { MenuOutline } from '@vicons/ionicons5'
-import { mainMenuOptions } from '../config/menuOptions'
+import {computed, onMounted, onUnmounted, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import type {MenuOption} from 'naive-ui'
+import {MenuOutline} from '@vicons/ionicons5'
+import {mainMenuOptions} from '../config/menuOptions'
 import BaseButton from './common/BaseButton.vue'
 
 const route = useRoute()
@@ -230,11 +230,11 @@ defineExpose({
   .desktop-nav {
     display: none;
   }
-  
+
   .mobile-nav {
     display: flex;
   }
-  
+
   .navbar {
     padding: 0 16px;
     height: 52px;
@@ -242,28 +242,28 @@ defineExpose({
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
-  
+
   .logo {
     padding: 0 8px;
   }
-  
+
   .logo-img {
     height: 32px;
   }
-  
+
   .mobile-menu {
     background-color: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(16px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
   }
-  
+
   .mobile-menu-item {
     padding: 14px 20px;
     font-size: 15px;
     min-height: 48px;
     color: rgba(51, 54, 57, 0.95);
   }
-  
+
   .mobile-menu-item:hover {
     background-color: rgba(24, 160, 88, 0.15);
   }
@@ -274,21 +274,21 @@ defineExpose({
     padding: 0 12px;
     height: 48px;
   }
-  
+
   .logo {
     padding: 0 4px;
   }
-  
+
   .logo-img {
     height: 28px;
   }
-  
+
   .mobile-menu-item {
     padding: 12px 18px;
     font-size: 14px;
     min-height: 42px;
   }
-  
+
   .mobile-menu-btn {
     padding: 6px;
     min-width: 36px;
@@ -324,52 +324,52 @@ defineExpose({
     background-color: rgba(16, 16, 20, 0.95);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .mobile-menu {
     background-color: rgba(16, 16, 20, 0.98);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
-  
+
   .mobile-menu-item {
     color: rgba(255, 255, 255, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
-  
+
   .mobile-menu-item:hover {
     background-color: rgba(24, 160, 88, 0.2);
     color: #4ade80;
   }
-  
+
   .mobile-menu-item:active {
     background-color: rgba(24, 160, 88, 0.25);
   }
-  
+
   .mobile-menu-btn {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .mobile-menu-btn:hover {
     background-color: rgba(24, 160, 88, 0.15);
     border-color: rgba(24, 160, 88, 0.3);
   }
-  
+
   @media (max-width: 768px) {
     .navbar {
       background-color: rgba(16, 16, 20, 0.98);
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
-    
+
     .mobile-menu {
       background-color: rgba(16, 16, 20, 0.98);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
     }
-    
+
     .mobile-menu-item {
       color: rgba(255, 255, 255, 0.95);
     }
-    
+
     .mobile-menu-item:hover {
       background-color: rgba(24, 160, 88, 0.18);
     }
@@ -408,17 +408,17 @@ defineExpose({
     padding: 16px 20px;
     font-size: 16px;
   }
-  
+
   .mobile-menu-btn {
     min-width: 44px;
     min-height: 44px;
     padding: 10px;
   }
-  
+
   .mobile-menu-item:hover {
     transform: none;
   }
-  
+
   .mobile-menu-item:active {
     transform: scale(0.98);
     background-color: rgba(24, 160, 88, 0.2);

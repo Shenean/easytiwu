@@ -8,22 +8,18 @@
           <component :is="defaultIcon" />
         </n-icon>
       </div>
-      
+
       <!-- 描述文本 -->
       <div class="empty-state__description">
         <h3 v-if="title" class="empty-state__title">{{ title }}</h3>
         <p class="empty-state__text">{{ description }}</p>
       </div>
-      
+
       <!-- 操作按钮区域 -->
       <div v-if="$slots.actions || showDefaultAction" class="empty-state__actions">
         <slot name="actions">
-          <BaseButton 
-            v-if="showDefaultAction && actionText"
-            :type="actionType"
-            :size="actionSize"
-            @click="handleAction"
-          >
+          <BaseButton v-if="showDefaultAction && actionText" :type="actionType" :size="actionSize"
+            @click="handleAction">
             {{ actionText }}
           </BaseButton>
         </slot>
@@ -33,13 +29,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type Component } from 'vue'
-import { NIcon } from 'naive-ui'
-import { 
-  PinOutline as DefaultEmptyIcon,
-  FolderOpenOutline as FolderIcon,
+import {type Component, computed} from 'vue'
+import {NIcon} from 'naive-ui'
+import {
+  BarChartOutline as ChartIcon,
   DocumentTextOutline as DocumentIcon,
-  BarChartOutline as ChartIcon
+  FolderOpenOutline as FolderIcon,
+  PinOutline as DefaultEmptyIcon
 } from '@vicons/ionicons5'
 import BaseButton from './BaseButton.vue'
 
@@ -234,25 +230,25 @@ const handleAction = () => {
     min-height: 160px;
     padding: 24px 12px;
   }
-  
+
   .empty-state__content {
     gap: 12px;
     max-width: 300px;
   }
-  
+
   .custom-icon {
     width: 48px;
     height: 48px;
   }
-  
+
   .empty-state__title {
     font-size: 16px;
   }
-  
+
   .empty-state__text {
     font-size: 13px;
   }
-  
+
   .empty-state__actions {
     gap: 8px;
   }
@@ -263,21 +259,21 @@ const handleAction = () => {
     min-height: 140px;
     padding: 20px 8px;
   }
-  
+
   .empty-state__content {
     gap: 10px;
     max-width: 280px;
   }
-  
+
   .custom-icon {
     width: 40px;
     height: 40px;
   }
-  
+
   .empty-state__title {
     font-size: 15px;
   }
-  
+
   .empty-state__text {
     font-size: 12px;
   }
@@ -293,6 +289,7 @@ const handleAction = () => {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

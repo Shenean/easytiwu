@@ -6,12 +6,7 @@
     </BaseButton>
 
     <!-- 提交按钮 -->
-    <BaseButton
-      type="primary"
-      :loading="props.loading"
-      :disabled="props.disabled"
-      @click="emit('submit')"
-    >
+    <BaseButton type="primary" :loading="props.loading" :disabled="props.disabled" @click="emit('submit')">
       提交
     </BaseButton>
   </div>
@@ -46,6 +41,4 @@ const emit = defineEmits<{
   width: 100%;
   margin-top: 12px;
 }
-
-
 </style>

@@ -14,15 +14,8 @@
 
       <!-- 文件上传 -->
       <n-form-item label="文件" path="file">
-        <n-upload
-          v-model:file-list="form.file"
-          :accept="'.docx,.pdf,.txt'"
-          :max="1"
-          :multiple="false"
-          action="#"
-          :custom-request="handleCustomRequest"
-          @before-upload="handleBeforeUpload"
-        >
+        <n-upload v-model:file-list="form.file" :accept="'.docx,.pdf,.txt'" :max="1" :multiple="false" action="#"
+          :custom-request="handleCustomRequest" @before-upload="handleBeforeUpload">
           <n-upload-dragger>
             <div style="margin-bottom: 12px">
               <n-icon size="48" :depth="3">
@@ -49,14 +42,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useMessage } from 'naive-ui'
-import type { FormInst, UploadFileInfo, UploadCustomRequestOptions } from 'naive-ui'
-import { ArchiveOutline as ArchiveIcon } from '@vicons/ionicons5'
-import { uploadAPI } from '../api/config'
+import {computed, ref} from 'vue'
+import type {FormInst, UploadCustomRequestOptions, UploadFileInfo} from 'naive-ui'
+import {useMessage} from 'naive-ui'
+import {ArchiveOutline as ArchiveIcon} from '@vicons/ionicons5'
+import {uploadAPI} from '../api/config'
 import FormActions from '../components/common/FormActions.vue'
 import PageContainer from '../components/common/PageContainer.vue'
-import { bankFormRules } from '../validation/rulesBank'
+import {bankFormRules} from '../validation/rulesBank'
 
 interface UploadForm {
   name: string
@@ -90,7 +83,7 @@ const rules = bankFormRules
 function handleBeforeUpload(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
   const file = data.file
   const fileName = file.file?.name || file.name || '未知文件'
-  
+
   // 文件类型校验
   const allowedTypes = ['.docx', '.pdf', '.txt']
   const fileExtension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'))
@@ -98,14 +91,14 @@ function handleBeforeUpload(data: { file: UploadFileInfo; fileList: UploadFileIn
     message.error(`不支持的文件格式，请选择 ${allowedTypes.join('、')} 格式的文件`)
     return false
   }
-  
+
   // 文件大小校验（20MB）
   const maxSize = 20 * 1024 * 1024
   if (file.file && file.file.size > maxSize) {
     message.error('文件大小不能超过 20MB')
     return false
   }
-  
+
   console.log('文件上传前处理:', fileName)
   return true
 }

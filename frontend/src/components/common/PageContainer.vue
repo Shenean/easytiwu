@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import {computed} from 'vue'
 
 interface Props {
   /** 页面标题 */
@@ -221,6 +221,4 @@ const contentClass = computed(() => [
     transform: translateY(0);
   }
 }
-
-
 </style>

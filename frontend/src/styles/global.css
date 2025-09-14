@@ -17,7 +17,8 @@ html {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 /* 移动端滚动优化 */
@@ -25,15 +26,17 @@ body {
   -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   -webkit-appearance: none;
-  appearance: none; 
+  appearance: none;
   border-radius: 0;
 }
 
 button {
   -webkit-appearance: none;
-  appearance: none; 
+  appearance: none;
   border-radius: 0;
   cursor: pointer;
 }
@@ -51,24 +54,22 @@ button {
   html {
     font-size: 14px;
   }
-  
+
   .container {
     padding: 0 12px;
   }
-  
+
   /* 移动端卡片间距优化 */
   .n-card {
     margin: 8px 0 !important;
   }
-  
-
 }
 
 @media (max-width: 480px) {
   html {
     font-size: 13px;
   }
-  
+
   .container {
     padding: 0 8px;
   }
@@ -92,7 +93,7 @@ button {
   .n-data-table {
     font-size: 12px;
   }
-  
+
   .n-data-table th,
   .n-data-table td {
     padding: 8px 4px !important;
@@ -104,11 +105,11 @@ button {
   .n-form-item {
     margin-bottom: 16px;
   }
-  
+
   .n-form-item-label {
     padding-bottom: 4px;
   }
-  
+
   .n-input {
     font-size: 16px !important; /* 防止iOS缩放 */
   }
@@ -119,7 +120,7 @@ button {
   .n-layout-header {
     padding: 0 12px;
   }
-  
+
   .n-menu-item {
     padding: 0 8px !important;
   }
@@ -130,7 +131,7 @@ button {
   .n-modal {
     margin: 16px !important;
   }
-  
+
   .n-card.n-modal {
     max-height: calc(100vh - 32px) !important;
   }
@@ -164,7 +165,7 @@ button {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
-  
+
   /* 优化滚动性能 */
   body,
   .n-scrollbar,
@@ -172,7 +173,7 @@ button {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
   }
-  
+
   /* 触摸反馈增强 */
   .answer-card-btn:active,
   .mobile-menu-item:active,
@@ -180,19 +181,19 @@ button {
     transform: scale(0.98) translateZ(0);
     transition: transform 0.1s ease;
   }
-  
+
   /* 减少重绘和回流 */
   .n-card,
   .n-data-table {
     contain: layout style paint;
   }
-  
+
   /* 优化动画性能 */
   .n-drawer-content,
   .mobile-menu {
     will-change: transform;
   }
-  
+
   /* 触摸目标最小尺寸 */
   .answer-card-btn,
   .mobile-menu-item,
@@ -200,7 +201,7 @@ button {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* 防止意外缩放 */
   input,
   textarea,
