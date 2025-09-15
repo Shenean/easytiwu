@@ -65,8 +65,17 @@
 
           <!-- 提交操作区 -->
           <n-form-item>
-            <div class="form-actions">
-              <n-button size="large" @click="handleReset">
+            <n-space 
+              justify="end" 
+              size="medium"
+              :vertical="isMobile"
+              :align="isMobile ? 'stretch' : 'center'"
+            >
+              <n-button
+                size="large"
+                secondary
+                @click="handleReset"
+              >
                 重置
               </n-button>
               <n-button
@@ -78,7 +87,7 @@
               >
                 提交
               </n-button>
-            </div>
+            </n-space>
           </n-form-item>
         </n-form>
       </n-card>
@@ -92,6 +101,7 @@ import type {FormInst, UploadCustomRequestOptions, UploadFileInfo,} from "naive-
 import {useMessage} from "naive-ui";
 import {ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
 import {uploadAPI} from "../api/config";
+import {useBreakpoints} from "../composables/useBreakpoints";
 
 import PageContainer from "../components/common/PageContainer.vue";
 import {bankFormRules} from "../validation/rulesBank";
@@ -105,6 +115,7 @@ interface UploadForm {
 const formRef = ref<FormInst | null>(null);
 const message = useMessage();
 const submitting = ref(false);
+const { isMobile } = useBreakpoints();
 
 const form = ref<UploadForm>({
   name: "",
@@ -246,29 +257,10 @@ defineExpose({
   border-radius: var(--border-radius-medium);
 }
 
-.form-actions {
-  display: flex;
-  gap: var(--spacing-3);
-  justify-content: flex-end;
-  margin-top: var(--spacing-4);
-}
-
 /* 移动端适配 */
 @media (max-width: 480px) {
   .upload-container {
     margin: 0 var(--spacing-3);
-  }
-  
-  .form-actions {
-    flex-direction: column;
-    gap: var(--spacing-2);
-  }
-}
-
-@media (max-width: 768px) and (orientation: landscape) {
-  .form-actions {
-    flex-direction: column;
-    gap: var(--spacing-2);
   }
 }
 </style>

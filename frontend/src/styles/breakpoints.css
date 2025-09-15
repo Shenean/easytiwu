@@ -2,19 +2,23 @@
 /* 解决项目中媒体查询重复定义的问题 */
 
 :root {
-  /* 断点定义 - 符合UI设计规范 */
-  --breakpoint-mobile: 480px;
-  --breakpoint-s: 768px;  /* 小屏幕 */
-  --breakpoint-tablet: 768px;
-  --breakpoint-m: 1024px; /* 中等屏幕 */
-  --breakpoint-l: 1280px; /* 大屏幕 */
-  --breakpoint-desktop: 1280px;
-  --breakpoint-large: 1400px;
+  /* 断点定义 - 严格符合UI设计规范 */
+  --breakpoint-mobile: 480px;   /* 移动端 */
+  --breakpoint-tablet: 768px;   /* 平板端 */
+  --breakpoint-desktop: 1024px; /* 桌面端 */
+  --breakpoint-wide: 1200px;    /* 宽屏 */
+  --breakpoint-large: 1400px;   /* 超宽屏 */
   
-  /* 容器最大宽度 */
-  --container-max-width: 1400px; /* 350 * 4px */
-  --container-medium-width: 1280px; /* 符合规范的大屏幕宽度 */
-  --container-small-width: 1024px; /* 符合规范的中等屏幕宽度 */
+  /* 语义化断点别名 */
+  --breakpoint-s: var(--breakpoint-tablet);
+  --breakpoint-m: var(--breakpoint-desktop);
+  --breakpoint-l: var(--breakpoint-wide);
+  
+  /* 容器最大宽度 - 符合UI设计规范 */
+  --container-max-width: 1400px;  /* 超宽屏容器 */
+  --container-wide-width: 1200px; /* 宽屏容器 */
+  --container-desktop-width: 1024px; /* 桌面容器 */
+  --container-tablet-width: 768px;   /* 平板容器 */
 }
 
 /* 断点混合类 - 提供常用的媒体查询 */

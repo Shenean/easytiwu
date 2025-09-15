@@ -6,20 +6,19 @@
     :class="{ 'mobile-mode': mobileMode }"
   >
     <n-grid
-      :cols="mobileMode ? 5 : 8"
+      :cols="mobileMode ? '5' : '8'"
       :x-gap="mobileMode ? 8 : 12"
       :y-gap="mobileMode ? 8 : 12"
+      responsive="screen"
     >
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
         <n-button
           :type="getCardButtonType(q)"
-          :size="mobileMode ? 'small' : getCardButtonSize"
+          :size="mobileMode ? 'small' : 'medium'"
           @click="jumpToQuestion(q.id)"
+          :focusable="true"
           class="answer-card-btn"
-          :class="{
-            active: q.id === currentQuestionId,
-            'mobile-btn': mobileMode,
-          }"
+          :style="getButtonStyle(q)"
         >
           {{ index + 1 }}
         </n-button>
@@ -29,10 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import {NGrid, NGridItem} from "naive-ui";
+import {NGrid, NGridItem, useThemeVars} from "naive-ui";
 import {useI18n} from "vue-i18n";
 
 const { t } = useI18n();
+const themeVars = useThemeVars();
 
 interface Question {
   id: number;
@@ -62,7 +62,27 @@ function getCardButtonType(q: Question) {
   return "error";
 }
 
-const getCardButtonSize = "medium";
+function getButtonStyle(q: Question) {
+  const baseStyle = {
+    width: '100%',
+    height: mobileMode ? '44px' : '40px',
+    minWidth: mobileMode ? '44px' : '40px',
+    fontSize: mobileMode ? '14px' : '16px',
+    fontWeight: '600',
+    borderRadius: mobileMode ? '8px' : '4px',
+  };
+
+  // 当前题目选中状态：仅改变边框样式，保持背景色不变
+  if (q.id === currentQuestionId) {
+    return {
+      ...baseStyle,
+      border: `2px solid ${themeVars.value.primaryColor}`,
+      borderStyle: 'solid',
+    };
+  }
+
+  return baseStyle;
+}
 
 function jumpToQuestion(id: number) {
   emit("questionClick", id);
@@ -72,74 +92,43 @@ function jumpToQuestion(id: number) {
 <style scoped>
 .answer-card-container {
   position: sticky;
-  top: var(--spacing-5);
-  max-height: calc(100vh - var(--spacing-50));
+  top: 24px;
+  max-height: calc(100vh - 200px);
   overflow-y: auto;
-  border-radius: var(--border-radius-md);
 }
 
-/* 自定义滚动条 */
+/* 自定义滚动条样式 */
 .answer-card-container::-webkit-scrollbar {
-  width: var(--spacing-2);
+  width: 8px;
 }
 
 .answer-card-container::-webkit-scrollbar-thumb {
-  background-color: var(--color-black-15);
-  border-radius: var(--border-radius-sm);
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
 }
 
-/* 答题卡按钮 */
-.answer-card-btn {
-  height: var(--spacing-10);
-  width: 100%;
+.answer-card-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.25);
 }
 
-/* 当前题目高亮（蓝色边框） */
-.answer-card-btn.active {
-  border: var(--spacing-1) solid var(--color-info) !important;
-  box-shadow: 0 0 0 var(--spacing-1) var(--color-info-25);
-}
-
-/* 移动端模式样式 */
+/* 移动端模式样式调整 */
 .mobile-mode {
   position: static;
   max-height: none;
-  border-radius: 0;
-  box-shadow: none;
 }
 
 .mobile-mode :deep(.n-card__header) {
-  padding: var(--spacing-3) var(--spacing-4);
-  font-size: var(--font-size-base);
+  padding: 12px 16px;
+  font-size: 16px;
   font-weight: 600;
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--n-border-color);
 }
 
 .mobile-mode :deep(.n-card__content) {
-  padding: var(--spacing-4);
+  padding: 16px;
 }
 
-.mobile-btn {
-  height: var(--spacing-11) !important;
-  min-width: var(--spacing-11);
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  border-radius: var(--border-radius-md);
-  touch-action: manipulation;
-}
-
-.mobile-btn:active {
-  transform: scale(0.95) !important;
-  transition: transform 0.1s ease;
-}
-
-.mobile-btn.active {
-  box-shadow: 0 0 0 var(--spacing-1) var(--color-primary),
-    var(--shadow-focus-ring);
-  transform: scale(1.02);
-}
-
-/* 移动端响应式优化 */
+/* 响应式隐藏 */
 @media (max-width: 768px) {
   .answer-card-container:not(.mobile-mode) {
     display: none;
@@ -148,36 +137,12 @@ function jumpToQuestion(id: number) {
 
 @media (max-width: 480px) {
   .mobile-mode :deep(.n-card__header) {
-    padding: var(--spacing-3) var(--spacing-3);
-    font-size: var(--font-size-sm);
+    padding: 12px;
+    font-size: 14px;
   }
 
   .mobile-mode :deep(.n-card__content) {
-    padding: var(--spacing-3);
-  }
-
-  .mobile-btn {
-    height: var(--spacing-11) !important;
-    min-width: var(--spacing-11);
-    font-size: var(--font-size-sm);
-  }
-}
-
-/* 横屏模式优化 */
-@media (max-width: 768px) and (orientation: landscape) {
-  .mobile-mode :deep(.n-card__header) {
-    padding: var(--spacing-2) var(--spacing-3);
-    font-size: var(--font-size-base);
-  }
-
-  .mobile-mode :deep(.n-card__content) {
-    padding: var(--spacing-3);
-  }
-
-  .mobile-btn {
-    height: var(--spacing-10) !important;
-    min-width: var(--spacing-10);
-    font-size: var(--font-size-xs);
+    padding: 12px;
   }
 }
 </style>

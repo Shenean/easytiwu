@@ -6,35 +6,35 @@
 :root {
   /* ===== 字体系统 ===== */
   
-  /* 字体族 - 符合UI设计规范 */
+  /* 字体族 - 严格符合UI设计规范 */
   --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
-  --font-family-serif: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Georgia, 'Times New Roman', serif;
+  --font-family-mono: "SF Mono", Monaco, Inconsolata, "Roboto Mono", "Courier New", monospace;
+  --font-family-serif: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Georgia, "Times New Roman", serif;
   
-  /* 字体大小 */
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-md: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 30px;
-  --font-size-4xl: 36px;
-  --font-size-5xl: 48px;
-  --font-size-6xl: 60px;
+  /* 字体大小 - 符合UI设计规范的标准字号系统 */
+  --font-size-xs: 12px;   /* 辅助信息 */
+  --font-size-sm: 14px;   /* 次要文本 */
+  --font-size-base: 16px; /* 正文基准 */
+  --font-size-md: 16px;   /* 正文标准 */
+  --font-size-lg: 18px;   /* 小标题 */
+  --font-size-xl: 20px;   /* 中标题 */
+  --font-size-2xl: 24px;  /* 大标题 */
+  --font-size-3xl: 30px;  /* 特大标题 */
+  --font-size-4xl: 36px;  /* 超大标题 */
+  --font-size-5xl: 48px;  /* 展示标题 */
+  --font-size-6xl: 60px;  /* 巨型标题 */
   
-  /* 字体权重 */
-  --font-weight-thin: 100;
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-black: 900;
+  /* 字体权重 - 符合UI设计规范的标准字重 */
+  --font-weight-thin: 100;      /* 极细 */
+  --font-weight-light: 300;     /* 细体 */
+  --font-weight-normal: 400;    /* 正常 - 正文标准 */
+  --font-weight-medium: 500;    /* 中等 - 强调文本 */
+  --font-weight-semibold: 600;  /* 半粗 - 小标题 */
+  --font-weight-bold: 700;      /* 粗体 - 标题 */
+  --font-weight-extrabold: 800; /* 特粗 */
+  --font-weight-black: 900;     /* 黑体 */
   
   /* 行高 */
   --line-height-none: 1;
@@ -123,6 +123,34 @@
   --color-text-muted: var(--color-gray-400);
   --color-text-inverse: #ffffff;
   --color-hover: rgba(32, 128, 240, 0.1);
+  
+  /* ===== 间距系统 ===== */
+  
+  /* 基础间距单位 - 基于8px基准 */
+  --spacing-base: 8px;
+  
+  /* 标准间距值 (8px倍数) - 与spacing-constants.css保持一致 */
+  --spacing-0: 0;
+  --spacing-1: 8px;   /* 1 * 8px */
+  --spacing-2: 16px;  /* 2 * 8px */
+  --spacing-3: 24px;  /* 3 * 8px */
+  --spacing-4: 32px;  /* 4 * 8px */
+  --spacing-5: 40px;  /* 5 * 8px */
+  --spacing-6: 48px;  /* 6 * 8px */
+  --spacing-8: 64px;  /* 8 * 8px */
+  --spacing-10: 80px; /* 10 * 8px */
+  --spacing-12: 96px; /* 12 * 8px */
+  --spacing-16: 128px; /* 16 * 8px */
+  --spacing-20: 160px; /* 20 * 8px */
+  --spacing-24: 192px; /* 24 * 8px */
+  
+  /* 语义化间距 */
+  --spacing-xs: var(--spacing-1); /* 8px - 极小间距 */
+  --spacing-sm: var(--spacing-2); /* 16px - 小间距 */
+  --spacing-md: var(--spacing-3); /* 24px - 中等间距 */
+  --spacing-lg: var(--spacing-4); /* 32px - 大间距 */
+  --spacing-xl: var(--spacing-6); /* 48px - 超大间距 */
+  --spacing-2xl: var(--spacing-8); /* 64px - 特大间距 */
   
   /* ===== 边框系统 ===== */
   

@@ -35,25 +35,25 @@ export function useTheme() {
   const themeOverrides = computed<GlobalThemeOverrides>(() => {
     const baseOverrides: GlobalThemeOverrides = {
       common: {
-        // 主色系 - 蓝色
-        primaryColor: "#2080F0",
-        primaryColorHover: "#3090FF",
-        primaryColorPressed: "#1070E0",
-        primaryColorSuppl: "#3090FF",
+        // Naive UI需要具体颜色值，不支持CSS变量
+        primaryColor: "#2080f0",
+        primaryColorHover: "#3090ff",
+        primaryColorPressed: "#1070e0",
+        primaryColorSuppl: "#3090ff",
 
-        // 功能色系
-        successColor: "#18A058",
-        warningColor: "#F0A020",
-        errorColor: "#F04040",
-        infoColor: "#2080F0",
+        // 状态颜色
+        successColor: "#18a058",
+        warningColor: "#f0a020",
+        errorColor: "#f04040",
+        infoColor: "#2080f0",
 
         // 文本颜色
-        textColorBase: actualTheme.value === "dark" ? "#F5F5F5" : "#2C2C2C",
+        textColorBase: actualTheme.value === "dark" ? "#ffffff" : "#2c2c2c",
         textColor2: "#666666",
 
-        // 边框和背景
-        borderColor: "#D9D9D9",
-        bodyColor: actualTheme.value === "dark" ? "#1E1E1E" : "#FFFFFF",
+        // 背景和边框
+        borderColor: "#d9d9d9",
+        bodyColor: actualTheme.value === "dark" ? "#1f2937" : "#ffffff",
 
         // 悬停效果
         hoverColor: "rgba(32, 128, 240, 0.1)",
@@ -90,11 +90,11 @@ export function useTheme() {
     // 更新CSS自定义属性以支持主题切换
     const root = document.documentElement;
     if (theme === "dark") {
-      root.style.setProperty("--app-bg-color", "#1E1E1E");
-      root.style.setProperty("--app-text-color", "#F5F5F5");
+      root.style.setProperty("--app-bg-color", "var(--color-bg-primary)");
+      root.style.setProperty("--app-text-color", "var(--color-text-primary)");
     } else {
-      root.style.setProperty("--app-bg-color", "#FFFFFF");
-      root.style.setProperty("--app-text-color", "#2C2C2C");
+      root.style.setProperty("--app-bg-color", "var(--color-bg-primary)");
+      root.style.setProperty("--app-text-color", "var(--color-text-primary)");
     }
   };
 

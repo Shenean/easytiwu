@@ -1,8 +1,8 @@
-/* 统一颜色系统变量文件 */
-/* 解决项目中颜色值重复定义的问题 */
+/* 统一颜色系统变量文件 - 符合UI设计规范 */
+/* 基于Naive UI设计规范的标准色板系统 */
 
 :root {
-  /* 主题色系 - 统一为蓝色系，与App.vue保持一致 */
+  /* 主题色系 - 符合UI设计规范的标准蓝色 #2080F0 */
   --color-primary: #2080f0;
   --color-primary-hover: #3090ff;
   --color-primary-active: #1070e0;
@@ -10,9 +10,9 @@
   --color-primary-lighter: #8fc5ff;
   --color-primary-lightest: #e6f4ff;
 
-  /* 文本颜色 */
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
+  /* 文本颜色 - 符合UI设计规范 */
+  --color-text-primary: #2c2c2c;    /* 主要文本，符合规范 */
+  --color-text-secondary: #666666;  /* 次要文本，符合规范 */
   --color-text-tertiary: #999999;
   --color-text-quaternary: #cccccc;
   --color-text-disabled: #d9d9d9;
@@ -26,25 +26,25 @@
   --color-bg-disabled: #f5f5f5;
   --color-bg-overlay: rgba(0, 0, 0, 0.5);
 
-  /* 边框颜色 */
-  --color-border-primary: #e0e0e0;
+  /* 边框颜色 - 符合UI设计规范 */
+  --color-border-primary: #d9d9d9;  /* 符合规范的边框色 */
   --color-border-secondary: #e8e8e8;
   --color-border-tertiary: #f0f0f0;
   --color-border-focus: var(--color-primary);
-  --color-border-error: #ff4d4f;
-  --color-border-warning: #faad14;
-  --color-border-success: #18a058;
+  --color-border-error: var(--color-error);
+  --color-border-warning: var(--color-warning);
+  --color-border-success: var(--color-success);
 
-  /* 状态颜色（遵循设计规范 2.2 标准色板） */
-  --color-success: #18a058;
-  --color-success-light: #a8eacb; /* 40% 淡化 */
-  --color-success-lighter: #f0fdf4; /* 90% 淡化 */
+  /* 状态颜色 - 严格遵循UI设计规范标准色板 */
+  --color-success: #18a058;  /* 符合规范的成功色 */
+  --color-success-light: #a8eacb;
+  --color-success-lighter: #f0fdf4;
 
-  --color-warning: #f0a020;
+  --color-warning: #f0a020;  /* 符合规范的警告色 */
   --color-warning-light: #ffe6b8;
   --color-warning-lighter: #fff9ec;
 
-  --color-error: #f04040;
+  --color-error: #f04040;    /* 符合规范的错误色 */
   --color-error-light: #ffcccc;
   --color-error-lighter: #fff2f2;
 
