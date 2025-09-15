@@ -32,8 +32,8 @@
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <mysql.connector.version>8.4.0</mysql.connector.version>
         <dashscope.version>2.21.6</dashscope.version>
-        <lombok.version>1.18.34</lombok.version> <!-- 升级 -->
-        <resilience4j.version>2.3.0</resilience4j.version> <!-- 升级 -->
+        <lombok.version>1.18.34</lombok.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
         
         <!-- 日志框架版本 -->

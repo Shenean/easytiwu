@@ -1,8 +1,8 @@
 package com.easytiwu.servicebank.service.impl;
 
-import com.easytiwu.servicebank.entity.QuestionBank;
-import com.easytiwu.commonexception.exception.BusinessException;
 import com.easytiwu.commonexception.enums.ErrorCode;
+import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.servicebank.entity.QuestionBank;
 import com.easytiwu.servicebank.mapper.QuestionBankMapper;
 import com.easytiwu.servicebank.service.QuestionBankService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
     public List<QuestionBank> getAllQuestionBanks() {
         try {
             log.info("开始查询所有题库");
+            // 查询所有记录，不加任何条件
             List<QuestionBank> questionBanks = questionBankMapper.selectList(null);
             log.info("查询到 {} 个题库", questionBanks.size());
             return questionBanks;
