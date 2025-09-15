@@ -1,18 +1,42 @@
 <template>
-  <PageContainer title="题库统计" card-class="stats-card" container-class="statistics-container">
+  <PageContainer
+    :title="t('statistics.title')"
+    card-class="stats-card"
+    container-class="statistics-container"
+  >
     <!-- 加载状态 -->
-    <LoadingContainer :loading="loading" description="正在加载统计数据..." height="400px" />
+    <div
+      v-if="loading"
+      class="loading-container"
+      style="
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <n-spin size="large">
+        <template #description>
+          {{ t("statistics.loading") }}
+        </template>
+      </n-spin>
+    </div>
 
     <!-- 内容区域 -->
     <template v-if="!loading">
       <!-- 错误提示 -->
-      <n-alert v-if="error" type="error" :title="error" style="margin-bottom: 16px;" />
+      <n-alert
+        v-if="error"
+        type="error"
+        :title="error"
+        style="margin-bottom: 16px"
+      />
 
       <!-- 统计数据内容 -->
       <div v-else-if="stats">
         <!-- 总览统计 -->
         <n-card class="overview-summary-card" size="small">
-          <n-grid 
+          <n-grid
             :cols="overviewGridCols"
             :x-gap="24"
             :y-gap="24"
@@ -20,12 +44,18 @@
           >
             <n-grid-item>
               <div class="overview-item">
-                <n-statistic label="题库总数" :value="formatNumber(stats.bankTotal)" />
+                <n-statistic
+                  :label="t('statistics.bankTotal')"
+                  :value="formatNumber(stats.bankTotal)"
+                />
               </div>
             </n-grid-item>
             <n-grid-item>
               <div class="overview-item">
-                <n-statistic label="题目总数" :value="formatNumber(stats.questionTotal)" />
+                <n-statistic
+                  :label="t('statistics.questionTotal')"
+                  :value="formatNumber(stats.questionTotal)"
+                />
               </div>
             </n-grid-item>
           </n-grid>
@@ -33,7 +63,7 @@
 
         <!-- 题型统计 -->
         <div class="type-stats-section">
-          <n-grid 
+          <n-grid
             :cols="typeStatsGridCols"
             :x-gap="16"
             :y-gap="16"
@@ -47,9 +77,9 @@
                     {{ stat.percentage }}%
                   </n-tag>
                 </div>
-                
+
                 <div class="type-stat-content">
-                  <n-grid 
+                  <n-grid
                     :cols="metricsGridCols"
                     :x-gap="16"
                     :y-gap="8"
@@ -58,19 +88,25 @@
                     <n-grid-item>
                       <div class="metric-item">
                         <div class="metric-value">{{ stat.total }}</div>
-                        <div class="metric-label">总题数</div>
+                        <div class="metric-label">
+                          {{ t("statistics.totalQuestions") }}
+                        </div>
                       </div>
                     </n-grid-item>
                     <n-grid-item>
                       <div class="metric-item">
                         <div class="metric-value">{{ stat.completed }}</div>
-                        <div class="metric-label">已完成</div>
+                        <div class="metric-label">
+                          {{ t("statistics.completed") }}
+                        </div>
                       </div>
                     </n-grid-item>
                     <n-grid-item>
                       <div class="metric-item">
                         <div class="metric-value">{{ stat.accuracy }}%</div>
-                        <div class="metric-label">正确率</div>
+                        <div class="metric-label">
+                          {{ t("statistics.accuracy") }}
+                        </div>
                       </div>
                     </n-grid-item>
                   </n-grid>
@@ -82,164 +118,184 @@
       </div>
 
       <!-- 空状态 -->
-      <EmptyState v-else description="暂无统计数据" icon-type="chart" size="small" />
+      <n-empty v-else :description="t('statistics.noData')" size="small" />
     </template>
 
     <!-- 刷新按钮 -->
     <template #action>
-      <BaseButton @click="refreshData" :loading="loading" type="primary" size="small">
-        刷新数据
-      </BaseButton>
+      <n-button
+        @click="refreshData"
+        :loading="loading"
+        type="primary"
+        size="small"
+      >
+        {{ t("statistics.refresh") }}
+      </n-button>
     </template>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue'
-import {NGrid, NGridItem} from 'naive-ui'
+import {computed, onMounted, ref} from "vue";
+import {NGrid, NGridItem} from "naive-ui";
+import {useI18n} from "vue-i18n";
 
-import {statisticsAPI} from '../api/config'
-import BaseButton from '../components/common/BaseButton.vue'
-import LoadingContainer from '../components/common/LoadingContainer.vue'
-import EmptyState from '../components/common/EmptyState.vue'
-import PageContainer from '../components/common/PageContainer.vue'
-import {useBreakpoints} from '../composables/useBreakpoints'
-import type {ApiResponse, StatisticsOverview, TypeStats} from '../types/statistics'
+import {statisticsAPI} from "../api/config";
+import PageContainer from "../components/common/PageContainer.vue";
+
+import {useBreakpoints} from "../composables/useBreakpoints";
+import type {ApiResponse, StatisticsOverview, TypeStats,} from "../types/statistics";
 
 // 数字格式化函数，防御性处理null/undefined
 const formatNumber = (value: number | null | undefined): string => {
-  return (value ?? 0).toLocaleString()
-}
+  return (value ?? 0).toLocaleString();
+};
+
+const { t } = useI18n();
 
 // 题型字段映射
 const getTypeDisplayName = (type: string): string => {
   const typeMap: Record<string, string> = {
-    'single': '单选题',
-    'fill_blank': '填空题',
-    'true_false': '判断题',
-    'multiple': '多选题',
-    'short_answer': '简答题'
-  }
-  return typeMap[type] || type
-}
+    single: t("statistics.questionTypes.single"),
+    fill_blank: t("statistics.questionTypes.fillBlank"),
+    true_false: t("statistics.questionTypes.trueFalse"),
+    multiple: t("statistics.questionTypes.multiple"),
+    short_answer: t("statistics.questionTypes.shortAnswer"),
+  };
+  return typeMap[type] || type;
+};
 
 // 响应式数据
-const stats = ref<StatisticsOverview | null>(null)
-const loading = ref(false)
-const error = ref<string | null>(null)
+const stats = ref<StatisticsOverview | null>(null);
+const loading = ref(false);
+const error = ref<string | null>(null);
 
 // 响应式布局
-const { isMobile, isTablet } = useBreakpoints()
+const { isMobile, isTablet } = useBreakpoints();
 
 // 网格列数计算
 const overviewGridCols = computed(() => {
-  if (isMobile.value) return 1
-  return 2
-})
+  if (isMobile.value) return 1;
+  return 2;
+});
 
 const typeStatsGridCols = computed(() => {
-  if (isMobile.value) return 1
-  if (isTablet.value) return 2
-  return 3
-})
+  if (isMobile.value) return 1;
+  if (isTablet.value) return 2;
+  return 3;
+});
 
 const metricsGridCols = computed(() => {
-  if (isMobile.value) return 1
-  return 3
-})
+  if (isMobile.value) return 1;
+  return 3;
+});
 
 // 题型统计卡片数据
 const typeStats = computed(() => {
-  if (!stats.value?.byType) return []
+  if (!stats.value?.byType) return [];
 
-  return Object.entries(stats.value.byType).map(([type, v]: [string, TypeStats]) => {
-    const total = v.count ?? 0
-    const completed = v.completedCount ?? 0
-    const correct = v.correctCount ?? 0
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0
-    const accuracy = completed > 0 ? Math.round((correct / completed) * 100) : 0
+  return Object.entries(stats.value.byType).map(
+    ([type, v]: [string, TypeStats]) => {
+      const total = v.count ?? 0;
+      const completed = v.completedCount ?? 0;
+      const correct = v.correctCount ?? 0;
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const accuracy =
+        completed > 0 ? Math.round((correct / completed) * 100) : 0;
 
-    return {
-      type: getTypeDisplayName(type),
-      originalType: type,
-      total,
-      completed,
-      correct,
-      percentage,
-      accuracy
+      return {
+        type: getTypeDisplayName(type),
+        originalType: type,
+        total,
+        completed,
+        correct,
+        percentage,
+        accuracy,
+      };
     }
-  })
-})
-
-
+  );
+});
 
 // 获取统计数据
 const fetchStatistics = async () => {
   try {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
 
-    const response = await statisticsAPI.getOverview()
+    const response = await statisticsAPI.getOverview();
 
     // 可能的后端包装：{ success, data } 或 直接对象
-    const body = response.data
-    if (body && typeof body === 'object') {
-      const apiResp = body as ApiResponse<StatisticsOverview>
+    const body = response.data;
+    if (body && typeof body === "object") {
+      const apiResp = body as ApiResponse<StatisticsOverview>;
       if (apiResp.success && apiResp.data) {
-        stats.value = apiResp.data
-      } else if (typeof body.bankTotal === 'number') {
+        stats.value = apiResp.data;
+      } else if (typeof body.bankTotal === "number") {
         // 若后端直接返回 overview 对象
-        stats.value = body as StatisticsOverview
+        stats.value = body as StatisticsOverview;
       } else {
-        throw new Error(apiResp.message || '获取统计数据失败')
+        throw new Error(apiResp.message || t("statistics.errors.fetchFailed"));
       }
     } else {
-      throw new Error('响应数据格式错误')
+      throw new Error(t("statistics.errors.dataFormat"));
     }
   } catch (err: unknown) {
-    console.error('获取统计数据失败:', err)
+    console.error("获取统计数据失败:", err);
 
-    if (err && typeof err === 'object' && 'response' in err) {
-      const axiosErr = err as { response: { status: number; data?: { message?: string } }; message?: string }
-      const status = axiosErr.response.status
-      const msg = axiosErr.response.data?.message || axiosErr.message
+    if (err && typeof err === "object" && "response" in err) {
+      const axiosErr = err as {
+        response: { status: number; data?: { message?: string } };
+        message?: string;
+      };
+      const status = axiosErr.response.status;
+      const msg = axiosErr.response.data?.message || axiosErr.message;
       switch (status) {
         case 404:
-          error.value = '统计服务不可用，请检查服务是否启动'
-          break
+          error.value = t("statistics.errors.serviceUnavailable");
+          break;
         case 500:
-          error.value = `服务器内部错误: ${msg}`
-          break
+          error.value = t("statistics.errors.serverError", { message: msg });
+          break;
         case 503:
-          error.value = '统计服务暂时不可用，请稍后重试'
-          break
+          error.value = t("statistics.errors.serviceTemporarilyUnavailable");
+          break;
         default:
-          error.value = `请求失败 (${status}): ${msg}`
+          error.value = t("statistics.errors.requestFailed", {
+            status,
+            message: msg,
+          });
       }
-    } else if (err && typeof err === 'object' && ('code' in err || 'message' in err)) {
-      const networkErr = err as { code?: string; message?: string }
-      if (networkErr.code === 'ECONNREFUSED' || (networkErr.message && networkErr.message.includes('Network Error'))) {
-        error.value = '无法连接到服务器，请检查网络连接和服务状态'
+    } else if (
+      err &&
+      typeof err === "object" &&
+      ("code" in err || "message" in err)
+    ) {
+      const networkErr = err as { code?: string; message?: string };
+      if (
+        networkErr.code === "ECONNREFUSED" ||
+        (networkErr.message && networkErr.message.includes("Network Error"))
+      ) {
+        error.value = t("statistics.errors.connectionFailed");
       } else {
-        error.value = networkErr.message || '获取统计数据时发生未知错误'
+        error.value = networkErr.message || t("statistics.errors.unknownError");
       }
     } else {
-      error.value = '获取统计数据时发生未知错误'
+      error.value = t("statistics.errors.unknownError");
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 // 刷新数据
 const refreshData = () => {
-  fetchStatistics()
-}
+  fetchStatistics();
+};
 
 // 组件挂载时获取数据
 onMounted(() => {
-  fetchStatistics()
-})
+  fetchStatistics();
+});
 </script>
 
 <style scoped>
@@ -269,7 +325,11 @@ onMounted(() => {
 /* 总览统计样式 */
 .overview-summary-card {
   margin-bottom: var(--spacing-md);
-  background: linear-gradient(135deg, var(--n-color) 0%, var(--n-color-embedded) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--n-color) 0%,
+    var(--n-color-embedded) 100%
+  );
   border: none;
   border-radius: var(--card-border-radius);
   box-shadow: var(--card-unified-shadow);
@@ -363,8 +423,6 @@ onMounted(() => {
   font-weight: 500;
   line-height: 1.2;
 }
-
-
 
 /* 统计数字样式优化 */
 :deep(.n-statistic-value) {

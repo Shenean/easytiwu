@@ -6,10 +6,12 @@
 :root {
   /* ===== 字体系统 ===== */
   
-  /* 字体族 */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-  --font-family-serif: Georgia, 'Times New Roman', Times, serif;
+  /* 字体族 - 符合UI设计规范 */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
+  --font-family-serif: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Georgia, 'Times New Roman', serif;
   
   /* 字体大小 */
   --font-size-xs: 12px;
@@ -52,49 +54,49 @@
   
   /* ===== 颜色系统 ===== */
   
-  /* 主色调 */
-  --color-primary-50: #f0f9ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
-  --color-primary-400: #38bdf8;
-  --color-primary-500: #0ea5e9;
-  --color-primary-600: #0284c7;
-  --color-primary-700: #0369a1;
-  --color-primary-800: #075985;
-  --color-primary-900: #0c4a6e;
+  /* 主色调 - 基于UI设计规范的标准蓝色 */
+  --color-primary-50: #f0f8ff;
+  --color-primary-100: #e0f0ff;
+  --color-primary-200: #c0e1ff;
+  --color-primary-300: #80c2ff;
+  --color-primary-400: #3090ff;
+  --color-primary-500: #2080f0;
+  --color-primary-600: #1070e0;
+  --color-primary-700: #0060d0;
+  --color-primary-800: #0050c0;
+  --color-primary-900: #0040b0;
   
-  /* 成功色 */
+  /* 成功色 - 基于UI设计规范 */
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
   --color-success-300: #86efac;
   --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
+  --color-success-500: #18a058;
   --color-success-600: #16a34a;
   --color-success-700: #15803d;
   --color-success-800: #166534;
   --color-success-900: #14532d;
   
-  /* 警告色 */
+  /* 警告色 - 基于UI设计规范 */
   --color-warning-50: #fffbeb;
   --color-warning-100: #fef3c7;
   --color-warning-200: #fde68a;
   --color-warning-300: #fcd34d;
   --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
+  --color-warning-500: #f0a020;
   --color-warning-600: #d97706;
   --color-warning-700: #b45309;
   --color-warning-800: #92400e;
   --color-warning-900: #78350f;
   
-  /* 错误色 */
+  /* 错误色 - 基于UI设计规范 */
   --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
   --color-error-300: #fca5a5;
   --color-error-400: #f87171;
-  --color-error-500: #ef4444;
+  --color-error-500: #f04040;
   --color-error-600: #dc2626;
   --color-error-700: #b91c1c;
   --color-error-800: #991b1b;
@@ -112,14 +114,15 @@
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
   
-  /* 语义化颜色 */
-  --color-background: var(--color-gray-50);
+  /* 语义化颜色 - 基于UI设计规范 */
+  --color-background: #ffffff;
   --color-surface: #ffffff;
-  --color-border: var(--color-gray-200);
-  --color-text-primary: var(--color-gray-900);
-  --color-text-secondary: var(--color-gray-600);
+  --color-border: #d9d9d9;
+  --color-text-primary: #2c2c2c;
+  --color-text-secondary: #666666;
   --color-text-muted: var(--color-gray-400);
   --color-text-inverse: #ffffff;
+  --color-hover: rgba(32, 128, 240, 0.1);
   
   /* ===== 边框系统 ===== */
   
@@ -355,17 +358,17 @@
   --font-size-h3-desktop: var(--font-size-2xl);
 }
 
-/* ===== 深色主题变量 ===== */
+/* ===== 深色主题变量 - 基于UI设计规范 ===== */
 @media (prefers-color-scheme: dark) {
   :root {
     /* 深色主题颜色覆盖 */
-    --color-background: var(--color-gray-900);
-    --color-surface: var(--color-gray-800);
+    --color-background: #1e1e1e;
+    --color-surface: #1e1e1e;
     --color-border: var(--color-gray-700);
-    --color-text-primary: var(--color-gray-100);
-    --color-text-secondary: var(--color-gray-300);
+    --color-text-primary: #f5f5f5;
+    --color-text-secondary: #666666;
     --color-text-muted: var(--color-gray-500);
-    --color-text-inverse: var(--color-gray-900);
+    --color-text-inverse: #2c2c2c;
     
     /* 深色主题阴影 */
     --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);

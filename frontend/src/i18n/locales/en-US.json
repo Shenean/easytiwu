@@ -1,0 +1,240 @@
+{
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "reset": "Reset",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "clear": "Clear",
+    "select": "Select",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "noData": "No data available"
+  },
+  "navigation": {
+    "upload": "Upload Bank",
+    "bank": "Question Banks",
+    "statistics": "Statistics",
+    "settings": "Settings",
+    "home": "Home",
+    "backToHome": "Back to Home",
+    "openMenu": "Open Navigation Menu",
+    "closeMenu": "Close Navigation Menu"
+  },
+  "upload": {
+    "title": "Upload Question Bank",
+    "bankName": "Bank Name",
+    "bankNamePlaceholder": "Please enter bank name",
+    "description": "Description",
+    "descriptionPlaceholder": "Please enter description (optional)",
+    "file": "File",
+    "uploadText": "Click or drag file to this area to upload",
+    "uploadHint": "Supports .docx, .pdf, .txt formats, file size not exceeding 20MB",
+    "dragToUpload": "Click or drag file to this area to upload",
+    "supportedFormats": "Supports .docx, .pdf, .txt formats, file size not exceeding 20MB",
+    "fileTooLarge": "File size cannot exceed 20MB",
+    "uploadSuccess": "Upload successful",
+    "uploadFailed": "Upload failed",
+    "processing": "Processing...",
+    "selectFile": "Please select a file",
+    "fileRequired": "Please select a file to upload",
+    "nameRequired": "Please enter bank name"
+  },
+  "bank": {
+    "title": "Question Bank List",
+    "noData": "No question bank data",
+    "refresh": "Refresh Data",
+    "totalQuestions": "Total Questions",
+    "completedQuestions": "Completed",
+    "errorQuestions": "Wrong Questions",
+    "startPractice": "Start Practice",
+    "errorCollection": "Wrong Question Set",
+    "delete": "Delete",
+    "confirmDelete": "Confirm Delete",
+    "deleteConfirmMessage": "Are you sure you want to delete question bank \"{name}\"? This action cannot be undone.",
+    "deleteSuccess": "Delete successful",
+    "deleteFailed": "Delete failed",
+    "practiceBank": "Practice bank {name}",
+    "viewWrongSet": "View wrong question set {name}",
+    "id": "ID"
+  },
+  "statistics": {
+    "title": "Statistics",
+    "loading": "Loading statistics data...",
+    "bankTotal": "Total Banks",
+    "questionTotal": "Total Questions",
+    "totalQuestions": "Total Questions",
+    "completed": "Completed",
+    "accuracy": "Accuracy",
+    "noData": "No statistics data available",
+    "refresh": "Refresh Data",
+    "questionTypes": {
+      "single": "Single Choice",
+      "fillBlank": "Fill in the Blank",
+      "trueFalse": "True/False",
+      "multiple": "Multiple Choice",
+      "shortAnswer": "Short Answer"
+    },
+    "errors": {
+      "fetchFailed": "Failed to fetch statistics data",
+      "dataFormat": "Response data format error",
+      "serviceUnavailable": "Statistics service unavailable, please check if the service is running",
+      "serverError": "Server internal error: {message}",
+      "serviceTemporarilyUnavailable": "Statistics service temporarily unavailable, please try again later",
+      "requestFailed": "Request failed ({status}): {message}",
+      "connectionFailed": "Unable to connect to server, please check network connection and service status",
+      "unknownError": "Unknown error occurred while fetching statistics data"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "darkTheme": "Dark Theme",
+    "lightTheme": "Light Theme",
+    "theme": {
+      "title": "Dark Theme",
+      "light": "Light Mode",
+      "dark": "Dark Mode",
+      "system": "Follow System",
+      "switchTo": "Switch to {theme}",
+      "current": "Current theme: {theme}",
+      "description": "Switch the application theme mode, including light, dark, and follow system"
+    },
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "switchToLight": "Switch to Light",
+    "switchToDark": "Switch to Dark",
+    "switchedTo": "Switched to {theme}",
+    "themeChanged": "Theme Changed",
+    "languageChanged": "Language Changed",
+    "language": {
+      "title": "Language Settings",
+      "chinese": "中文",
+      "english": "English",
+      "switchTo": "Switch to {language}",
+      "switched": "Switched to {language}",
+      "description": "Switch the application display language, supports Chinese and English"
+    },
+    "other": "Other Settings",
+    "moreFeatures": "More features coming soon",
+    "followSystem": "Follow System"
+  },
+  "answerCard": {
+    "title": "Answer Card"
+  },
+  "questionAnswer": {
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "inputPlaceholder": "Please enter your answer"
+  },
+  "questionActions": {
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit Answer",
+    "submitting": "Submitting..."
+  },
+  "content": {
+    "loadingQuestions": "Loading questions...",
+    "noQuestions": "No questions available",
+    "goBack": "Go Back",
+    "answerSheet": "Answer Sheet",
+    "questionNumber": "Question {number}",
+    "answerAndAnalysis": "Answer & Analysis",
+    "correctAnswer": "Correct Answer",
+    "analysis": "Analysis",
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "none": "None",
+    "pleaseAnswer": "Please answer first",
+    "answerCorrect": "Correct answer!",
+    "answerWrong": "Wrong answer",
+    "lastQuestion": "This is the last question",
+    "noWrongQuestions": "No wrong questions available",
+    "noBankQuestions": "No questions in this bank",
+    "bankId": "Bank ID",
+    "wrongQuestions": "Wrong Questions Practice",
+    "allPractice": "All Practice",
+    "currentBank": "Current Bank: {bankName} - {practiceType}, Total {count} questions",
+    "fetchQuestionsFailed": "Failed to fetch questions",
+    "questionNotFound": "Question not found",
+    "submitFailed": "Submit failed",
+    "submitAnswerFailed": "Failed to submit answer"
+  },
+  "form": {
+    "validation": {
+      "required": "This field is required",
+      "minLength": "Please enter at least {min} characters",
+      "maxLength": "Please enter no more than {max} characters",
+      "email": "Please enter a valid email address",
+      "phone": "Please enter a valid phone number",
+      "url": "Please enter a valid URL",
+      "number": "Please enter a valid number",
+      "integer": "Please enter an integer",
+      "positive": "Please enter a positive number",
+      "range": "Please enter a value between {min} and {max}"
+    },
+    "actions": {
+      "submit": "Submit",
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "save": "Save",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirm": "Confirm"
+    }
+  },
+  "message": {
+    "success": {
+      "saved": "Saved successfully",
+      "deleted": "Deleted successfully",
+      "updated": "Updated successfully",
+      "created": "Created successfully",
+      "uploaded": "Uploaded successfully",
+      "submitted": "Submitted successfully"
+    },
+    "error": {
+      "saveFailed": "Save failed",
+      "deleteFailed": "Delete failed",
+      "updateFailed": "Update failed",
+      "createFailed": "Create failed",
+      "uploadFailed": "Upload failed",
+      "submitFailed": "Submit failed",
+      "networkError": "Network error, please try again later",
+      "serverError": "Server error, please contact administrator",
+      "unknownError": "Unknown error"
+    },
+    "warning": {
+      "deleteConfirm": "Are you sure you want to delete? This action cannot be undone.",
+      "overwrite": "File already exists, overwrite?"
+    },
+    "info": {
+      "processing": "Processing, please wait...",
+      "loading": "Loading...",
+      "noData": "No data available",
+      "noResults": "No relevant results found"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "bankNameRequired": "Question bank name is required",
+    "bankNameMaxLength": "Maximum 15 characters",
+    "descriptionMaxLength": "Maximum 30 characters",
+    "fileRequired": "Please upload a file",
+    "pleaseUploadFile": "Please upload a file",
+    "maxLength": "Maximum {count} characters"
+  }
+}

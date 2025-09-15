@@ -1,22 +1,24 @@
-import type { FormRules } from 'naive-ui'
-import type { UploadFileInfo } from 'naive-ui'
+import type {FormRules, UploadFileInfo} from 'naive-ui'
+import {i18n} from '../i18n'
+
+const t = i18n.global.t
 
 export const bankFormRules: FormRules = {
   name: [
-    { required: true, message: '题库名不能为空', trigger: 'blur' },
-    { max: 15, message: '最多 15 字', trigger: 'input' }
+    { required: true, message: () => t('validation.bankNameRequired'), trigger: 'blur' },
+    { max: 15, message: () => t('validation.maxLength', { count: 15 }), trigger: 'input' }
   ],
   description: [
-    { max: 30, message: '最多 30 字', trigger: 'input' }
+    { max: 30, message: () => t('validation.maxLength', { count: 30 }), trigger: 'input' }
   ],
   file: [
     {
       required: true,
-      message: '请上传文件',
+      message: () => t('validation.fileRequired'),
       trigger: 'change',
       validator: (_rule: any, value: UploadFileInfo[]) => {
         if (!value || value.length === 0) {
-          return new Error('请上传文件')
+          return new Error(t('validation.fileRequired'))
         }
         return true
       }

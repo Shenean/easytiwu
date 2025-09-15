@@ -1,106 +1,156 @@
 <template>
-  <PageContainer title="上传题库" card-class="upload-card">
-    <n-form ref="formRef" :model="form" :rules="rules" label-placement="left" label-width="80" size="large">
-      <!-- 题库名 -->
-      <n-form-item label="题库名" path="name">
-        <n-input v-model:value="form.name" placeholder="请输入题库名" maxlength="15" show-count clearable aria-label="题库名称" />
-      </n-form-item>
+  <PageContainer :title="$t('upload.title')">
+    <div class="upload-container">
+      <n-card class="upload-card">
+        <n-form
+          ref="formRef"
+          :model="form"
+          :rules="rules"
+          label-placement="left"
+          label-width="80"
+          size="large"
+        >
+          <!-- 题库名 -->
+          <n-form-item :label="$t('upload.bankName')" path="name">
+            <n-input
+              v-model:value="form.name"
+              :placeholder="$t('upload.bankNamePlaceholder')"
+              maxlength="15"
+              show-count
+              clearable
+              :aria-label="$t('upload.bankName')"
+            />
+          </n-form-item>
 
-      <!-- 描述 -->
-      <n-form-item label="描述" path="description">
-        <n-input v-model:value="form.description" placeholder="请输入描述（可选）" type="textarea" maxlength="30" show-count
-          clearable autosize aria-label="题库描述" />
-      </n-form-item>
+          <!-- 描述 -->
+          <n-form-item :label="$t('upload.description')" path="description">
+            <n-input
+              v-model:value="form.description"
+              :placeholder="$t('upload.descriptionPlaceholder')"
+              type="textarea"
+              maxlength="30"
+              show-count
+              clearable
+              autosize
+              :aria-label="$t('upload.description')"
+            />
+          </n-form-item>
 
-      <!-- 文件上传 -->
-      <n-form-item label="文件" path="file">
-        <n-upload v-model:file-list="form.file" :accept="'.docx,.pdf,.txt'" :max="1" :multiple="false" action="#"
-          :custom-request="handleCustomRequest" @before-upload="handleBeforeUpload">
-          <n-upload-dragger>
-            <div style="margin-bottom: var(--spacing-3)">
-              <n-icon size="48" :depth="3">
-                <ArchiveIcon />
-              </n-icon>
+          <!-- 文件上传 -->
+          <n-form-item :label="$t('upload.file')" path="file">
+            <n-upload
+              v-model:file-list="form.file"
+              :accept="'.docx,.pdf,.txt'"
+              :max="1"
+              :multiple="false"
+              action="#"
+              :custom-request="handleCustomRequest"
+              @before-upload="handleBeforeUpload"
+            >
+              <n-upload-dragger>
+                <div style="margin-bottom: var(--spacing-3)">
+                  <n-icon size="48" :depth="3">
+                    <ArchiveIcon />
+                  </n-icon>
+                </div>
+                <n-text style="font-size: var(--font-size-base)">
+                  {{ $t("upload.uploadText") }}
+                </n-text>
+                <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
+                  {{ $t("upload.uploadHint") }}
+                </n-p>
+              </n-upload-dragger>
+            </n-upload>
+          </n-form-item>
+
+          <!-- 提交操作区 -->
+          <n-form-item>
+            <div class="form-actions">
+              <n-button size="large" @click="handleReset">
+                重置
+              </n-button>
+              <n-button
+                type="primary"
+                size="large"
+                :loading="submitting"
+                :disabled="!isFormValid"
+                @click="handleSubmit"
+              >
+                提交
+              </n-button>
             </div>
-            <n-text style="font-size: var(--font-size-base)">
-              点击或者拖动文件到该区域来上传
-            </n-text>
-            <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
-              支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB
-            </n-p>
-          </n-upload-dragger>
-        </n-upload>
-      </n-form-item>
-
-      <!-- 提交操作区 -->
-      <n-form-item>
-        <FormActions :loading="submitting" :disabled="!isFormValid" :show-reset="true" @submit="handleSubmit"
-          @reset="handleReset" />
-      </n-form-item>
-    </n-form>
+          </n-form-item>
+        </n-form>
+      </n-card>
+    </div>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
-import type {FormInst, UploadCustomRequestOptions, UploadFileInfo} from 'naive-ui'
-import {useMessage} from 'naive-ui'
-import {ArchiveOutline as ArchiveIcon} from '@vicons/ionicons5'
-import {uploadAPI} from '../api/config'
-import FormActions from '../components/common/FormActions.vue'
-import PageContainer from '../components/common/PageContainer.vue'
-import {bankFormRules} from '../validation/rulesBank'
+import {computed, ref} from "vue";
+import type {FormInst, UploadCustomRequestOptions, UploadFileInfo,} from "naive-ui";
+import {useMessage} from "naive-ui";
+import {ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
+import {uploadAPI} from "../api/config";
+
+import PageContainer from "../components/common/PageContainer.vue";
+import {bankFormRules} from "../validation/rulesBank";
 
 interface UploadForm {
-  name: string
-  description: string
-  file: UploadFileInfo[]
+  name: string;
+  description: string;
+  file: UploadFileInfo[];
 }
 
-const formRef = ref<FormInst | null>(null)
-const message = useMessage()
-const submitting = ref(false)
+const formRef = ref<FormInst | null>(null);
+const message = useMessage();
+const submitting = ref(false);
 
 const form = ref<UploadForm>({
-  name: '',
-  description: '',
-  file: []
-})
+  name: "",
+  description: "",
+  file: [],
+});
 
 // 表单是否有效（用于按钮禁用）
 const isFormValid = computed(() => {
-  return !!form.value.name.trim() && form.value.file.length > 0
-})
+  return !!form.value.name.trim() && form.value.file.length > 0;
+});
 
 // 使用公共表单校验规则
-const rules = bankFormRules
-
-
+const rules = bankFormRules;
 
 /**
  * 上传前校验文件
  */
-function handleBeforeUpload(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
-  const file = data.file
-  const fileName = file.file?.name || file.name || '未知文件'
+function handleBeforeUpload(data: {
+  file: UploadFileInfo;
+  fileList: UploadFileInfo[];
+}) {
+  const file = data.file;
+  const fileName = file.file?.name || file.name || "未知文件";
 
   // 文件类型校验
-  const allowedTypes = ['.docx', '.pdf', '.txt']
-  const fileExtension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'))
+  const allowedTypes = [".docx", ".pdf", ".txt"];
+  const fileExtension = fileName
+    .toLowerCase()
+    .substring(fileName.lastIndexOf("."));
   if (!allowedTypes.includes(fileExtension)) {
-    message.error(`不支持的文件格式，请选择 ${allowedTypes.join('、')} 格式的文件`)
-    return false
+    message.error(
+      `不支持的文件格式，请选择 ${allowedTypes.join("、")} 格式的文件`
+    );
+    return false;
   }
 
   // 文件大小校验（20MB）
-  const maxSize = 20 * 1024 * 1024
+  const maxSize = 20 * 1024 * 1024;
   if (file.file && file.file.size > maxSize) {
-    message.error('文件大小不能超过 20MB')
-    return false
+    message.error("文件大小不能超过 20MB");
+    return false;
   }
 
-  console.log('文件上传前处理:', fileName)
-  return true
+  console.log("文件上传前处理:", fileName);
+  return true;
 }
 
 /**
@@ -108,27 +158,26 @@ function handleBeforeUpload(data: { file: UploadFileInfo; fileList: UploadFileIn
  */
 function handleCustomRequest(options: UploadCustomRequestOptions) {
   // 阻止默认上传，文件将在表单提交时统一处理
-  options.onFinish()
+  options.onFinish();
 }
-
-
 
 /**
  * 重置表单
  */
 function handleReset() {
-  const hasData = form.value.name || form.value.description || form.value.file.length > 0
+  const hasData =
+    form.value.name || form.value.description || form.value.file.length > 0;
   if (!hasData) {
-    message.info('表单已是初始状态')
-    return
+    message.info("表单已是初始状态");
+    return;
   }
 
-  if (window.confirm('⚠️ 确定重置表单？所有数据将丢失')) {
+  if (window.confirm("⚠️ 确定重置表单？所有数据将丢失")) {
     // 重置表单数据，文件列表通过v-model自动同步到BaseUpload组件
-    form.value.name = ''
-    form.value.description = ''
-    form.value.file = []
-    message.info('表单已重置')
+    form.value.name = "";
+    form.value.description = "";
+    form.value.file = [];
+    message.info("表单已重置");
   }
 }
 
@@ -138,122 +187,88 @@ function handleReset() {
 function handleSubmit() {
   formRef.value?.validate(async (errors) => {
     if (errors) {
-      const firstError = Object.values(errors)
-        .flat()
-        .find(err => err.message)?.message || '请检查表单输入'
-      message.error(firstError)
-      return
+      const firstError =
+        Object.values(errors)
+          .flat()
+          .find((err) => err.message)?.message || "请检查表单输入";
+      message.error(firstError);
+      return;
     }
 
-    submitting.value = true
+    submitting.value = true;
     try {
       if (!form.value.file[0]?.file) {
-        message.error('请选择有效的文件')
-        return
+        message.error("请选择有效的文件");
+        return;
       }
 
-      const formData = new FormData()
-      formData.append('name', form.value.name)
-      formData.append('description', form.value.description)
-      formData.append('file', form.value.file[0].file as Blob)
+      const formData = new FormData();
+      formData.append("name", form.value.name);
+      formData.append("description", form.value.description);
+      formData.append("file", form.value.file[0].file as Blob);
 
-      await uploadAPI.uploadFile(formData)
+      await uploadAPI.uploadFile(formData);
 
-      message.success('上传成功 🎉')
+      message.success("上传成功 🎉");
       // 上传成功后重置表单，文件列表通过v-model自动同步到BaseUpload组件
-      form.value.name = ''
-      form.value.description = ''
-      form.value.file = []
+      form.value.name = "";
+      form.value.description = "";
+      form.value.file = [];
     } catch (err: unknown) {
-      console.error('Upload error:', err)
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosErr = err as { response: { data?: string } }
-        message.error(axiosErr.response?.data || '上传失败，请重试')
+      console.error("Upload error:", err);
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosErr = err as { response: { data?: string } };
+        message.error(axiosErr.response?.data || "上传失败，请重试");
       } else {
-        message.error('上传失败，请重试')
+        message.error("上传失败，请重试");
       }
     } finally {
-      submitting.value = false
+      submitting.value = false;
     }
-  })
+  });
 }
 
 defineExpose({
   submit: handleSubmit,
   reset: handleReset,
-  getFormData: () => ({ ...form.value })
-})
+  getFormData: () => ({ ...form.value }),
+});
 </script>
 
 <style scoped>
+.upload-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .upload-card {
-  max-width: var(--spacing-160); /* 160 * 4px */
-  margin: var(--spacing-10) auto;
-  box-shadow: var(--shadow-card-light);
-  border-radius: var(--spacing-4);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-medium);
 }
 
-.upload-card:hover {
-  box-shadow: var(--shadow-card-medium);
+.form-actions {
+  display: flex;
+  gap: var(--spacing-3);
+  justify-content: flex-end;
+  margin-top: var(--spacing-4);
 }
 
-/* 移动端表单优化 */
-@media (max-width: 768px) {
-  .upload-card {
-    margin: var(--spacing-4);
-    max-width: none;
-  }
-
-  /* 表单项移动端优化 */
-  :deep(.n-form-item-label) {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-  }
-
-  :deep(.n-input) {
-    font-size: var(--font-size-base) !important;
-    min-height: var(--spacing-11); /* 44px */
-  }
-
-  :deep(.n-input__input-el) {
-    font-size: var(--font-size-base) !important;
-  }
-
-  :deep(.n-input__textarea-el) {
-    font-size: var(--font-size-base) !important;
-  }
-
-
-}
-
+/* 移动端适配 */
 @media (max-width: 480px) {
-  .upload-card {
-    margin: var(--spacing-3);
-    border-radius: 12px;
+  .upload-container {
+    margin: 0 var(--spacing-3);
   }
-
-  :deep(.n-form-item-label) {
-    font-size: var(--font-size-xs);
+  
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-2);
   }
-
-  :deep(.n-input) {
-    min-height: var(--spacing-11); /* 44px */
-  }
-
-
 }
 
-/* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
-  .upload-card {
-    margin: var(--spacing-2);
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-2);
   }
-
-  :deep(.n-input) {
-    min-height: var(--spacing-10); /* 40px */
-  }
-
-
 }
 </style>

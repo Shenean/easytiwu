@@ -1,14 +1,23 @@
 <template>
-  <PageContainer title="题库列表" card-class="bank-card">
+  <PageContainer :title="$t('bank.title')" card-class="bank-card">
     <!-- 空状态占位 -->
-    <EmptyState v-if="!loading && banks.length === 0" description="暂无题库数据" icon-type="folder"
-      :show-default-action="true" action-text="刷新数据" action-type="primary" action-size="small" @action="fetchBanks" />
+    <n-empty
+      v-if="!loading && banks.length === 0"
+      :description="$t('bank.noData')"
+      size="large"
+    >
+      <template #extra>
+        <n-button type="primary" size="small" @click="fetchBanks">
+          {{ $t("bank.refresh") }}
+        </n-button>
+      </template>
+    </n-empty>
 
     <!-- 移动端卡片列表 -->
     <div v-else class="banks-container">
       <div v-for="bank in banks" :key="bank.id" class="bank-card-item">
         <div class="bank-header">
-          <div class="bank-id">ID: {{ bank.id }}</div>
+          <div class="bank-id">{{ $t("bank.id") }}: {{ bank.id }}</div>
           <div class="bank-name">{{ bank.name }}</div>
         </div>
 
@@ -19,37 +28,53 @@
         <n-grid :cols="3" :x-gap="8" :y-gap="8" class="bank-stats">
           <n-grid-item>
             <div class="stat-item">
-              <div class="stat-label">总题数</div>
+              <div class="stat-label">{{ $t("bank.totalQuestions") }}</div>
               <div class="stat-value">{{ bank.totalCount }}</div>
             </div>
           </n-grid-item>
           <n-grid-item>
             <div class="stat-item">
-              <div class="stat-label">已完成</div>
+              <div class="stat-label">{{ $t("bank.completedQuestions") }}</div>
               <div class="stat-value">{{ bank.completedCount }}</div>
             </div>
           </n-grid-item>
           <n-grid-item>
             <div class="stat-item">
-              <div class="stat-label">错题数</div>
+              <div class="stat-label">{{ $t("bank.errorQuestions") }}</div>
               <div class="stat-value">{{ bank.wrongCount }}</div>
             </div>
           </n-grid-item>
         </n-grid>
 
         <div class="bank-actions">
-          <BaseButton type="primary" size="medium" class="action-button" @click="handlePractice(bank.id)"
-            :aria-label="`练习题库 ${bank.name}`">
-            开始练习
-          </BaseButton>
-          <BaseButton type="warning" size="medium" class="action-button" @click="handleWrongSet(bank.id)"
-            :aria-label="`查看错题集 ${bank.name}`">
-            错题集
-          </BaseButton>
-          <BaseButton type="error" ghost size="medium" class="action-button" @click="confirmDelete(bank.id)"
-            :aria-label="`删除题库 ${bank.name}`">
-            删除
-          </BaseButton>
+          <n-button
+            type="primary"
+            size="medium"
+            class="action-button"
+            @click="handlePractice(bank.id)"
+            :aria-label="`练习题库 ${bank.name}`"
+          >
+            {{ $t("bank.startPractice") }}
+          </n-button>
+          <n-button
+            type="default"
+            size="medium"
+            class="action-button"
+            @click="handleWrongSet(bank.id)"
+            :aria-label="`查看错题集 ${bank.name}`"
+          >
+            {{ $t("bank.errorCollection") }}
+          </n-button>
+          <n-button
+            type="default"
+            ghost
+            size="medium"
+            class="action-button"
+            @click="confirmDelete(bank.id)"
+            :aria-label="`删除题库 ${bank.name}`"
+          >
+            {{ $t("bank.delete") }}
+          </n-button>
         </div>
       </div>
     </div>
@@ -57,156 +82,159 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
-import {NGrid, NGridItem, useDialog, useMessage} from 'naive-ui'
-import {useRouter} from 'vue-router'
-import axios, {AxiosError} from 'axios'
-import BaseButton from '../components/common/BaseButton.vue'
-import EmptyState from '../components/common/EmptyState.vue'
-import PageContainer from '../components/common/PageContainer.vue'
+import {onMounted, ref} from "vue";
+import {NGrid, NGridItem, useDialog, useMessage} from "naive-ui";
+import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
+import axios, {AxiosError} from "axios";
 
+import PageContainer from "../components/common/PageContainer.vue";
 
 // 定义统一响应格式
 interface ApiResponse<T> {
-  code: number
-  message: string
-  data: T
-  timestamp: number
+  code: number;
+  message: string;
+  data: T;
+  timestamp: number;
 }
 
 interface QuestionBank {
-  id: number
-  name: string
-  description: string
-  totalCount: number
-  completedCount: number
-  wrongCount: number
+  id: number;
+  name: string;
+  description: string;
+  totalCount: number;
+  completedCount: number;
+  wrongCount: number;
 }
 
 // ================== 状态管理 ==================
-const message = useMessage()
-const dialog = useDialog()
-const router = useRouter()
-const banks = ref<QuestionBank[]>([])
-const loading = ref(false)
-
-
-
-
-
-
-
+const message = useMessage();
+const dialog = useDialog();
+const router = useRouter();
+const { t } = useI18n();
+const banks = ref<QuestionBank[]>([]);
+const loading = ref(false);
 
 // ================== 数据获取 ==================
 /**
  * 获取题库数据
  */
 async function fetchBanks() {
-  loading.value = true
+  loading.value = true;
   try {
-    const res = await axios.get<ApiResponse<QuestionBank[]>>('/api/bank')
+    const res = await axios.get<ApiResponse<QuestionBank[]>>("/api/bank");
 
     // 检查响应格式并正确处理数据
     if (res.data.code === 200) {
-      banks.value = res.data.data || []
+      banks.value = res.data.data || [];
     } else {
-      message.error(res.data.message || '获取题库失败')
+      message.error(res.data.message || t("message.fetchBanksFailed"));
     }
   } catch (err) {
-    console.error('[API Error] 获取题库失败:', err)
+    console.error("[API Error] 获取题库失败:", err);
     if (err instanceof AxiosError) {
-      message.error(`请求失败：${err.response?.data?.message || '未知错误'}`)
+      message.error(
+        `${t("message.requestFailed")}：${
+          err.response?.data?.message || t("message.unknownError")
+        }`
+      );
     } else {
-      message.error('获取题库失败，请稍后重试')
+      message.error(
+        `${t("message.fetchBanksFailed")}，${t("message.retryLater")}`
+      );
     }
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // ================== 操作处理 ==================
 function handlePractice(id: number) {
   try {
-    const targetBank = banks.value.find(b => b.id === id)
-    const bankName = targetBank?.name || `ID: ${id}`
+    const targetBank = banks.value.find((b) => b.id === id);
+    const bankName = targetBank?.name || `ID: ${id}`;
     router.push({
-      name: 'content',
-      params: { bankId: id.toString(), type: 'all' },
-      query: { bankName: bankName }
-    })
+      name: "content",
+      params: { bankId: id.toString(), type: "all" },
+      query: { bankName: bankName },
+    });
     // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
-    console.error('路由跳转失败:', error)
-    message.error('页面跳转失败，请稍后重试')
+    console.error("路由跳转失败:", error);
+    message.error(t("message.routeJumpFailed"));
   }
 }
 
 function handleWrongSet(id: number) {
   try {
-    const targetBank = banks.value.find(b => b.id === id)
-    const bankName = targetBank?.name || `ID: ${id}`
+    const targetBank = banks.value.find((b) => b.id === id);
+    const bankName = targetBank?.name || `ID: ${id}`;
     router.push({
-      name: 'content',
-      params: { bankId: id.toString(), type: 'wrong' },
-      query: { bankName: bankName }
-    })
+      name: "content",
+      params: { bankId: id.toString(), type: "wrong" },
+      query: { bankName: bankName },
+    });
     // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
-    console.error('路由跳转失败:', error)
-    message.error('页面跳转失败，请稍后重试')
+    console.error("路由跳转失败:", error);
+    message.error(t("message.routeJumpFailed"));
   }
 }
 
 function confirmDelete(id: number) {
-  const targetBank = banks.value.find(b => b.id === id)
-  const bankName = targetBank?.name || `ID: ${id}`
+  const targetBank = banks.value.find((b) => b.id === id);
+  const bankName = targetBank?.name || `ID: ${id}`;
 
   dialog.warning({
-    title: '⚠️ 确认删除',
-    content: `确定要删除题库 “${bankName}” 吗？此操作不可恢复！`,
-    positiveText: '删除',
-    negativeText: '取消',
+    title: t("message.confirmDelete"),
+    content: t("message.deleteConfirmContent", { name: bankName }),
+    positiveText: t("bank.delete"),
+    negativeText: t("message.cancel"),
     onPositiveClick: async () => {
-      await handleDelete(id)
+      await handleDelete(id);
     },
     onNegativeClick: () => {
-      message.info('已取消删除')
-    }
-  })
+      message.info(t("message.cancelDelete"));
+    },
+  });
 }
 
 async function handleDelete(id: number) {
   try {
-    const res = await axios.delete<ApiResponse<void>>(`/api/bank/${id}`)
+    const res = await axios.delete<ApiResponse<void>>(`/api/bank/${id}`);
 
     // 检查响应格式
     if (res.data.code === 200) {
-      message.success('删除成功 ✅')
+      message.success(t("message.deleteSuccess"));
       // 优化：前端移除，避免重新拉取全部数据
-      banks.value = banks.value.filter(b => b.id !== id)
+      banks.value = banks.value.filter((b) => b.id !== id);
     } else {
-      message.error(res.data.message || '删除失败')
+      message.error(res.data.message || t("message.deleteFailed"));
     }
   } catch (err) {
-    console.error('[API Error] 删除失败:', err)
+    console.error("[API Error] 删除失败:", err);
     if (err instanceof AxiosError) {
-      message.error(`删除失败：${err.response?.data?.message || '未知错误'}`)
+      message.error(
+        `${t("message.deleteFailed")}：${
+          err.response?.data?.message || t("message.unknownError")
+        }`
+      );
     } else {
-      message.error('删除失败，请稍后重试')
+      message.error(`${t("message.deleteFailed")}，${t("message.retryLater")}`);
     }
   }
 }
 
 // ================== 生命周期 ==================
 onMounted(() => {
-  fetchBanks()
-})
+  fetchBanks();
+});
 
 // ================== 暴露方法（供父组件调用） ==================
 defineExpose({
   refresh: fetchBanks,
-  getBanks: () => [...banks.value]
-})
+  getBanks: () => [...banks.value],
+});
 </script>
 
 <style scoped>
@@ -230,17 +258,17 @@ defineExpose({
   }
 }
 
-/* 卡片容器样式 */
+/* 卡片容器样式 - 紧凑型布局 */
 .banks-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2); /* 16px - 更紧凑的卡片间距 */
   padding: 0;
 }
 
 .bank-card-item {
   border-radius: var(--card-border-radius);
-  padding: var(--card-padding-desktop);
+  padding: var(--spacing-4); /* 32px - 紧凑型内边距 */
   box-shadow: var(--card-unified-shadow);
   border: none;
   position: relative;
@@ -248,21 +276,22 @@ defineExpose({
   width: var(--card-standard-width);
   max-width: var(--card-content-max-width);
   margin: 0 auto;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease; /* 包含变形动画 */
+  background: var(--color-surface);
 }
 
 .bank-card-item:hover {
   box-shadow: var(--card-unified-shadow-hover);
+  transform: translateY(-2px); /* 轻微上浮效果 */
 }
 
 .bank-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-2); /* 16px */
   flex-wrap: wrap;
-  gap: var(--spacing-2);
-  /* 8px */
+  gap: var(--spacing-1); /* 8px - 紧凑间距 */
 }
 
 .bank-id {
@@ -288,14 +317,13 @@ defineExpose({
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
   line-height: 1.4;
-  margin-bottom: var(--spacing-3);
+  margin-bottom: var(--spacing-2); /* 16px - 紧凑间距 */
   word-break: break-word;
 }
 
 .bank-stats {
-  margin-bottom: var(--spacing-4);
-  /* 16px */
-  padding: var(--spacing-3);
+  margin-bottom: var(--spacing-3); /* 24px */
+  padding: var(--spacing-2); /* 16px - 紧凑内边距 */
   background: var(--color-bg-soft);
   border-radius: var(--border-radius-sm);
 }
@@ -307,28 +335,28 @@ defineExpose({
 .stat-label {
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
-  margin-bottom: var(--spacing-1);
-  /* 4px */
+  margin-bottom: 4px; /* 4px - 固定紧凑间距 */
   font-weight: 500;
 }
 
 .stat-value {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
+  font-size: var(--font-size-base); /* 16px - 紧凑字体大小 */
+  font-weight: 600; /* 稍微减轻字重 */
   color: var(--color-text-primary);
 }
 
 .bank-actions {
   display: flex;
-  gap: var(--spacing-2);
+  gap: var(--spacing-1); /* 8px - 紧凑按钮间距 */
   flex-wrap: wrap;
 }
 
 .action-button {
   flex: 1;
-  min-width: var(--spacing-25);
-  height: var(--spacing-8);
+  min-width: 80px; /* 紧凑最小宽度 */
+  height: 36px; /* 紧凑高度 */
   font-size: var(--font-size-sm);
+  padding: var(--spacing-1) var(--spacing-2); /* 8px 16px */
 }
 
 /* 空状态提示按钮动画 */
@@ -337,24 +365,22 @@ defineExpose({
   border-radius: var(--border-radius-md);
 }
 
-/* 移动端适配 */
+/* 移动端适配 - 紧凑型布局 */
 @media (max-width: 768px) {
   .banks-container {
-    gap: var(--spacing-3);
-    /* 12px */
+    gap: var(--spacing-2); /* 16px - 保持紧凑间距 */
   }
 
   .bank-card-item {
-    padding: var(--card-padding-tablet);
+    padding: var(--spacing-3); /* 24px - 平板紧凑内边距 */
     border-radius: var(--card-border-radius);
     width: var(--card-tablet-width);
     box-shadow: var(--card-tablet-shadow);
   }
 
   .bank-header {
-    margin-bottom: var(--spacing-2);
-    /* 8px */
-    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-2); /* 16px */
+    gap: var(--spacing-1); /* 8px */
   }
 
   .bank-name {
@@ -363,16 +389,12 @@ defineExpose({
 
   .bank-description {
     font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-3);
-    /* 12px */
+    margin-bottom: var(--spacing-2); /* 16px - 保持紧凑 */
   }
 
   .bank-stats {
-    padding: var(--spacing-3);
-    /* 12px */
-    gap: var(--spacing-2);
-    /* 8px */
-    margin-bottom: var(--spacing-3);
+    padding: var(--spacing-2); /* 16px - 紧凑内边距 */
+    margin-bottom: var(--spacing-3); /* 24px */
   }
 
   .stat-value {
@@ -380,16 +402,14 @@ defineExpose({
   }
 
   .bank-actions {
-    gap: var(--spacing-2);
-    /* 8px */
+    gap: var(--spacing-1); /* 8px - 紧凑按钮间距 */
   }
 
   .action-button {
-    min-width: var(--spacing-20);
-    /* 80px */
-    height: var(--spacing-8);
-    /* 32px */
+    min-width: 72px; /* 紧凑最小宽度 */
+    height: 32px; /* 紧凑高度 */
     font-size: var(--font-size-xs);
+    padding: 6px 12px; /* 紧凑内边距 */
   }
 
   .bank-card {
@@ -443,11 +463,11 @@ defineExpose({
 
 @media (max-width: var(--breakpoint-mobile)) {
   .banks-container {
-    gap: var(--spacing-2);
+    gap: var(--spacing-2); /* 16px - 保持紧凑间距 */
   }
 
   .bank-card-item {
-    padding: var(--card-padding-mobile);
+    padding: var(--spacing-3); /* 24px - 移动端紧凑内边距 */
     width: var(--card-mobile-width);
     box-shadow: var(--card-mobile-shadow);
   }
@@ -458,13 +478,12 @@ defineExpose({
 
   .bank-description {
     font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-2);
+    margin-bottom: var(--spacing-2); /* 16px */
   }
 
   .bank-stats {
-    padding: var(--spacing-2);
-    gap: var(--spacing-1);
-    margin-bottom: var(--spacing-3);
+    padding: var(--spacing-2); /* 16px */
+    margin-bottom: var(--spacing-2); /* 16px - 更紧凑 */
   }
 
   .stat-label {
@@ -476,9 +495,10 @@ defineExpose({
   }
 
   .action-button {
-    min-width: var(--spacing-17);
-    height: var(--spacing-7);
+    min-width: 64px; /* 移动端最小宽度 */
+    height: 28px; /* 移动端紧凑高度 */
     font-size: var(--font-size-xs);
+    padding: 4px 8px; /* 移动端紧凑内边距 */
   }
 
   .bank-card {
@@ -520,12 +540,26 @@ defineExpose({
   }
 }
 
-/* 超小屏幕优化 */
+/* 超小屏幕优化 - 紧凑型布局 */
 @media (max-width: 360px) {
-  .bank-card {
-    margin: var(--spacing-2);
-    width: var(--card-mobile-width);
-    box-shadow: var(--card-mobile-shadow);
+  .banks-container {
+    gap: var(--spacing-1); /* 8px - 超紧凑间距 */
+  }
+
+  .bank-card-item {
+    padding: var(--spacing-2); /* 16px - 超紧凑内边距 */
+  }
+
+  .bank-stats {
+    padding: var(--spacing-1); /* 8px - 超紧凑统计区域 */
+    margin-bottom: var(--spacing-2); /* 16px */
+  }
+
+  .action-button {
+    min-width: 56px; /* 超小屏最小宽度 */
+    height: 24px; /* 超小屏高度 */
+    font-size: 10px; /* 更小字体 */
+    padding: 2px 6px; /* 超紧凑内边距 */
   }
 
   .mobile-table {
@@ -546,16 +580,23 @@ defineExpose({
   }
 }
 
-/* 横屏模式优化 */
+/* 横屏模式优化 - 紧凑型布局 */
 @media (max-height: 500px) and (orientation: landscape) {
-  .bank-card {
-    margin: var(--spacing-2) var(--spacing-4);
-    width: var(--card-tablet-width);
-    box-shadow: var(--card-tablet-shadow);
+  .banks-container {
+    gap: var(--spacing-1); /* 8px - 横屏紧凑间距 */
+  }
+
+  .bank-card-item {
+    padding: var(--spacing-2); /* 16px - 横屏紧凑内边距 */
+  }
+
+  .bank-stats {
+    padding: var(--spacing-1); /* 8px */
+    margin-bottom: var(--spacing-2); /* 16px */
   }
 
   .empty-state {
-    padding: var(--spacing-5);
+    padding: var(--spacing-3); /* 24px - 紧凑空状态 */
   }
 
   :deep(.n-data-table-tr) {

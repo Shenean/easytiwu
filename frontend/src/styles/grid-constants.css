@@ -188,8 +188,8 @@
   grid-auto-flow: dense;
 }
 
-/* 移动端优化 */
-@media (max-width: 480px) {
+/* 移动端优化 - 使用标准断点 */
+@media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
   .grid-responsive {
     gap: var(--grid-gap-xs);
     grid-template-columns: 1fr;

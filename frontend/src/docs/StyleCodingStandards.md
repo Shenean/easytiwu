@@ -29,7 +29,7 @@
 
 /* ❌ 禁止 - 硬编码颜色值 */
 .button {
-  background-color: #18a058;
+  background-color: #2080F0;
   color: #ffffff;
 }
 ```

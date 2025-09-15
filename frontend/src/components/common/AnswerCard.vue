@@ -1,49 +1,71 @@
 <template>
-  <n-card title="答题卡" size="small" class="answer-card-container" :class="{ 'mobile-mode': mobileMode }">
-    <n-grid :cols="mobileMode ? 5 : 8" :x-gap="mobileMode ? 8 : 12" :y-gap="mobileMode ? 8 : 12">
+  <n-card
+    :title="t('answerCard.title')"
+    size="small"
+    class="answer-card-container"
+    :class="{ 'mobile-mode': mobileMode }"
+  >
+    <n-grid
+      :cols="mobileMode ? 5 : 8"
+      :x-gap="mobileMode ? 8 : 12"
+      :y-gap="mobileMode ? 8 : 12"
+    >
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
-        <BaseButton :type="getCardButtonType(q)" :size="mobileMode ? 'small' : getCardButtonSize"
-          @click="jumpToQuestion(q.id)" class="answer-card-btn"
-          :class="{ active: q.id === currentQuestionId, 'mobile-btn': mobileMode }">
+        <n-button
+          :type="getCardButtonType(q)"
+          :size="mobileMode ? 'small' : getCardButtonSize"
+          @click="jumpToQuestion(q.id)"
+          class="answer-card-btn"
+          :class="{
+            active: q.id === currentQuestionId,
+            'mobile-btn': mobileMode,
+          }"
+        >
           {{ index + 1 }}
-        </BaseButton>
+        </n-button>
       </n-grid-item>
     </n-grid>
   </n-card>
 </template>
 
 <script setup lang="ts">
-import BaseButton from './BaseButton.vue'
-import {NGrid, NGridItem} from 'naive-ui'
+import {NGrid, NGridItem} from "naive-ui";
+import {useI18n} from "vue-i18n";
+
+const { t } = useI18n();
 
 interface Question {
-  id: number
-  isCompleted: number
-  isCorrect: number | null
+  id: number;
+  isCompleted: number;
+  isCorrect: number | null;
 }
 
 interface Props {
-  questions: Question[]
-  currentQuestionId?: number
-  mobileMode?: boolean
+  questions: Question[];
+  currentQuestionId?: number;
+  mobileMode?: boolean;
 }
 
-const { questions, currentQuestionId, mobileMode = false } = defineProps<Props>()
+const {
+  questions,
+  currentQuestionId,
+  mobileMode = false,
+} = defineProps<Props>();
 
 const emit = defineEmits<{
-  questionClick: [id: number]
-}>()
+  questionClick: [id: number];
+}>();
 
 function getCardButtonType(q: Question) {
-  if (q.isCompleted === 0) return 'default'
-  if (q.isCorrect === 1) return 'success'
-  return 'error'
+  if (q.isCompleted === 0) return "default";
+  if (q.isCorrect === 1) return "success";
+  return "error";
 }
 
-const getCardButtonSize = 'medium'
+const getCardButtonSize = "medium";
 
 function jumpToQuestion(id: number) {
-  emit('questionClick', id)
+  emit("questionClick", id);
 }
 </script>
 
@@ -112,7 +134,8 @@ function jumpToQuestion(id: number) {
 }
 
 .mobile-btn.active {
-  box-shadow: 0 0 0 var(--spacing-1) var(--color-primary), var(--shadow-focus-ring);
+  box-shadow: 0 0 0 var(--spacing-1) var(--color-primary),
+    var(--shadow-focus-ring);
   transform: scale(1.02);
 }
 

@@ -1,5 +1,9 @@
 <template>
-  <PageContainer title="设置" card-class="settings-card" container-class="settings-container">
+  <PageContainer
+    :title="$t('settings.title')"
+    card-class="settings-card"
+    container-class="settings-container"
+  >
     <div class="setting-section">
       <div class="setting-row">
         <div class="setting-info">
@@ -7,20 +11,74 @@
             <n-icon size="20" class="setting-icon">
               <i class="i-ion-moon"></i>
             </n-icon>
-            <h3 class="setting-title">暗色主题</h3>
+            <h3 class="setting-title">{{ $t("settings.darkTheme") }}</h3>
           </div>
         </div>
 
         <div class="theme-toggle-container">
-          <button class="theme-toggle-btn" :class="`theme-${currentTheme}`" @click="toggleTheme"
-            :aria-label="getThemeLabel()">
-            <div class="theme-icon-container">
-              <n-icon size="18" class="theme-icon">
-                <i :class="getThemeIcon()"></i>
-              </n-icon>
-            </div>
-            <span class="theme-text">{{ getThemeText() }}</span>
-          </button>
+          <n-button-group>
+            <n-button
+              :type="currentTheme === 'light' ? 'primary' : 'default'"
+              @click="setTheme('light')"
+              size="small"
+              :ghost="currentTheme !== 'light'"
+            >
+              <template #icon>
+                <n-icon>
+                  <i class="i-ion-sunny"></i>
+                </n-icon>
+              </template>
+              {{ $t('settings.lightTheme') }}
+            </n-button>
+            <n-button
+              :type="currentTheme === 'dark' ? 'primary' : 'default'"
+              @click="setTheme('dark')"
+              size="small"
+              :ghost="currentTheme !== 'dark'"
+            >
+              <template #icon>
+                <n-icon>
+                  <i class="i-ion-moon"></i>
+                </n-icon>
+              </template>
+              {{ $t('settings.darkTheme') }}
+            </n-button>
+            <n-button
+              :type="currentTheme === 'system' ? 'primary' : 'default'"
+              @click="setTheme('system')"
+              size="small"
+              :ghost="currentTheme !== 'system'"
+            >
+              <template #icon>
+                <n-icon>
+                  <i class="i-ion-desktop-outline"></i>
+                </n-icon>
+              </template>
+              {{ $t('settings.followSystem') }}
+            </n-button>
+          </n-button-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-section">
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-header">
+            <n-icon size="20" class="setting-icon">
+              <i class="i-ion-language"></i>
+            </n-icon>
+            <h3 class="setting-title">{{ $t("settings.language.title") }}</h3>
+          </div>
+        </div>
+        <div class="language-toggle-container">
+          <n-select
+            v-model:value="currentLanguage"
+            :options="languageOptions"
+            @update:value="setLanguage"
+            size="small"
+            style="width: 120px"
+          />
         </div>
       </div>
     </div>
@@ -30,75 +88,94 @@
         <n-icon size="20" class="setting-icon">
           <i class="i-ion-settings-outline"></i>
         </n-icon>
-        <h3 class="setting-title">其他设置</h3>
+        <h3 class="setting-title">{{ $t("settings.other") }}</h3>
       </div>
-      <div class="setting-description">更多功能即将推出…</div>
+      <div class="setting-description">{{ $t("settings.moreFeatures") }}</div>
     </div>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
-import {inject, onMounted, ref} from 'vue'
-import {useMessage} from 'naive-ui'
-import PageContainer from '../components/common/PageContainer.vue'
+import {inject, onMounted, onUnmounted, ref} from "vue";
+import {useMessage} from "../utils/message";
+import {useI18n} from "vue-i18n";
+import {getCurrentLocale, getFullLocale, getSimpleLocale, setLocale} from "../i18n";
+import PageContainer from "../components/common/PageContainer.vue";
 
-type Theme = 'light' | 'dark' | 'system'
+type Theme = "light" | "dark" | "system";
+type Language = "zh" | "en";
 
-const message = useMessage()
-const currentTheme = ref<Theme>('system')
+const message = useMessage();
+const { t } = useI18n();
+const currentTheme = ref<Theme>("system");
+const currentLanguage = ref<Language>("zh");
 
-const setGlobalTheme = inject<(theme: Theme) => void>('setGlobalTheme')
-const getGlobalTheme = inject<() => Theme>('getGlobalTheme')
+// 语言选项
+const languageOptions = [
+  {
+    label: t('settings.language.chinese'),
+    value: 'zh' as Language
+  },
+  {
+    label: t('settings.language.english'), 
+    value: 'en' as Language
+  }
+];
+
+const setGlobalTheme = inject<(theme: Theme) => void>("setGlobalTheme");
+const getGlobalTheme = inject<() => Theme>("getGlobalTheme");
 
 onMounted(() => {
   if (getGlobalTheme) {
-    currentTheme.value = getGlobalTheme()
+    currentTheme.value = getGlobalTheme();
   } else {
-    currentTheme.value = (localStorage.getItem('app-theme') as Theme) || 'system'
+    currentTheme.value =
+      (localStorage.getItem("app-theme") as Theme) || "system";
   }
-})
 
-function toggleTheme() {
-  const themeOrder: Theme[] = ['light', 'dark', 'system']
-  const currentIndex = themeOrder.indexOf(currentTheme.value)
-  const nextIndex = (currentIndex + 1) % themeOrder.length
-  currentTheme.value = themeOrder[nextIndex]
+  // 初始化语言设置
+  const currentLocale = getCurrentLocale();
+  currentLanguage.value = getSimpleLocale(currentLocale);
+  
+  // 监听语言切换事件
+  const localeChangeHandler = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const { locale } = customEvent.detail;
+    currentLanguage.value = getSimpleLocale(locale);
+  };
+  window.addEventListener('locale-changed', localeChangeHandler as EventListener);
+  
+  // 清理事件监听器
+  onUnmounted(() => {
+    window.removeEventListener('locale-changed', localeChangeHandler as EventListener);
+  });
+});
 
-  localStorage.setItem('app-theme', currentTheme.value)
-  if (setGlobalTheme) setGlobalTheme(currentTheme.value)
-
-  message.success(`已切换到 ${getThemeText()}`)
-}
-
-function getThemeText(): string {
+function setTheme(theme: Theme) {
+  currentTheme.value = theme;
+  localStorage.setItem("app-theme", currentTheme.value);
+  if (setGlobalTheme) setGlobalTheme(currentTheme.value);
+  
   const themeTexts = {
-    light: '亮色主题',
-    dark: '暗色主题',
-    system: '跟随系统'
-  }
-  return themeTexts[currentTheme.value]
+    light: t("settings.lightTheme"),
+    dark: t("settings.darkTheme"),
+    system: t("settings.followSystem"),
+  };
+  message.success(t("settings.switchedTo", { theme: themeTexts[theme] }));
 }
 
-function getThemeIcon(): string {
-  const themeIcons = {
-    light: 'i-ion-sunny',
-    dark: 'i-ion-moon',
-    system: 'i-ion-desktop-outline'
-  }
-  return themeIcons[currentTheme.value]
-}
-
-function getThemeLabel(): string {
-  const themeOrder: Theme[] = ['light', 'dark', 'system']
-  const currentIndex = themeOrder.indexOf(currentTheme.value)
-  const nextIndex = (currentIndex + 1) % themeOrder.length
-  const nextTheme = themeOrder[nextIndex]
-  const nextThemeText = {
-    light: '亮色主题',
-    dark: '暗色主题',
-    system: '跟随系统'
-  }[nextTheme]
-  return `切换到${nextThemeText}`
+function setLanguage(language: Language) {
+  currentLanguage.value = language;
+  const fullLocale = getFullLocale(language);
+  setLocale(fullLocale);
+  
+  const languageTexts = {
+    zh: t('settings.language.chinese'),
+    en: t('settings.language.english'),
+  };
+  message.success(
+    t("settings.language.switched", { language: languageTexts[language] })
+  );
 }
 </script>
 
@@ -170,140 +247,9 @@ function getThemeLabel(): string {
   flex-shrink: 0;
 }
 
-.theme-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3) var(--spacing-4);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--spacing-3);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  user-select: none;
-  outline: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(12px);
-  position: relative;
-  overflow: hidden;
-  min-width: 120px;
-  justify-content: flex-start;
-}
-
-.theme-toggle-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.theme-toggle-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.theme-toggle-btn:hover::before {
-  opacity: 1;
-}
-
-.theme-toggle-btn:active {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.theme-toggle-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.theme-icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--spacing-8);
-  height: var(--spacing-8);
-  border-radius: var(--spacing-2);
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+/* 语言切换容器 */
+.language-toggle-container {
   flex-shrink: 0;
-}
-
-.theme-text {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--n-text-color);
-  transition: color 0.3s ease;
-  white-space: nowrap;
-}
-
-/* 不同主题状态的样式 */
-.theme-toggle-btn.theme-light .theme-icon-container {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  border-color: rgba(255, 215, 0, 0.3);
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
-}
-
-.theme-toggle-btn.theme-dark .theme-icon-container {
-  background: linear-gradient(135deg, #4a5568, #2d3748);
-  border-color: rgba(74, 85, 104, 0.3);
-  box-shadow: 0 2px 8px rgba(74, 85, 104, 0.2);
-}
-
-.theme-toggle-btn.theme-system .theme-icon-container {
-  background: linear-gradient(135deg, var(--color-primary), rgba(var(--color-primary-rgb), 0.8));
-  border-color: rgba(var(--color-primary-rgb), 0.3);
-  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.2);
-}
-
-.theme-icon {
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-
-.theme-toggle-btn.theme-light .theme-icon {
-  color: #b45309;
-}
-
-.theme-toggle-btn.theme-dark .theme-icon {
-  color: #e2e8f0;
-}
-
-.theme-toggle-btn.theme-system .theme-icon {
-  color: white;
-}
-
-/* 暗色主题下的按钮样式 */
-@media (prefers-color-scheme: dark) {
-  .theme-toggle-btn {
-    background: rgba(40, 40, 40, 0.9);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .theme-toggle-btn::before {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-  }
-
-  .theme-toggle-btn:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  }
-
-  .theme-text {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .theme-icon-container {
-    background: rgba(60, 60, 60, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
 }
 
 
@@ -366,21 +312,13 @@ function getThemeLabel(): string {
     flex-shrink: 0;
   }
 
-  .theme-toggle-btn {
-    padding: var(--spacing-2) var(--spacing-3);
-    min-width: 100px;
-    min-height: var(--spacing-12);
-    gap: var(--spacing-2);
+
+
+  .language-toggle-container {
+    flex-shrink: 0;
   }
 
-  .theme-icon-container {
-    width: var(--spacing-7);
-    height: var(--spacing-7);
-  }
 
-  .theme-text {
-    font-size: var(--font-size-xs);
-  }
 
   /* 表单组件优化 */
   :deep(.n-radio-group) {
@@ -446,21 +384,11 @@ function getThemeLabel(): string {
     font-size: var(--font-size-xs);
   }
 
-  .theme-toggle-btn {
-    padding: var(--spacing-2);
-    min-width: 90px;
-    min-height: var(--spacing-11);
-    gap: var(--spacing-2);
-  }
 
-  .theme-icon-container {
-    width: var(--spacing-6);
-    height: var(--spacing-6);
-  }
 
-  .theme-text {
-    font-size: var(--font-size-xs);
-  }
+
+
+
 
   :deep(.n-card__header) {
     padding: var(--spacing-4) var(--spacing-4) 0;
@@ -486,11 +414,7 @@ function getThemeLabel(): string {
     min-height: var(--spacing-12);
   }
 
-  .theme-toggle-btn {
-    padding: var(--spacing-1);
-    min-width: var(--spacing-11);
-    min-height: var(--spacing-11);
-  }
+
 }
 
 /* 超小屏幕优化 */
@@ -513,26 +437,23 @@ function getThemeLabel(): string {
   }
 }
 
+/* 无障碍支持 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+
 /* 触摸优化 */
 @media (hover: none) and (pointer: coarse) {
-  .theme-toggle-btn {
-    min-width: var(--spacing-12);
-    min-height: var(--spacing-12);
-    padding: var(--spacing-2);
-  }
-
-  .theme-toggle-btn:hover {
-    transform: none;
-    background: transparent;
-  }
-
-  .theme-toggle-btn:active {
-    transform: scale(0.96);
-    transition: transform 0.1s ease;
-    background: var(--color-primary-08);
-    border-radius: var(--border-radius-md);
-  }
-
   .setting-row {
     min-height: var(--spacing-14);
   }

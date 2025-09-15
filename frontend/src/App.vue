@@ -1,123 +1,96 @@
 <template>
-  <n-config-provider :theme="naiveTheme" :theme-overrides="themeOverrides">
+  <n-config-provider
+    :theme="naiveTheme"
+    :theme-overrides="themeOverrides"
+    :locale="naiveLocale"
+    :date-locale="naiveDateLocale"
+  >
     <n-dialog-provider>
       <n-message-provider>
-        <n-layout style="min-height: 100vh">
-          <NavigationBar />
-          <n-layout-content style="padding: 20px">
-            <router-view />
-          </n-layout-content>
-        </n-layout>
+        <AppLayout container-size="xl" content-padding="md" :responsive="true">
+          <router-view />
+        </AppLayout>
       </n-message-provider>
     </n-dialog-provider>
   </n-config-provider>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, provide, ref, watch} from 'vue'
-import {darkTheme, type GlobalThemeOverrides} from 'naive-ui'
-import NavigationBar from './components/NavigationBar.vue'
-import {RouterView} from 'vue-router'
+import {computed, onMounted, onUnmounted} from "vue";
+import {dateEnUS, dateZhCN, enUS, zhCN} from "naive-ui";
+import {useThemeProvider} from "./composables/useTheme";
+import {getCurrentLocale} from "./i18n";
+import AppLayout from "./components/layout/AppLayout.vue";
 
-// 主题状态管理
-const currentTheme = ref<'light' | 'dark' | 'auto'>('light')
-const systemPrefersDark = ref(false)
+// 使用主题管理 composable
+const { naiveTheme, themeOverrides, provideTheme } = useThemeProvider();
 
-// 计算实际应用的主题
-const actualTheme = computed(() => {
-  if (currentTheme.value === 'auto') {
-    return systemPrefersDark.value ? 'dark' : 'light'
-  }
-  return currentTheme.value
-})
+// 为子组件提供主题功能
+provideTheme();
 
-// Naive UI 主题配置
-const naiveTheme = computed(() => {
-  return actualTheme.value === 'dark' ? darkTheme : null
-})
+// 响应式的 Naive UI 语言包配置
+const naiveLocale = computed(() => {
+  const currentLocale = getCurrentLocale();
+  return currentLocale === 'en-US' ? enUS : zhCN;
+});
 
-// 主题覆盖配置
-const themeOverrides = computed<GlobalThemeOverrides>(() => {
-  const baseOverrides: GlobalThemeOverrides = {
-    common: {
-      primaryColor: '#18a058',
-      primaryColorHover: '#36ad6a',
-      primaryColorPressed: '#0c7a43',
-      primaryColorSuppl: '#36ad6a',
-    }
-  }
+const naiveDateLocale = computed(() => {
+  const currentLocale = getCurrentLocale();
+  return currentLocale === 'en-US' ? dateEnUS : dateZhCN;
+});
 
-  return baseOverrides
-})
+// 监听语言切换事件，确保 Naive UI 组件响应语言变化
+let localeChangeHandler: ((event: Event) => void) | null = null;
 
-// 监听系统主题变化
-const updateSystemTheme = () => {
-  systemPrefersDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
-}
-
-// 设置全局主题
-const setGlobalTheme = (theme: string) => {
-  currentTheme.value = theme as 'light' | 'dark' | 'auto'
-  localStorage.setItem('app-theme', theme)
-  applyThemeToDocument()
-}
-
-// 获取当前主题
-const getGlobalTheme = () => {
-  return currentTheme.value
-}
-
-// 应用主题到文档
-const applyThemeToDocument = () => {
-  const theme = actualTheme.value
-  document.documentElement.setAttribute('data-theme', theme)
-}
-
-// 初始化主题
 onMounted(() => {
-  // 从localStorage读取保存的主题
-  const savedTheme = localStorage.getItem('app-theme') || 'light'
-  currentTheme.value = savedTheme as 'light' | 'dark' | 'auto'
+  localeChangeHandler = () => {
+    // 强制重新计算 computed 值
+    // Vue 的响应式系统会自动处理，这里只是确保事件被正确监听
+  };
+  window.addEventListener('locale-changed', localeChangeHandler);
+});
 
-  // 初始化系统主题检测
-  updateSystemTheme()
-
-  // 监听系统主题变化
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  mediaQuery.addEventListener('change', updateSystemTheme)
-
-  // 应用初始主题
-  applyThemeToDocument()
-})
-
-// 监听主题变化
-watch(actualTheme, () => {
-  applyThemeToDocument()
-})
-
-// 提供主题方法给子组件
-provide('setGlobalTheme', setGlobalTheme)
-provide('getGlobalTheme', getGlobalTheme)
+onUnmounted(() => {
+  if (localeChangeHandler) {
+    window.removeEventListener('locale-changed', localeChangeHandler);
+  }
+});
 </script>
 
 <style>
-/* 全局主题样式 */
-:root {
-  --text-color: var(--color-text-primary);
-  --border-color: var(--color-border-primary);
-}
+/**
+ * App.vue 全局样式
+ * 使用设计令牌系统，确保主题切换的平滑过渡
+ */
 
-[data-theme="dark"] {
-  --text-color: var(--color-text-inverse);
-  --border-color: var(--color-border-primary);
-}
-
-body {
-  color: var(--text-color);
-  transition: color 0.3s ease;
-}
-
+/* 全局过渡效果 */
 * {
-  transition: color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 确保应用占满整个视口 */
+#app {
+  min-height: 100vh;
+  font-family: var(--font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 主题切换时的背景色过渡 */
+body {
+  background-color: var(--app-bg-color, var(--n-body-color));
+  color: var(--app-text-color, var(--n-text-color));
+  margin: 0;
+  padding: 0;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  #app {
+    font-size: var(--font-size-sm);
+  }
 }
 </style>

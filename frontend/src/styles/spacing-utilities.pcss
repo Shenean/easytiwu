@@ -1,0 +1,116 @@
+/* ===== 间距工具类系统 ===== */
+/* 提供语义化的间距工具类，基于8px基准网格系统 */
+
+/* 基础间距工具类已在 spacing-constants.css 中定义，此处删除重复定义 */
+
+/* 间隙工具类已在 grid-constants.css 中定义，此处删除重复定义 */
+
+/* 语义化组件间距类 */
+.component-spacing {
+  /* 卡片间距 */
+  &-card {
+    padding: var(--card-padding-default);
+    margin-bottom: var(--spacing-3);
+    
+    &-compact { padding: var(--card-padding-compact); }
+    &-comfortable { padding: var(--card-padding-comfortable); }
+  }
+  
+  /* 按钮间距 */
+  &-button {
+    &-group {
+      gap: var(--button-gap-default);
+      
+      &-tight { gap: var(--button-gap-tight); }
+      &-loose { gap: var(--button-gap-loose); }
+    }
+  }
+  
+  /* 表单间距 */
+  &-form {
+    &-field {
+      margin-bottom: var(--spacing-3);
+      
+      &-compact { margin-bottom: var(--spacing-2); }
+      &-comfortable { margin-bottom: var(--spacing-4); }
+    }
+    
+    &-section {
+      margin-bottom: var(--spacing-6);
+      padding: var(--spacing-4);
+    }
+  }
+  
+  /* 列表间距 */
+  &-list {
+    &-item {
+      padding: var(--spacing-2) var(--spacing-3);
+      
+      &-compact { padding: var(--spacing-1) var(--spacing-2); }
+      &-comfortable { padding: var(--spacing-3) var(--spacing-4); }
+    }
+  }
+  
+  /* 导航间距 */
+  &-nav {
+    &-item {
+      padding: var(--spacing-2) var(--spacing-3);
+      margin-right: var(--spacing-1);
+    }
+    
+    &-section {
+      margin-bottom: var(--spacing-4);
+    }
+  }
+}
+
+/* 响应式间距工具类已在 responsive-utilities.css 中定义，此处删除重复定义 */
+
+/* 特殊用途间距类 */
+.spacing-special {
+  /* 零间距 */
+  &-none {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 负外边距（谨慎使用） */
+  &-negative {
+    &-sm { margin-top: calc(-1 * var(--spacing-2)); }
+    &-md { margin-top: calc(-1 * var(--spacing-3)); }
+    &-lg { margin-top: calc(-1 * var(--spacing-4)); }
+  }
+  
+  /* 分隔线间距 */
+  &-divider {
+    &-vertical { margin: 0 var(--spacing-2); }
+    &-horizontal { margin: var(--spacing-2) 0; }
+  }
+}
+
+/* 使用说明注释 */
+/*
+使用指南：
+
+1. 基础间距类：
+   - .spacing-p-md: 24px 内边距
+   - .spacing-m-lg: 32px 外边距
+   - .gap-sm: 16px 间隙
+
+2. 语义化组件类：
+   - .component-spacing-card: 卡片标准间距
+   - .component-spacing-form-field: 表单字段间距
+
+3. 响应式类：
+   - .spacing-responsive-p-mobile: 移动端内边距
+   - .spacing-responsive-p-tablet: 平板端内边距
+
+4. 优先级：
+   - 优先使用语义化组件类
+   - 其次使用基础间距类
+   - 最后考虑响应式类
+
+5. 命名规范：
+   - xs: 8px, sm: 16px, md: 24px, lg: 32px, xl: 48px, 2xl: 64px
+   - p: padding, m: margin, x: 水平, y: 垂直, t: 顶部, b: 底部
+*/

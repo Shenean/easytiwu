@@ -1,0 +1,251 @@
+/* 响应式间距系统 Mixin */
+/* 统一管理断点和间距的响应式行为 */
+
+/* 断点定义 - 使用CSS变量保持一致性 */
+@define-mixin mobile {
+  @media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+    @mixin-content;
+  }
+}
+
+@define-mixin tablet {
+  @media (min-width: var(--breakpoint-tablet)) and (max-width: calc(var(--breakpoint-desktop) - 1px)) {
+    @mixin-content;
+  }
+}
+
+@define-mixin desktop {
+  @media (min-width: var(--breakpoint-desktop)) {
+    @mixin-content;
+  }
+}
+
+@define-mixin mobile-and-tablet {
+  @media (max-width: calc(var(--breakpoint-desktop) - 1px)) {
+    @mixin-content;
+  }
+}
+
+@define-mixin tablet-and-desktop {
+  @media (min-width: var(--breakpoint-tablet)) {
+    @mixin-content;
+  }
+}
+
+/* 响应式容器间距 Mixin */
+@define-mixin container-spacing {
+  padding: var(--container-padding-desktop);
+  
+  @mixin tablet {
+    padding: var(--container-padding-tablet);
+  }
+  
+  @mixin mobile {
+    padding: var(--container-padding-mobile);
+  }
+}
+
+/* 响应式卡片间距 Mixin */
+@define-mixin card-spacing {
+  padding: var(--card-padding-lg);
+  
+  @mixin tablet {
+    padding: var(--card-padding-md);
+  }
+  
+  @mixin mobile {
+    padding: var(--card-padding-sm);
+  }
+}
+
+/* 响应式组件间距 Mixin */
+@define-mixin component-spacing {
+  gap: var(--spacing-lg);
+  
+  @mixin tablet {
+    gap: var(--spacing-md);
+  }
+  
+  @mixin mobile {
+    gap: var(--spacing-sm);
+  }
+}
+
+/* 响应式栅格间距 Mixin */
+@define-mixin grid-spacing {
+  gap: var(--grid-gap-desktop);
+  
+  @mixin tablet {
+    gap: var(--grid-gap-tablet);
+  }
+  
+  @mixin mobile {
+    gap: var(--grid-gap-mobile);
+  }
+}
+
+/* 响应式表单间距 Mixin */
+@define-mixin form-spacing {
+  .form-item {
+    margin-bottom: var(--spacing-4);
+    
+    @mixin tablet {
+      margin-bottom: var(--spacing-3);
+    }
+    
+    @mixin mobile {
+      margin-bottom: var(--spacing-2);
+    }
+  }
+  
+  .form-section {
+    margin-bottom: var(--spacing-6);
+    
+    @mixin tablet {
+      margin-bottom: var(--spacing-5);
+    }
+    
+    @mixin mobile {
+      margin-bottom: var(--spacing-4);
+    }
+  }
+}
+
+/* 响应式按钮间距 Mixin */
+@define-mixin button-spacing {
+  gap: var(--spacing-3);
+  
+  @mixin tablet {
+    gap: var(--spacing-2);
+  }
+  
+  @mixin mobile {
+    gap: var(--spacing-2);
+  }
+}
+
+/* 响应式列表间距 Mixin */
+@define-mixin list-spacing {
+  .list-item {
+    padding: var(--spacing-3) var(--spacing-4);
+    
+    @mixin tablet {
+      padding: var(--spacing-2) var(--spacing-3);
+    }
+    
+    @mixin mobile {
+      padding: var(--spacing-2) var(--spacing-2);
+    }
+  }
+  
+  .list-item + .list-item {
+    margin-top: var(--spacing-2);
+    
+    @mixin mobile {
+      margin-top: var(--spacing-1);
+    }
+  }
+}
+
+/* 响应式导航间距 Mixin */
+@define-mixin navigation-spacing {
+  padding: var(--spacing-4) var(--spacing-6);
+  
+  @mixin tablet {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+  
+  @mixin mobile {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+}
+
+/* 响应式页面布局间距 Mixin */
+@define-mixin page-layout-spacing {
+  .page-header {
+    margin-bottom: var(--spacing-6);
+    
+    @mixin tablet {
+      margin-bottom: var(--spacing-5);
+    }
+    
+    @mixin mobile {
+      margin-bottom: var(--spacing-4);
+    }
+  }
+  
+  .page-content {
+    padding: var(--spacing-6);
+    
+    @mixin tablet {
+      padding: var(--spacing-4);
+    }
+    
+    @mixin mobile {
+      padding: var(--spacing-3);
+    }
+  }
+  
+  .page-footer {
+    margin-top: var(--spacing-8);
+    padding-top: var(--spacing-6);
+    
+    @mixin tablet {
+      margin-top: var(--spacing-6);
+      padding-top: var(--spacing-4);
+    }
+    
+    @mixin mobile {
+      margin-top: var(--spacing-4);
+      padding-top: var(--spacing-3);
+    }
+  }
+}
+
+/* 使用示例和说明 */
+/*
+使用方法:
+
+1. 基础断点使用:
+.my-component {
+  padding: var(--spacing-4);
+  
+  @mixin mobile {
+    padding: var(--spacing-2);
+  }
+}
+
+2. 预设间距 Mixin:
+.my-container {
+  @mixin container-spacing;
+}
+
+.my-card {
+  @mixin card-spacing;
+}
+
+3. 组合使用:
+.my-layout {
+  @mixin page-layout-spacing;
+  @mixin component-spacing;
+}
+
+4. 自定义响应式间距:
+.custom-component {
+  margin: var(--spacing-6);
+  
+  @mixin tablet {
+    margin: var(--spacing-4);
+  }
+  
+  @mixin mobile {
+    margin: var(--spacing-3);
+  }
+}
+
+注意事项:
+- 所有间距值都基于8px基准单位
+- 优先使用预设的 Mixin 而不是自定义
+- 保持断点的一致性
+- 遵循移动端优先的设计原则
+*/

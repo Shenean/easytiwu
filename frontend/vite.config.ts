@@ -1,52 +1,53 @@
 // vite.config.ts
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import {defineConfig} from "vite";
+import vue from "@vitejs/plugin-vue";
+import {resolve} from "path";
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src')
-    }
+      "@": resolve(__dirname, "src"),
+    },
   },
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 3000,
     proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
+      "/api": {
+        target: "http://localhost:8080",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
           // 错误处理
-          proxy.on('error', (err, _req, res) => {
-            console.error('Proxy Error:', err)
+          proxy.on("error", (err, _req, res) => {
+            console.error("Proxy Error:", err);
 
-            // ✅ 类型守卫：确保 res 是 ServerResponse
-            if ('writeHead' in res && !res.headersSent) {
+            if ("writeHead" in res && !res.headersSent) {
               res.writeHead(500, {
-                'Content-Type': 'application/json',
-              })
-              res.end(JSON.stringify({
-                error: 'Proxy Error',
-                message: err.message,
-                code: 'PROXY_ERROR'
-              }))
+                "Content-Type": "application/json",
+              });
+              res.end(
+                JSON.stringify({
+                  error: "Proxy Error",
+                  message: err.message,
+                  code: "PROXY_ERROR",
+                })
+              );
             }
-          })
+          });
 
           // 请求转发前钩子
-          proxy.on('proxyReq', (_proxyReq, req, _res) => {
-            console.log('→ Forwarding Request:', req.method, req.url)
-          })
+          proxy.on("proxyReq", (_proxyReq, req, _res) => {
+            console.log("→ Forwarding Request:", req.method, req.url);
+          });
 
           // 收到响应后钩子
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('← Received Response:', proxyRes.statusCode, req.url)
-          })
-        }
-      }
-    }
-  }
-})
+          proxy.on("proxyRes", (proxyRes, req, _res) => {
+            console.log("← Received Response:", proxyRes.statusCode, req.url);
+          });
+        },
+      },
+    },
+  },
+});

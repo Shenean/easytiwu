@@ -2,16 +2,19 @@
 /* 解决项目中媒体查询重复定义的问题 */
 
 :root {
-  /* 断点定义 */
+  /* 断点定义 - 符合UI设计规范 */
   --breakpoint-mobile: 480px;
+  --breakpoint-s: 768px;  /* 小屏幕 */
   --breakpoint-tablet: 768px;
-  --breakpoint-desktop: 1200px;
+  --breakpoint-m: 1024px; /* 中等屏幕 */
+  --breakpoint-l: 1280px; /* 大屏幕 */
+  --breakpoint-desktop: 1280px;
   --breakpoint-large: 1400px;
   
   /* 容器最大宽度 */
   --container-max-width: 1400px; /* 350 * 4px */
-  --container-medium-width: 1200px; /* 300 * 4px */
-  --container-small-width: 896px; /* 224 * 4px */
+  --container-medium-width: 1280px; /* 符合规范的大屏幕宽度 */
+  --container-small-width: 1024px; /* 符合规范的中等屏幕宽度 */
 }
 
 /* 断点混合类 - 提供常用的媒体查询 */

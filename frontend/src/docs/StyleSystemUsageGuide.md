@@ -64,10 +64,10 @@
 
 #### 1. 主题色系
 ```css
---color-primary: #18a058;           /* 主色调 */
---color-primary-hover: #36ad6a;     /* 悬停状态 */
---color-primary-active: #0c7a43;    /* 激活状态 */
---color-primary-light: #4ade80;     /* 浅色变体 */
+--color-primary: #2080F0;           /* 主色调 */
+--color-primary-hover: #3090FF;     /* 悬停状态 */
+--color-primary-active: #1070E0;    /* 激活状态 */
+--color-primary-light: #5AA3FF;     /* 浅色变体 */
 ```
 
 #### 2. 文本颜色
@@ -189,7 +189,7 @@
 **之前：**
 ```css
 .button {
-  background-color: #18a058;
+  background-color: #2080F0;
   color: #333;
   border: 1px solid #e0e0e0;
 }

@@ -15,7 +15,7 @@
   <n-layout-header bordered class="navbar">
     <!-- 导航栏内容 -->
   </n-layout-header>
-  <n-layout-content style="padding: 20px">
+  <n-layout-content style="padding: var(--container-padding-md)">
     <!-- 主要内容 -->
   </n-layout-content>
 </n-layout>
@@ -88,20 +88,20 @@
 ```css
 /* 桌面端 */
 .container {
-  padding: 20px 24px;
+  padding: var(--container-padding-desktop);
 }
 
 /* 平板端 */
 @media (max-width: 768px) {
   .container {
-    padding: 16px 20px;
+    padding: var(--container-padding-tablet);
   }
 }
 
 /* 移动端 */
 @media (max-width: 480px) {
   .container {
-    padding: 12px 16px;
+    padding: var(--container-padding-mobile);
   }
 }
 ```
@@ -116,11 +116,11 @@
 #### 垂直间距
 ```css
 .section + .section {
-  margin-top: 24px;
+  margin-top: var(--spacing-3);
 }
 
 .component + .component {
-  margin-top: 16px;
+  margin-top: var(--spacing-2);
 }
 ```
 
@@ -136,7 +136,7 @@
 </n-space>
 
 <!-- 使用 CSS Grid -->
-<div style="display: grid; gap: 16px;">
+<div style="display: grid; gap: var(--grid-gap-md);">
   <div>内容1</div>
   <div>内容2</div>
 </div>

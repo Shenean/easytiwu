@@ -1,0 +1,19 @@
+:root {
+  /* 亮色主题 */
+  --primary-color: #18a058;
+  --secondary-color: #2080d0;
+  --text-color: #333;
+  --bg-color: #ffffff;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  /* 暗色主题 */
+  --primary-color: #2d7a4f;
+  --secondary-color: #3b82f6;
+  --text-color: #e5e7eb;
+  --bg-color: #1f2937;
+  --border-color: #374151;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}

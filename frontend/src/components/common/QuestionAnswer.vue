@@ -26,15 +26,15 @@
     <div v-else-if="question.type === 'true_false'">
       <n-radio-group v-model:value="radioValue" name="true-false" size="large">
         <n-space>
-          <n-radio :value="'1'" :disabled="false">正确</n-radio>
-          <n-radio :value="'0'" :disabled="false">错误</n-radio>
+          <n-radio :value="'1'" :disabled="false">{{ t('questionAnswer.correct') }}</n-radio>
+          <n-radio :value="'0'" :disabled="false">{{ t('questionAnswer.incorrect') }}</n-radio>
         </n-space>
       </n-radio-group>
     </div>
 
     <!-- 填空 / 简答 -->
     <div v-else-if="question.type === 'fill_blank' || question.type === 'short_answer'">
-      <n-input v-model:value="inputValue" type="textarea" placeholder="请输入你的答案" :autosize="{ minRows: 2, maxRows: 6 }"
+      <n-input v-model:value="inputValue" type="textarea" :placeholder="t('questionAnswer.inputPlaceholder')" :autosize="{ minRows: 2, maxRows: 6 }"
         :disabled="false" clearable />
     </div>
   </div>
@@ -43,6 +43,9 @@
 <script setup lang="ts">
 import {computed} from 'vue'
 import {NCheckbox, NCheckboxGroup, NInput, NRadio, NRadioGroup, NSpace} from 'naive-ui'
+import {useI18n} from 'vue-i18n'
+
+const { t } = useI18n()
 
 /** 类型声明 */
 interface Question {
