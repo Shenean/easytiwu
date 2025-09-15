@@ -1,0 +1,349 @@
+/* 响应式样式 Mixin 系统 */
+/* 统一管理所有响应式断点和常用样式模式 */
+
+/* ===== 基础响应式 Mixin ===== */
+
+/* 移动端优先 - 小于平板断点 */
+@define-mixin mobile {
+  @media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 平板端 - 平板到桌面断点之间 */
+@define-mixin tablet {
+  @media (min-width: var(--breakpoint-tablet)) and (max-width: calc(var(--breakpoint-desktop) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 桌面端及以上 */
+@define-mixin desktop {
+  @media (min-width: var(--breakpoint-desktop)) {
+    @mixin-content;
+  }
+}
+
+/* 大屏幕 */
+@define-mixin large {
+  @media (min-width: var(--breakpoint-large)) {
+    @mixin-content;
+  }
+}
+
+/* ===== 特殊场景 Mixin ===== */
+
+/* 横屏模式 */
+@define-mixin landscape {
+  @media (orientation: landscape) {
+    @mixin-content;
+  }
+}
+
+/* 竖屏模式 */
+@define-mixin portrait {
+  @media (orientation: portrait) {
+    @mixin-content;
+  }
+}
+
+/* 触摸设备优化 */
+@define-mixin touch {
+  @media (hover: none) and (pointer: coarse) {
+    @mixin-content;
+  }
+}
+
+/* 鼠标设备优化 */
+@define-mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    @mixin-content;
+  }
+}
+
+/* 高分辨率屏幕 */
+@define-mixin retina {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @mixin-content;
+  }
+}
+
+/* 减少动画偏好 */
+@define-mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @mixin-content;
+  }
+}
+
+/* 暗色主题偏好 */
+@define-mixin dark-theme {
+  @media (prefers-color-scheme: dark) {
+    @mixin-content;
+  }
+}
+
+/* ===== 组合 Mixin ===== */
+
+/* 移动端横屏 */
+@define-mixin mobile-landscape {
+  @media (max-width: calc(var(--breakpoint-tablet) - 1px)) and (orientation: landscape) {
+    @mixin-content;
+  }
+}
+
+/* 平板端横屏 */
+@define-mixin tablet-landscape {
+  @media (min-width: var(--breakpoint-tablet)) and (max-width: calc(var(--breakpoint-desktop) - 1px)) and (orientation: landscape) {
+    @mixin-content;
+  }
+}
+
+/* 小屏幕设备（包含移动端和小平板） */
+@define-mixin small-screen {
+  @media (max-width: calc(var(--breakpoint-desktop) - 1px)) {
+    @mixin-content;
+  }
+}
+
+/* 大屏幕设备（桌面端及以上） */
+@define-mixin large-screen {
+  @media (min-width: var(--breakpoint-desktop)) {
+    @mixin-content;
+  }
+}
+
+/* ===== 常用响应式样式模式 ===== */
+
+/* 响应式容器内边距 */
+@define-mixin responsive-padding {
+  padding: var(--container-responsive-padding-desktop);
+
+  @mixin mobile {
+    padding: var(--container-responsive-padding-mobile);
+  }
+
+  @mixin tablet {
+    padding: var(--container-responsive-padding-tablet);
+  }
+}
+
+/* 响应式卡片圆角 */
+@define-mixin responsive-border-radius {
+  border-radius: var(--card-border-radius-desktop);
+
+  @mixin mobile {
+    border-radius: var(--card-border-radius-mobile);
+  }
+
+  @mixin tablet {
+    border-radius: var(--card-border-radius-tablet);
+  }
+}
+
+/* 响应式卡片阴影 */
+@define-mixin responsive-shadow {
+  box-shadow: var(--card-shadow-desktop);
+
+  @mixin mobile {
+    box-shadow: var(--card-shadow-mobile);
+  }
+
+  @mixin tablet {
+    box-shadow: var(--card-shadow-tablet);
+  }
+}
+
+/* 响应式字体大小 */
+@define-mixin responsive-font-size {
+  font-size: var(--font-size-base);
+
+  @mixin mobile {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* 响应式网格布局 */
+@define-mixin responsive-grid {
+  display: grid;
+  gap: var(--spacing-4);
+
+  @mixin mobile {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  @mixin tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @mixin desktop {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-5);
+  }
+}
+
+/* 响应式弹性布局 */
+@define-mixin responsive-flex {
+  display: flex;
+  gap: var(--spacing-4);
+
+  @mixin mobile {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  @mixin tablet {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* 响应式文本对齐 */
+@define-mixin responsive-text-align {
+  text-align: left;
+
+  @mixin mobile {
+    text-align: center;
+  }
+}
+
+/* 响应式按钮尺寸 */
+@define-mixin responsive-button {
+  padding: var(--spacing-3) var(--spacing-4);
+  min-height: var(--spacing-12);
+
+  @mixin mobile {
+    padding: var(--spacing-2) var(--spacing-3);
+    min-height: var(--spacing-11);
+    width: 100%;
+  }
+}
+
+/* 响应式表单元素 */
+@define-mixin responsive-form-element {
+  width: 100%;
+  min-height: var(--spacing-12);
+
+  @mixin mobile {
+    min-height: var(--spacing-11);
+  }
+}
+
+/* ===== 工具类生成 Mixin ===== */
+
+/* 生成响应式显示控制类 */
+@define-mixin responsive-display-utils {
+  .mobile-only {
+    display: block;
+
+    @mixin tablet {
+      display: none;
+    }
+
+    @mixin desktop {
+      display: none;
+    }
+  }
+
+  .tablet-only {
+    display: none;
+
+    @mixin tablet {
+      display: block;
+    }
+
+    @mixin desktop {
+      display: none;
+    }
+  }
+
+  .desktop-only {
+    display: none;
+
+    @mixin desktop {
+      display: block;
+    }
+  }
+
+  .mobile-up {
+    display: block;
+  }
+
+  .tablet-up {
+    display: none;
+
+    @mixin tablet {
+      display: block;
+    }
+
+    @mixin desktop {
+      display: block;
+    }
+  }
+
+  .desktop-up {
+    display: none;
+
+    @mixin desktop {
+      display: block;
+    }
+  }
+}
+
+/* 生成响应式间距工具类 */
+@define-mixin responsive-spacing-utils {
+  /* 响应式内边距 */
+  .p-responsive {
+    @mixin responsive-padding;
+  }
+
+  /* 响应式外边距 */
+  .m-responsive {
+    margin: var(--spacing-4);
+
+    @mixin mobile {
+      margin: var(--spacing-2);
+    }
+
+    @mixin tablet {
+      margin: var(--spacing-3);
+    }
+  }
+}
+
+/* ===== 使用示例注释 ===== */
+/*
+使用方法：
+
+1. 基础响应式：
+.my-component {
+  padding: 20px;
+  
+  @mixin mobile {
+    padding: 12px;
+  }
+  
+  @mixin tablet {
+    padding: 16px;
+  }
+}
+
+2. 组合使用：
+.my-card {
+  @mixin responsive-padding;
+  @mixin responsive-border-radius;
+  @mixin responsive-shadow;
+}
+
+3. 特殊场景：
+.touch-optimized {
+  @mixin touch {
+    min-height: 44px;
+    padding: 12px;
+  }
+}
+
+4. 工具类：
+@mixin responsive-display-utils;
+@mixin responsive-spacing-utils;
+*/
