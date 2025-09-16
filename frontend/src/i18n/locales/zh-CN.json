@@ -73,7 +73,21 @@
     "deleteFailed": "删除失败",
     "practiceBank": "练习题库 {name}",
     "viewWrongSet": "查看错题集 {name}",
-    "id": "ID"
+    "id": "ID",
+    "merge": "合并题库",
+    "mergeTitle": "合并题库",
+    "confirmMerge": "确认合并",
+    "selectBanks": "选择题库",
+    "selectBanksHint": "请选择1-2个题库进行合并",
+    "selectBanksError": "请选择1-2个题库进行合并",
+    "newBankName": "新题库名称",
+    "newBankNamePlaceholder": "请输入合并后的题库名称",
+    "description": "描述信息",
+    "descriptionPlaceholder": "请输入题库描述（可选）",
+    "nameRequired": "题库名称不能为空",
+    "nameTooShort": "题库名称至少需要2个字符",
+    "mergeSuccess": "题库合并成功",
+    "mergeFailed": "题库合并失败"
   },
   "statistics": {
     "title": "数据统计",

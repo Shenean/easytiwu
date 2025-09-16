@@ -72,7 +72,21 @@
     "deleteFailed": "Delete failed",
     "practiceBank": "Practice bank {name}",
     "viewWrongSet": "View wrong question set {name}",
-    "id": "ID"
+    "id": "ID",
+    "merge": "Merge Banks",
+    "mergeTitle": "Merge Question Banks",
+    "confirmMerge": "Confirm Merge",
+    "selectBanks": "Select Banks",
+    "selectBanksHint": "Please select 1-2 question banks to merge",
+    "selectBanksError": "Please select 1-2 question banks to merge",
+    "newBankName": "New Bank Name",
+    "newBankNamePlaceholder": "Please enter the name for the merged bank",
+    "description": "Description",
+    "descriptionPlaceholder": "Please enter bank description (optional)",
+    "nameRequired": "Bank name is required",
+    "nameTooShort": "Bank name must be at least 2 characters",
+    "mergeSuccess": "Banks merged successfully",
+    "mergeFailed": "Failed to merge banks"
   },
   "statistics": {
     "title": "Statistics",

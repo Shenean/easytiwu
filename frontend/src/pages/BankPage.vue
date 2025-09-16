@@ -4,6 +4,18 @@
     :show-card="false"
     container-class="bank-container"
   >
+    <!-- 顶部操作栏 -->
+    <div v-if="!loading && banks.length > 1" class="top-actions">
+      <n-button 
+        type="primary" 
+        size="medium" 
+        @click="showMergeModal = true"
+        :disabled="banks.length < 2"
+      >
+        {{ $t("bank.merge") }}
+      </n-button>
+    </div>
+
     <!-- 空状态占位 -->
     <n-empty
       v-if="!loading && banks.length === 0"
@@ -82,12 +94,80 @@
         </div>
       </div>
     </div>
+
+    <!-- 合并题库弹窗 -->
+    <n-modal 
+      v-model:show="showMergeModal" 
+      preset="dialog" 
+      :title="$t('bank.mergeTitle')"
+      :positive-text="$t('bank.confirmMerge')"
+      :negative-text="$t('message.cancel')"
+      @positive-click="handleMergeSubmit"
+      @negative-click="resetMergeForm"
+      :loading="mergeLoading"
+      style="width: 90%; max-width: 500px;"
+    >
+      <div class="merge-form">
+        <!-- 题库选择 -->
+        <div class="form-section">
+          <n-text class="form-label">{{ $t("bank.selectBanks") }}</n-text>
+          <n-text depth="3" class="form-hint">{{ $t("bank.selectBanksHint") }}</n-text>
+          <div class="bank-list">
+            <div 
+              v-for="bank in banks" 
+              :key="bank.id" 
+              class="bank-option"
+              :class="{ 'selected': selectedBanks.includes(bank.id) }"
+              @click="toggleBankSelection(bank.id)"
+            >
+              <n-checkbox 
+                :checked="selectedBanks.includes(bank.id)"
+                :disabled="!selectedBanks.includes(bank.id) && selectedBanks.length >= 2"
+                @update:checked="(checked) => handleBankCheck(bank.id, checked)"
+              />
+              <div class="bank-info">
+                <div class="bank-option-name">{{ bank.name }}</div>
+                <div class="bank-option-id">ID: {{ bank.id }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 新题库名称 -->
+        <div class="form-section">
+          <n-form-item 
+            :label="$t('bank.newBankName')"
+            :validation-status="nameError ? 'error' : undefined"
+            :feedback="nameError"
+          >
+            <n-input 
+              v-model:value="mergeForm.name"
+              :placeholder="$t('bank.newBankNamePlaceholder')"
+              @blur="validateName"
+              @input="nameError = ''"
+            />
+          </n-form-item>
+        </div>
+
+        <!-- 描述信息 -->
+        <div class="form-section">
+          <n-form-item :label="$t('bank.description')">
+            <n-input 
+              v-model:value="mergeForm.description"
+              type="textarea"
+              :placeholder="$t('bank.descriptionPlaceholder')"
+              :autosize="{ minRows: 3, maxRows: 5 }"
+            />
+          </n-form-item>
+        </div>
+      </div>
+    </n-modal>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {NGrid, NGridItem, useDialog, useMessage} from "naive-ui";
+import {NCheckbox, NFormItem, NGrid, NGridItem, NInput, NModal, NText, useDialog, useMessage} from "naive-ui";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import axios, {AxiosError} from "axios";
@@ -102,6 +182,16 @@ const router = useRouter();
 const { t } = useI18n();
 const banks = ref<QuestionBank[]>([]);
 const loading = ref(false);
+
+// ================== 合并功能状态 ==================
+const showMergeModal = ref(false);
+const mergeLoading = ref(false);
+const selectedBanks = ref<number[]>([]);
+const mergeForm = ref({
+  name: '',
+  description: ''
+});
+const nameError = ref('');
 
 // ================== 数据获取 ==================
 /**
@@ -209,6 +299,127 @@ async function handleDelete(id: number) {
   }
 }
 
+// ================== 合并功能处理 ==================
+/**
+ * 切换题库选择状态
+ */
+function toggleBankSelection(bankId: number) {
+  const index = selectedBanks.value.indexOf(bankId);
+  if (index > -1) {
+    selectedBanks.value.splice(index, 1);
+  } else if (selectedBanks.value.length < 2) {
+    selectedBanks.value.push(bankId);
+  }
+}
+
+/**
+ * 处理复选框状态变化
+ */
+function handleBankCheck(bankId: number, checked: boolean) {
+  if (checked && !selectedBanks.value.includes(bankId) && selectedBanks.value.length < 2) {
+    selectedBanks.value.push(bankId);
+  } else if (!checked) {
+    const index = selectedBanks.value.indexOf(bankId);
+    if (index > -1) {
+      selectedBanks.value.splice(index, 1);
+    }
+  }
+}
+
+/**
+ * 验证题库名称
+ */
+function validateName() {
+  if (!mergeForm.value.name.trim()) {
+    nameError.value = t('bank.nameRequired');
+    return false;
+  }
+  if (mergeForm.value.name.trim().length < 2) {
+    nameError.value = t('bank.nameTooShort');
+    return false;
+  }
+  nameError.value = '';
+  return true;
+}
+
+/**
+ * 验证表单
+ */
+function validateMergeForm() {
+  let isValid = true;
+  
+  // 验证题库选择
+  if (selectedBanks.value.length < 1 || selectedBanks.value.length > 2) {
+    message.error(t('bank.selectBanksError'));
+    isValid = false;
+  }
+  
+  // 验证名称
+  if (!validateName()) {
+    isValid = false;
+  }
+  
+  return isValid;
+}
+
+/**
+ * 重置合并表单
+ */
+function resetMergeForm() {
+  selectedBanks.value = [];
+  mergeForm.value = {
+    name: '',
+    description: ''
+  };
+  nameError.value = '';
+}
+
+/**
+ * 处理合并提交
+ */
+async function handleMergeSubmit() {
+  if (!validateMergeForm()) {
+    return false;
+  }
+  
+  mergeLoading.value = true;
+  try {
+    const requestData = {
+      bankId1: selectedBanks.value[0],
+      bankId2: selectedBanks.value[1] || selectedBanks.value[0], // 如果只选择一个，则复制自己
+      name: mergeForm.value.name.trim(),
+      description: mergeForm.value.description.trim()
+    };
+    
+    const res = await axios.post<ApiResponse<QuestionBank>>('/api/bank/merge', requestData);
+    
+    if (res.data.code === 200) {
+      message.success(t('bank.mergeSuccess'));
+      showMergeModal.value = false;
+      resetMergeForm();
+      // 刷新题库列表
+      await fetchBanks();
+      return true;
+    } else {
+      message.error(res.data.message || t('bank.mergeFailed'));
+      return false;
+    }
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      message.error(
+        `${t('bank.mergeFailed')}：${
+          err.response?.data?.message || t('message.unknownError')
+        }`
+      );
+    } else {
+      message.error(`${t('bank.mergeFailed')}，${t('message.retryLater')}`);
+    }
+    return false;
+  } finally {
+    mergeLoading.value = false;
+  }
+}
+
 // ================== 生命周期 ==================
 onMounted(() => {
   fetchBanks();
@@ -223,6 +434,114 @@ defineExpose({
 
 <style scoped>
 /* 页面容器样式已移至 PageContainer 组件 */
+
+/* 顶部操作栏样式 */
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-4);
+  padding: 0 var(--spacing-2);
+}
+
+/* 合并弹窗样式 */
+.merge-form {
+  padding: var(--spacing-2) 0;
+}
+
+.form-section {
+  margin-bottom: var(--spacing-4);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-1);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.form-hint {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-xs);
+}
+
+.bank-list {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.bank-option {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--color-border-soft);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.bank-option:last-child {
+  border-bottom: none;
+}
+
+.bank-option:hover {
+  background-color: var(--color-bg-soft);
+}
+
+.bank-option.selected {
+  background-color: var(--color-primary-light);
+}
+
+.bank-info {
+  margin-left: var(--spacing-2);
+  flex: 1;
+}
+
+.bank-option-name {
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.bank-option-id {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .top-actions {
+    padding: 0;
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .bank-option {
+    padding: var(--spacing-2);
+  }
+  
+  .bank-info {
+    margin-left: var(--spacing-2);
+  }
+}
+
+@media (max-width: var(--breakpoint-mobile)) {
+  .top-actions {
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .form-section {
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .bank-list {
+    max-height: 150px;
+  }
+  
+  .bank-option {
+    padding: var(--spacing-2);
+  }
+}
 
 .empty-state {
   padding: var(--spacing-12) 0;
