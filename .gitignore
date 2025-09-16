@@ -1,3 +1,131 @@
+# ================================
+# 通用忽略规则（操作系统、编辑器、临时文件）
+# ================================
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# 编辑器 & IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# 临时 & 备份文件
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+tmp/
+temp/
+
+# 日志文件
+*.log
+logs/
+error.log
+
+# 压缩包 & 二进制包
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.iso
+*.jar
+*.exe
+*.dll
+*.so
+*.o
+*.com
+*.class
+
+# ================================
+# 前端相关
+# ================================
+
+# 依赖 & 包管理
+node_modules/
+jspm_packages/
+web_modules/
+.pnpm-store/
+bower_components/
+
+# 构建输出
+dist/
+dist-ssr/
+build/
+build/Release
+out/
+.next/
+.nuxt/
+.cache/
+public/
+.storybook-out/
+.out/
+
+# 包管理器缓存 & 锁文件（按需保留）
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+.npm/
+.yarn-integrity
+
+# 构建缓存 & 工具缓存
+.vite/
+.parcel-cache/
+.grunt/
+.lock-wscript
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# TypeScript
+*.tsbuildinfo
+
+# 测试 & 覆盖率
+coverage/
+.nyc_output/
+*.lcov
+/tests/e2e/videos/
+/tests/e2e/screenshots/
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+
+# ESLint / Stylelint 缓存
+.eslintcache
+.stylelintcache
+
+# REPL 历史
+.node_repl_history
+
+# 自动生成文件（Vue/Unplugin等）
+auto-imports.d.ts
+components.d.ts
+
+# ================================
+# 后端相关（Java/Spring/Maven）
+# ================================
+
 # Maven
 target/
 pom.xml.tag
@@ -10,14 +138,16 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
-# IntelliJ IDEA
-.idea/
-*.iws
-*.iml
-*.ipr
-out/
-logs/
-*.log
+# Spring Boot
+*.jar.original
+
+# JVM & 性能分析
+hs_err_pid*.log
+*.hprof
+*.cpuprofile
+*.heapprofile
+*.mv.db
+*.trace.db
 
 # Eclipse
 *.classpath
@@ -28,97 +158,19 @@ bin/
 
 # NetBeans
 nbproject/private/
-build/
 nbbuild/
-dist/
 nbdist/
 .netbeans/
 
-# VS Code
-.vscode/
-!**/.vscode/extensions.json
-
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# Compiled source
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
-
-# Packages
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-# Logs
-*.log
-
-# Database
+# 数据库文件
 *.sqlite
 
-# Temporary files
-*.tmp
-*.temp
+# ================================
+# 其他工具
+# ================================
 
-# Spring Boot
-*.jar.original
-
-# Lingma directory
+# Lingma（AI辅助工具）
 .lingma/
 
-# Node/PNPM/Vite
-node_modules/
-.pnpm-store/
-pnpm-debug.log*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.vite/
-.eslintcache
-dist/
-dist-ssr/
-
-# Env files
-.env
-.env.local
-.env.*.local
-
-# JVM and coverage
-hs_err_pid*.log
-*.hprof
-coverage/
-.nyc_output
-*.mv.db
-*.trace.db
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Frontend specific
-logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-dist-ssr
-*.local
+# Git 相关（可选）
+.gitignore.swp
