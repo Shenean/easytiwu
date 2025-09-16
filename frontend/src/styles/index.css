@@ -8,7 +8,6 @@
 @import "./design-tokens.css";
 
 /* ===== Mixin系统 ===== */
-@import "./mixins/breakpoints.css";
 @import "./mixins/index.css";
 
 /* ===== 基础样式 ===== */

@@ -5,37 +5,39 @@
 
 :root {
   /* ===== 字体系统 ===== */
-  
+
   /* 字体族 - 严格符合UI设计规范 */
   --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-mono: "SF Mono", Monaco, Inconsolata, "Roboto Mono", "Courier New", monospace;
-  --font-family-serif: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Georgia, "Times New Roman", serif;
-  
+  --font-family-mono: "SF Mono", Monaco, Inconsolata, "Roboto Mono",
+    "Courier New", monospace;
+  --font-family-serif: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    Georgia, "Times New Roman", serif;
+
   /* 字体大小 - 符合UI设计规范的标准字号系统 */
-  --font-size-xs: 12px;   /* 辅助信息 */
-  --font-size-sm: 14px;   /* 次要文本 */
+  --font-size-xs: 12px; /* 辅助信息 */
+  --font-size-sm: 14px; /* 次要文本 */
   --font-size-base: 16px; /* 正文基准 */
-  --font-size-md: 16px;   /* 正文标准 */
-  --font-size-lg: 18px;   /* 小标题 */
-  --font-size-xl: 20px;   /* 中标题 */
-  --font-size-2xl: 24px;  /* 大标题 */
-  --font-size-3xl: 30px;  /* 特大标题 */
-  --font-size-4xl: 36px;  /* 超大标题 */
-  --font-size-5xl: 48px;  /* 展示标题 */
-  --font-size-6xl: 60px;  /* 巨型标题 */
-  
+  --font-size-md: 16px; /* 正文标准 */
+  --font-size-lg: 18px; /* 小标题 */
+  --font-size-xl: 20px; /* 中标题 */
+  --font-size-2xl: 24px; /* 大标题 */
+  --font-size-3xl: 30px; /* 特大标题 */
+  --font-size-4xl: 36px; /* 超大标题 */
+  --font-size-5xl: 48px; /* 展示标题 */
+  --font-size-6xl: 60px; /* 巨型标题 */
+
   /* 字体权重 - 符合UI设计规范的标准字重 */
-  --font-weight-thin: 100;      /* 极细 */
-  --font-weight-light: 300;     /* 细体 */
-  --font-weight-normal: 400;    /* 正常 - 正文标准 */
-  --font-weight-medium: 500;    /* 中等 - 强调文本 */
-  --font-weight-semibold: 600;  /* 半粗 - 小标题 */
-  --font-weight-bold: 700;      /* 粗体 - 标题 */
+  --font-weight-thin: 100; /* 极细 */
+  --font-weight-light: 300; /* 细体 */
+  --font-weight-normal: 400; /* 正常 - 正文标准 */
+  --font-weight-medium: 500; /* 中等 - 强调文本 */
+  --font-weight-semibold: 600; /* 半粗 - 小标题 */
+  --font-weight-bold: 700; /* 粗体 - 标题 */
   --font-weight-extrabold: 800; /* 特粗 */
-  --font-weight-black: 900;     /* 黑体 */
-  
+  --font-weight-black: 900; /* 黑体 */
+
   /* 行高 */
   --line-height-none: 1;
   --line-height-tight: 1.25;
@@ -43,7 +45,7 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.625;
   --line-height-loose: 2;
-  
+
   /* 字母间距 */
   --letter-spacing-tighter: -0.05em;
   --letter-spacing-tight: -0.025em;
@@ -51,9 +53,9 @@
   --letter-spacing-wide: 0.025em;
   --letter-spacing-wider: 0.05em;
   --letter-spacing-widest: 0.1em;
-  
+
   /* ===== 颜色系统 ===== */
-  
+
   /* 主色调 - 基于UI设计规范的标准蓝色 */
   --color-primary-50: #f0f8ff;
   --color-primary-100: #e0f0ff;
@@ -65,7 +67,7 @@
   --color-primary-700: #0060d0;
   --color-primary-800: #0050c0;
   --color-primary-900: #0040b0;
-  
+
   /* 成功色 - 基于UI设计规范 */
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
@@ -77,7 +79,7 @@
   --color-success-700: #15803d;
   --color-success-800: #166534;
   --color-success-900: #14532d;
-  
+
   /* 警告色 - 基于UI设计规范 */
   --color-warning-50: #fffbeb;
   --color-warning-100: #fef3c7;
@@ -89,7 +91,7 @@
   --color-warning-700: #b45309;
   --color-warning-800: #92400e;
   --color-warning-900: #78350f;
-  
+
   /* 错误色 - 基于UI设计规范 */
   --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
@@ -101,7 +103,7 @@
   --color-error-700: #b91c1c;
   --color-error-800: #991b1b;
   --color-error-900: #7f1d1d;
-  
+
   /* 中性色 */
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -113,7 +115,7 @@
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
-  
+
   /* 语义化颜色 - 基于UI设计规范 */
   --color-background: #ffffff;
   --color-surface: #ffffff;
@@ -123,27 +125,27 @@
   --color-text-muted: var(--color-gray-400);
   --color-text-inverse: #ffffff;
   --color-hover: rgba(32, 128, 240, 0.1);
-  
+
   /* ===== 间距系统 ===== */
-  
+
   /* 基础间距单位 - 基于8px基准 */
   --spacing-base: 8px;
-  
+
   /* 标准间距值 (8px倍数) - 与spacing-constants.css保持一致 */
   --spacing-0: 0;
-  --spacing-1: 8px;   /* 1 * 8px */
-  --spacing-2: 16px;  /* 2 * 8px */
-  --spacing-3: 24px;  /* 3 * 8px */
-  --spacing-4: 32px;  /* 4 * 8px */
-  --spacing-5: 40px;  /* 5 * 8px */
-  --spacing-6: 48px;  /* 6 * 8px */
-  --spacing-8: 64px;  /* 8 * 8px */
+  --spacing-1: 8px; /* 1 * 8px */
+  --spacing-2: 16px; /* 2 * 8px */
+  --spacing-3: 24px; /* 3 * 8px */
+  --spacing-4: 32px; /* 4 * 8px */
+  --spacing-5: 40px; /* 5 * 8px */
+  --spacing-6: 48px; /* 6 * 8px */
+  --spacing-8: 64px; /* 8 * 8px */
   --spacing-10: 80px; /* 10 * 8px */
   --spacing-12: 96px; /* 12 * 8px */
   --spacing-16: 128px; /* 16 * 8px */
   --spacing-20: 160px; /* 20 * 8px */
   --spacing-24: 192px; /* 24 * 8px */
-  
+
   /* 语义化间距 */
   --spacing-xs: var(--spacing-1); /* 8px - 极小间距 */
   --spacing-sm: var(--spacing-2); /* 16px - 小间距 */
@@ -151,22 +153,22 @@
   --spacing-lg: var(--spacing-4); /* 32px - 大间距 */
   --spacing-xl: var(--spacing-6); /* 48px - 超大间距 */
   --spacing-2xl: var(--spacing-8); /* 64px - 特大间距 */
-  
+
   /* ===== 边框系统 ===== */
-  
+
   /* 边框宽度 */
   --border-width-0: 0;
   --border-width-1: 1px;
   --border-width-2: 2px;
   --border-width-4: 4px;
   --border-width-8: 8px;
-  
+
   /* 边框样式 */
   --border-style-solid: solid;
   --border-style-dashed: dashed;
   --border-style-dotted: dotted;
   --border-style-none: none;
-  
+
   /* 圆角 */
   --border-radius-none: 0;
   --border-radius-xs: 2px;
@@ -177,44 +179,53 @@
   --border-radius-2xl: 16px;
   --border-radius-3xl: 24px;
   --border-radius-full: 9999px;
-  
+
   /* 组合边框 */
-  --border-default: var(--border-width-1) var(--border-style-solid) var(--color-border);
-  --border-primary: var(--border-width-1) var(--border-style-solid) var(--color-primary-500);
-  --border-success: var(--border-width-1) var(--border-style-solid) var(--color-success-500);
-  --border-warning: var(--border-width-1) var(--border-style-solid) var(--color-warning-500);
-  --border-error: var(--border-width-1) var(--border-style-solid) var(--color-error-500);
-  
+  --border-default: var(--border-width-1) var(--border-style-solid)
+    var(--color-border);
+  --border-primary: var(--border-width-1) var(--border-style-solid)
+    var(--color-primary-500);
+  --border-success: var(--border-width-1) var(--border-style-solid)
+    var(--color-success-500);
+  --border-warning: var(--border-width-1) var(--border-style-solid)
+    var(--color-warning-500);
+  --border-error: var(--border-width-1) var(--border-style-solid)
+    var(--color-error-500);
+
   /* ===== 阴影系统 ===== */
-  
+
   /* 基础阴影 */
   --shadow-xs: 0 1px 2px 0 var(--color-black-05);
-  --shadow-sm: 0 1px 3px 0 var(--color-black-10), 0 1px 2px 0 var(--color-black-06);
-  --shadow-md: 0 4px 6px -1px var(--color-black-10), 0 2px 4px -1px var(--color-black-06);
-  --shadow-lg: 0 10px 15px -3px var(--color-black-10), 0 4px 6px -2px var(--color-black-05);
-  --shadow-xl: 0 20px 25px -5px var(--color-black-10), 0 10px 10px -5px var(--color-black-04);
+  --shadow-sm: 0 1px 3px 0 var(--color-black-10),
+    0 1px 2px 0 var(--color-black-06);
+  --shadow-md: 0 4px 6px -1px var(--color-black-10),
+    0 2px 4px -1px var(--color-black-06);
+  --shadow-lg: 0 10px 15px -3px var(--color-black-10),
+    0 4px 6px -2px var(--color-black-05);
+  --shadow-xl: 0 20px 25px -5px var(--color-black-10),
+    0 10px 10px -5px var(--color-black-04);
   --shadow-2xl: 0 25px 50px -12px var(--color-black-25);
   --shadow-inner: inset 0 2px 4px 0 var(--color-black-06);
   --shadow-none: none;
-  
+
   /* 卡片专用阴影 */
   --shadow-card-light: 0 6px 18px var(--color-black-06);
   --shadow-card-medium: 0 10px 28px var(--color-black-08);
   --shadow-card-mobile: 0 2px 8px var(--color-black-06);
   --shadow-card-tablet: 0 4px 12px var(--color-black-08);
-  
+
   /* 特殊用途阴影 */
   --shadow-focus-ring: 0 0 0 var(--spacing-1) var(--color-primary-30);
   --shadow-dark-overlay: 0 var(--spacing-2) var(--spacing-6) rgba(0, 0, 0, 0.4);
-  
+
   /* 彩色阴影 */
   --shadow-primary: 0 4px 14px 0 rgba(14, 165, 233, 0.15);
   --shadow-success: 0 4px 14px 0 rgba(34, 197, 94, 0.15);
   --shadow-warning: 0 4px 14px 0 rgba(245, 158, 11, 0.15);
   --shadow-error: 0 4px 14px 0 rgba(239, 68, 68, 0.15);
-  
+
   /* ===== 过渡动画 ===== */
-  
+
   /* 过渡时长 */
   --transition-duration-75: 75ms;
   --transition-duration-100: 100ms;
@@ -224,7 +235,7 @@
   --transition-duration-500: 500ms;
   --transition-duration-700: 700ms;
   --transition-duration-1000: 1000ms;
-  
+
   /* 过渡函数 */
   --transition-timing-linear: linear;
   --transition-timing-ease: ease;
@@ -232,14 +243,17 @@
   --transition-timing-ease-out: ease-out;
   --transition-timing-ease-in-out: ease-in-out;
   --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
+
   /* 常用过渡组合 */
-  --transition-fast: all var(--transition-duration-150) var(--transition-timing-ease-out);
-  --transition-base: all var(--transition-duration-200) var(--transition-timing-ease-out);
-  --transition-slow: all var(--transition-duration-300) var(--transition-timing-ease-out);
-  
+  --transition-fast: all var(--transition-duration-150)
+    var(--transition-timing-ease-out);
+  --transition-base: all var(--transition-duration-200)
+    var(--transition-timing-ease-out);
+  --transition-slow: all var(--transition-duration-300)
+    var(--transition-timing-ease-out);
+
   /* ===== Z-Index 层级 ===== */
-  
+
   --z-index-hide: -1;
   --z-index-auto: auto;
   --z-index-base: 0;
@@ -253,9 +267,9 @@
   --z-index-skiplink: 1600;
   --z-index-toast: 1700;
   --z-index-tooltip: 1800;
-  
+
   /* ===== 尺寸系统 ===== */
-  
+
   /* 宽度 */
   --width-xs: 320px;
   --width-sm: 384px;
@@ -268,7 +282,7 @@
   --width-5xl: 1024px;
   --width-6xl: 1152px;
   --width-7xl: 1280px;
-  
+
   /* 高度 */
   --height-xs: 320px;
   --height-sm: 384px;
@@ -276,28 +290,28 @@
   --height-lg: 512px;
   --height-xl: 576px;
   --height-2xl: 672px;
-  
+
   /* 最大宽度 */
-  --max-width-xs: 20rem;    /* 320px */
-  --max-width-sm: 24rem;    /* 384px */
-  --max-width-md: 28rem;    /* 448px */
-  --max-width-lg: 32rem;    /* 512px */
-  --max-width-xl: 36rem;    /* 576px */
-  --max-width-2xl: 42rem;   /* 672px */
-  --max-width-3xl: 48rem;   /* 768px */
-  --max-width-4xl: 56rem;   /* 896px */
-  --max-width-5xl: 64rem;   /* 1024px */
-  --max-width-6xl: 72rem;   /* 1152px */
-  --max-width-7xl: 80rem;   /* 1280px */
+  --max-width-xs: 20rem; /* 320px */
+  --max-width-sm: 24rem; /* 384px */
+  --max-width-md: 28rem; /* 448px */
+  --max-width-lg: 32rem; /* 512px */
+  --max-width-xl: 36rem; /* 576px */
+  --max-width-2xl: 42rem; /* 672px */
+  --max-width-3xl: 48rem; /* 768px */
+  --max-width-4xl: 56rem; /* 896px */
+  --max-width-5xl: 64rem; /* 1024px */
+  --max-width-6xl: 72rem; /* 1152px */
+  --max-width-7xl: 80rem; /* 1280px */
   --max-width-full: 100%;
   --max-width-screen-sm: 640px;
   --max-width-screen-md: 768px;
   --max-width-screen-lg: 1024px;
   --max-width-screen-xl: 1280px;
   --max-width-screen-2xl: 1536px;
-  
+
   /* ===== 组件特定变量 ===== */
-  
+
   /* 按钮 */
   --button-height-sm: 32px;
   --button-height-md: 40px;
@@ -305,7 +319,7 @@
   --button-min-width: 64px;
   --button-border-radius: var(--border-radius-md);
   --button-font-weight: var(--font-weight-medium);
-  
+
   /* 输入框 */
   --input-height-sm: 32px;
   --input-height-md: 40px;
@@ -314,7 +328,7 @@
   --input-border-width: var(--border-width-1);
   --input-focus-ring-width: 2px;
   --input-focus-ring-color: rgba(14, 165, 233, 0.2);
-  
+
   /* 卡片 */
   --card-border-radius: var(--border-radius-lg);
   --card-border-width: var(--border-width-1);
@@ -324,20 +338,20 @@
   --card-default-shadow-hover: var(--shadow-card-medium);
   --card-shadow-tablet: var(--shadow-card-tablet);
   --card-shadow-mobile: var(--shadow-card-mobile);
-  
+
   /* 卡片宽度约束 */
   --card-max-width-mobile: 100%;
-  --card-max-width-tablet: var(--max-width-2xl);   /* 672px */
-  --card-max-width-desktop: var(--max-width-4xl);  /* 896px */
+  --card-max-width-tablet: var(--max-width-2xl); /* 672px */
+  --card-max-width-desktop: var(--max-width-4xl); /* 896px */
   --card-standard-width: 100%;
-  --card-content-max-width: var(--max-width-3xl);  /* 768px */
-  
+  --card-content-max-width: var(--max-width-3xl); /* 768px */
+
   /* 统一卡片阴影效果 */
   --card-unified-shadow: var(--shadow-card-light);
   --card-unified-shadow-hover: var(--shadow-card-medium);
   --card-unified-shadow-mobile: var(--shadow-card-mobile);
   --card-unified-shadow-tablet: var(--shadow-card-tablet);
-  
+
   /* 卡片内边距 */
   --card-padding-sm: var(--spacing-4);
   --card-padding-md: var(--spacing-6);
@@ -345,38 +359,38 @@
   --card-padding-mobile: var(--spacing-4);
   --card-padding-tablet: var(--spacing-5);
   --card-padding-desktop: var(--spacing-6);
-  
+
   /* 模态框 */
   --modal-border-radius: var(--border-radius-xl);
   --modal-shadow: var(--shadow-2xl);
   --modal-backdrop-color: rgba(0, 0, 0, 0.5);
-  
+
   /* 导航 */
   --nav-height: 64px;
   --nav-item-padding: var(--spacing-3) var(--spacing-4);
   --nav-item-border-radius: var(--border-radius-md);
-  
+
   /* 侧边栏 */
   --sidebar-width: 256px;
   --sidebar-width-collapsed: 64px;
-  
+
   /* 表格 */
   --table-cell-padding: var(--spacing-3) var(--spacing-4);
   --table-header-height: 48px;
   --table-row-height: 56px;
-  
+
   /* ===== 响应式变量 ===== */
-  
+
   /* 容器内边距 */
   --container-padding-mobile: var(--spacing-4);
   --container-padding-tablet: var(--spacing-6);
   --container-padding-desktop: var(--spacing-8);
-  
+
   /* 栅格间距 */
   --grid-gap-mobile: var(--spacing-4);
   --grid-gap-tablet: var(--spacing-6);
   --grid-gap-desktop: var(--spacing-8);
-  
+
   /* 字体大小响应式 */
   --font-size-h1-mobile: var(--font-size-2xl);
   --font-size-h1-desktop: var(--font-size-4xl);
@@ -397,13 +411,16 @@
     --color-text-secondary: #666666;
     --color-text-muted: var(--color-gray-500);
     --color-text-inverse: #2c2c2c;
-    
+
     /* 深色主题阴影 */
     --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
     --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+      0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+      0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
+      0 10px 10px -5px rgba(0, 0, 0, 0.3);
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
   }
 }
@@ -430,4 +447,25 @@
     --transition-duration-700: 0ms;
     --transition-duration-1000: 0ms;
   }
+}
+
+/* ===== 响应式断点系统 ===== */
+:root {
+  /* 标准断点定义 - 符合UI设计规范 */
+  --breakpoint-mobile: 480px; /* 移动端上限 */
+  --breakpoint-tablet: 768px; /* 平板端上限 */
+  --breakpoint-desktop: 1024px; /* 桌面端上限 */
+  --breakpoint-wide: 1200px; /* 宽屏 */
+  --breakpoint-large: 1400px; /* 超宽屏 */
+
+  /* 语义化断点别名 */
+  --breakpoint-s: var(--breakpoint-tablet);
+  --breakpoint-m: var(--breakpoint-desktop);
+  --breakpoint-l: var(--breakpoint-wide);
+
+  /* 容器最大宽度 - 符合UI设计规范 */
+  --container-max-width: 1400px; /* 超宽屏容器 */
+  --container-wide-width: 1200px; /* 宽屏容器 */
+  --container-desktop-width: 1024px; /* 桌面容器 */
+  --container-tablet-width: 768px; /* 平板容器 */
 }

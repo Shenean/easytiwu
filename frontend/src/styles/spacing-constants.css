@@ -63,12 +63,6 @@
   --form-section-margin: var(--spacing-4); /* 32px */
 
   --list-item-padding: var(--spacing-2) var(--spacing-3); /* 16px 24px */
-
-  /* 响应式断点 */
-  --breakpoint-mobile: 480px;
-  --breakpoint-tablet: 768px;
-  --breakpoint-desktop: 1024px;
-  --breakpoint-wide: 1200px;
 }
 
 /* 工具类 - 使用CSS变量 */
