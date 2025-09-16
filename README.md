@@ -10,7 +10,7 @@
 
 ## 演示视频
 
-[点击查看演示视频](https://reurl.cc/VWllLY)
+[点击查看演示视频](https://www.bilibili.com/video/BV1MGpuz1EoR/?spm_id_from=333.1387.upload.video_card.click)
 
 ## 反馈
 
