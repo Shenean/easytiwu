@@ -255,7 +255,7 @@ function setLanguage(language: Language) {
 
 
 /* 移动端设置页面优化 */
-@media (max-width: var(--breakpoint-tablet)) {
+@media (max-width: 1023px) {
   .settings-container {
     padding: var(--container-responsive-padding-tablet);
     max-width: 100%;
@@ -344,7 +344,7 @@ function setLanguage(language: Language) {
   }
 }
 
-@media (max-width: var(--breakpoint-mobile)) {
+@media (max-width: 639px) {
   .settings-container {
     padding: var(--container-responsive-padding-mobile);
   }
@@ -401,7 +401,7 @@ function setLanguage(language: Language) {
 }
 
 /* 横屏模式优化 */
-@media (max-width: var(--breakpoint-tablet)) and (orientation: landscape) {
+@media (max-width: 1023px) and (orientation: landscape) {
   .settings-container {
     padding: var(--spacing-2) var(--spacing-4);
   }

@@ -1,32 +1,109 @@
 /* 响应式样式 Mixin 系统 */
 /* 统一管理所有响应式断点和常用样式模式 */
+/* 基于新的断点配置：xs(0), sm(640), md(768), lg(1024), xl(1280), xxl(1536) */
 
 /* ===== 基础响应式 Mixin ===== */
 
-/* 移动端优先 - 小于平板断点 */
+/* 超小屏幕 - xs: 0-639px */
+@define-mixin xs {
+  @media (max-width: 639px) {
+    @mixin-content;
+  }
+}
+
+/* 小屏幕 - sm: 640-767px */
+@define-mixin sm {
+  @media (min-width: 640px) and (max-width: 767px) {
+    @mixin-content;
+  }
+}
+
+/* 中等屏幕 - md: 768-1023px */
+@define-mixin md {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    @mixin-content;
+  }
+}
+
+/* 大屏幕 - lg: 1024-1279px */
+@define-mixin lg {
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    @mixin-content;
+  }
+}
+
+/* 超大屏幕 - xl: 1280-1535px */
+@define-mixin xl {
+  @media (min-width: 1280px) and (max-width: 1535px) {
+    @mixin-content;
+  }
+}
+
+/* 超超大屏幕 - xxl: 1536px+ */
+@define-mixin xxl {
+  @media (min-width: 1536px) {
+    @mixin-content;
+  }
+}
+
+/* ===== 向上断点 Mixin（大于等于指定断点）===== */
+
+@define-mixin sm-up {
+  @media (min-width: 640px) {
+    @mixin-content;
+  }
+}
+
+@define-mixin md-up {
+  @media (min-width: 768px) {
+    @mixin-content;
+  }
+}
+
+@define-mixin lg-up {
+  @media (min-width: 1024px) {
+    @mixin-content;
+  }
+}
+
+@define-mixin xl-up {
+  @media (min-width: 1280px) {
+    @mixin-content;
+  }
+}
+
+@define-mixin xxl-up {
+  @media (min-width: 1536px) {
+    @mixin-content;
+  }
+}
+
+/* ===== 兼容旧版本的断点 Mixin ===== */
+
+/* 移动端优先 - 小于md断点 */
 @define-mixin mobile {
-  @media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+  @media (max-width: 767px) {
     @mixin-content;
   }
 }
 
-/* 平板端 - 平板到桌面断点之间 */
+/* 平板端 - md到lg断点之间 */
 @define-mixin tablet {
-  @media (min-width: var(--breakpoint-tablet)) and (max-width: calc(var(--breakpoint-desktop) - 1px)) {
+  @media (min-width: 768px) and (max-width: 1023px) {
     @mixin-content;
   }
 }
 
-/* 桌面端及以上 */
+/* 桌面端及以上 - lg断点以上 */
 @define-mixin desktop {
-  @media (min-width: var(--breakpoint-desktop)) {
+  @media (min-width: 1024px) {
     @mixin-content;
   }
 }
 
-/* 大屏幕 */
+/* 大屏幕 - xl断点以上 */
 @define-mixin large {
-  @media (min-width: var(--breakpoint-large)) {
+  @media (min-width: 1280px) {
     @mixin-content;
   }
 }
@@ -98,16 +175,16 @@
   }
 }
 
-/* 小屏幕设备（包含移动端和小平板） */
+/* 小屏幕设备（包含移动端和小平板） - 小于lg断点 */
 @define-mixin small-screen {
-  @media (max-width: calc(var(--breakpoint-desktop) - 1px)) {
+  @media (max-width: 1023px) {
     @mixin-content;
   }
 }
 
-/* 大屏幕设备（桌面端及以上） */
+/* 大屏幕设备（桌面端及以上） - lg断点以上 */
 @define-mixin large-screen {
-  @media (min-width: var(--breakpoint-desktop)) {
+  @media (min-width: 1024px) {
     @mixin-content;
   }
 }
@@ -167,17 +244,28 @@
   display: grid;
   gap: var(--spacing-4);
 
-  @mixin mobile {
+  @mixin xs {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+
+  @mixin sm {
     grid-template-columns: 1fr;
     gap: var(--spacing-3);
   }
 
-  @mixin tablet {
+  @mixin md {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-3);
   }
 
-  @mixin desktop {
+  @mixin lg {
     grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  @mixin xl-up {
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--spacing-5);
   }
 }
@@ -233,36 +321,72 @@
 
 /* 生成响应式显示控制类 */
 @define-mixin responsive-display-utils {
+  /* 单一断点显示 */
+  .xs-only {
+    display: block;
+    @mixin sm-up { display: none; }
+  }
+
+  .sm-only {
+    display: none;
+    @mixin sm { display: block; }
+  }
+
+  .md-only {
+    display: none;
+    @mixin md { display: block; }
+  }
+
+  .lg-only {
+    display: none;
+    @mixin lg { display: block; }
+  }
+
+  .xl-only {
+    display: none;
+    @mixin xl { display: block; }
+  }
+
+  .xxl-only {
+    display: none;
+    @mixin xxl { display: block; }
+  }
+
+  /* 向上显示 */
+  .sm-up {
+    display: none;
+    @mixin sm-up { display: block; }
+  }
+
+  .md-up {
+    display: none;
+    @mixin md-up { display: block; }
+  }
+
+  .lg-up {
+    display: none;
+    @mixin lg-up { display: block; }
+  }
+
+  .xl-up {
+    display: none;
+    @mixin xl-up { display: block; }
+  }
+
+  /* 兼容旧版本类名 */
   .mobile-only {
     display: block;
-
-    @mixin tablet {
-      display: none;
-    }
-
-    @mixin desktop {
-      display: none;
-    }
+    @mixin md-up { display: none; }
   }
 
   .tablet-only {
     display: none;
-
-    @mixin tablet {
-      display: block;
-    }
-
-    @mixin desktop {
-      display: none;
-    }
+    @mixin md { display: block; }
   }
 
   .desktop-only {
     display: none;
-
-    @mixin desktop {
-      display: block;
-    }
+    @mixin lg-up { display: block; }
   }
 
   .mobile-up {
@@ -271,22 +395,12 @@
 
   .tablet-up {
     display: none;
-
-    @mixin tablet {
-      display: block;
-    }
-
-    @mixin desktop {
-      display: block;
-    }
+    @mixin md-up { display: block; }
   }
 
   .desktop-up {
     display: none;
-
-    @mixin desktop {
-      display: block;
-    }
+    @mixin lg-up { display: block; }
   }
 }
 

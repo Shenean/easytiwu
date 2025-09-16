@@ -143,7 +143,7 @@ const containerClass = computed(() => {
   padding: 0 var(--spacing-3);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .content-container.container-responsive {
     padding: 0 var(--spacing-2);
   }

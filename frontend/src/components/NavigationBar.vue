@@ -65,7 +65,7 @@ const route = useRoute();
 const router = useRouter();
 
 // 响应式判断是否为移动端
-const isMobile = computed(() => window.innerWidth <= 768);
+const isMobile = computed(() => window.innerWidth <= 767);
 
 // 移动端菜单状态
 const showMobileMenu = ref(false);
@@ -174,7 +174,7 @@ watch(
 }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .desktop-nav {
     display: none;
   }

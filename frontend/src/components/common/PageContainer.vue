@@ -88,7 +88,7 @@ const contentStyle = computed(() => ({
   padding: var(--spacing-md); /* 16px */
 }
 
-@media (max-width: var(--breakpoint-s)) {
+@media (max-width: 639px) {
   .page-container {
     padding: var(--spacing-sm); /* 8px */
   }

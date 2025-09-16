@@ -88,7 +88,7 @@ body {
 }
 
 /* 移动端优化 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   #app {
     font-size: var(--font-size-sm);
   }

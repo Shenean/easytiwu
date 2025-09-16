@@ -458,7 +458,7 @@ onMounted(() => {
 }
 
 /* 移动端适配 */
-@media (max-width: var(--breakpoint-tablet)) {
+@media (max-width: 1023px) {
   .statistics-container {
     padding: var(--container-responsive-padding-tablet);
     max-width: 100%;

@@ -10,14 +10,14 @@
   margin-bottom: var(--spacing-6);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .content-area {
     padding: var(--spacing-4);
     margin-bottom: var(--spacing-4);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .content-area {
     padding: var(--spacing-3);
     margin-bottom: var(--spacing-3);
@@ -33,7 +33,7 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .sidebar {
     width: 100%;
     margin-bottom: var(--spacing-4);
@@ -67,8 +67,57 @@
   grid-template-columns: repeat(6, 1fr);
 }
 
-/* 响应式栅格 */
-@media (max-width: 480px) {
+/* 响应式栅格 - 基于新的断点系统 */
+/* 超小屏幕 (xs: 0-639px) */
+@media (max-width: 639px) {
+  .xs\:grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .xs\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .xs\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .xs\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 小屏幕 (sm: 640-767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+  .sm\:grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sm\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .sm\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 中等屏幕 (md: 768-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .md\:grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 兼容旧版本的断点类名 */
+@media (max-width: 767px) {
   .mobile\:grid-cols-1 {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -83,7 +132,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .tablet\:grid-cols-1 {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -98,7 +147,52 @@
   }
 }
 
-@media (min-width: 769px) {
+/* 大屏幕 (lg: 1024-1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .lg\:grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .lg\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .lg\:grid-cols-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .lg\:grid-cols-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* 超大屏幕 (xl: 1280-1535px) */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .xl\:grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .xl\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .xl\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .xl\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .xl\:grid-cols-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .xl\:grid-cols-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* 兼容旧版本的桌面端断点类名 */
+@media (min-width: 1024px) {
   .desktop\:grid-cols-1 {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -168,13 +262,45 @@
   color: var(--n-color-error);
 }
 
-@media (max-width: var(--breakpoint-tablet)) {
+/* 统计卡片响应式样式 - 基于新的断点系统 */
+@media (max-width: 1023px) {
   .stats-card {
     padding: var(--card-padding-tablet);
     width: var(--card-tablet-width);
     box-shadow: var(--card-tablet-shadow);
   }
 
+  .stats-card .stats-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .stats-card .stats-label {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 639px) {
+  .stats-card {
+    padding: var(--card-padding-mobile);
+    width: var(--card-mobile-width);
+    box-shadow: var(--card-mobile-shadow);
+  }
+
+  .stats-card .stats-value {
+    font-size: var(--font-size-lg);
+  }
+
+  .stats-card .stats-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .stats-card .stats-change {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* 其他卡片组件的响应式样式 */
+@media (max-width: 1023px) {
   .bank-card {
     padding: var(--card-padding-tablet);
     width: var(--card-tablet-width);
@@ -188,21 +314,7 @@
   }
 }
 
-@media (max-width: 480px) {
-  .stats-card {
-    padding: var(--card-padding-mobile);
-    width: var(--card-mobile-width);
-    box-shadow: var(--card-mobile-shadow);
-  }
-
-  .stats-card .stats-value {
-    font-size: var(--font-size-xl);
-  }
-
-  .stats-card .stats-label {
-    font-size: var(--font-size-xs);
-  }
-
+@media (max-width: 639px) {
   .bank-card {
     padding: var(--card-padding-mobile);
     width: var(--card-mobile-width);
@@ -255,7 +367,7 @@
   background: var(--color-primary-light);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .answer-card {
     padding: var(--spacing-2);
     min-height: var(--spacing-9);
@@ -303,7 +415,7 @@
   color: var(--n-text-color-3);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .bank-card .bank-title {
     font-size: var(--font-size-sm);
   }
@@ -382,7 +494,7 @@
   border-top: var(--border-width-1) solid var(--n-border-color);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .form-actions {
     flex-direction: column-reverse;
     gap: var(--spacing-2);

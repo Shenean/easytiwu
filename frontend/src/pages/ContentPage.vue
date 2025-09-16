@@ -713,7 +713,7 @@ watch(currentQuestion, () => {
 }
 
 /* ===== 中等屏幕优化 ===== */
-@media (min-width: 769px) and (max-width: 1199px) {
+@media (min-width: 768px) and (max-width: 1199px) {
   .content-layout {
     gap: var(--spacing-7);
     /* 28px */
@@ -734,7 +734,7 @@ watch(currentQuestion, () => {
 }
 
 /* ===== 移动端响应式设计 ===== */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .page-container {
     padding: var(--container-responsive-padding-mobile);
   }
@@ -805,7 +805,7 @@ watch(currentQuestion, () => {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .page-container {
     padding: var(--container-responsive-padding-small);
   }
@@ -875,7 +875,7 @@ watch(currentQuestion, () => {
   margin: 0 auto;
 }
 
-@media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+@media (max-width: 1023px) {
   .action-buttons {
     gap: var(--spacing-2);
   }
