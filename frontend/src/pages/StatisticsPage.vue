@@ -146,14 +146,46 @@ import PageContainer from "../components/common/PageContainer.vue";
 import {useBreakpoints} from "../composables/useBreakpoints";
 import type {ApiResponse, StatisticsOverview, TypeStats,} from "../types/statistics";
 
-// 数字格式化函数，防御性处理null/undefined
+/**
+ * 数字格式化工具函数
+ * 
+ * 将数字转换为本地化格式的字符串，支持千分位分隔符。
+ * 提供防御性编程，安全处理 null 和 undefined 值。
+ * 
+ * @param {number | null | undefined} value - 需要格式化的数字值
+ * @returns {string} 格式化后的字符串，如 "1,234" 或 "0"
+ * 
+ * @example
+ * ```typescript
+ * formatNumber(1234)      // "1,234"
+ * formatNumber(null)      // "0"
+ * formatNumber(undefined) // "0"
+ * formatNumber(0)         // "0"
+ * ```
+ */
 const formatNumber = (value: number | null | undefined): string => {
   return (value ?? 0).toLocaleString();
 };
 
+/** 国际化翻译函数 */
 const { t } = useI18n();
 
-// 题型字段映射
+/**
+ * 题型显示名称映射函数
+ * 
+ * 将后端返回的题型标识符转换为用户友好的显示名称。
+ * 支持国际化，根据当前语言环境返回对应的题型名称。
+ * 
+ * @param {string} type - 题型标识符
+ * @returns {string} 本地化的题型显示名称
+ * 
+ * @example
+ * ```typescript
+ * getTypeDisplayName('single')      // "单选题"
+ * getTypeDisplayName('multiple')    // "多选题"
+ * getTypeDisplayName('unknown')     // "unknown" (fallback)
+ * ```
+ */
 const getTypeDisplayName = (type: string): string => {
   const typeMap: Record<string, string> = {
     single: t("statistics.questionTypes.single"),
@@ -165,26 +197,59 @@ const getTypeDisplayName = (type: string): string => {
   return typeMap[type] || type;
 };
 
-// 响应式数据
+// ==================== 响应式状态管理 ====================
+
+/** 统计数据状态 */
 const stats = ref<StatisticsOverview | null>(null);
+
+/** 加载状态 */
 const loading = ref(false);
+
+/** 错误状态 */
 const error = ref<string | null>(null);
 
-// 响应式布局
+// ==================== 响应式布局管理 ====================
+
+/** 断点检测 Hook */
 const { isMobile, isTablet } = useBreakpoints();
 
-// 网格列数计算
+/**
+ * 概览区域网格列数计算
+ * 
+ * 根据屏幕尺寸动态调整网格布局的列数。
+ * 移动端使用单列布局，其他设备使用双列布局。
+ * 
+ * @returns {ComputedRef<number>} 网格列数
+ */
 const overviewGridCols = computed(() => {
   if (isMobile.value) return 1;
   return 2;
 });
 
+/**
+ * 题型统计区域网格列数计算
+ * 
+ * 根据屏幕尺寸动态调整题型统计卡片的网格布局。
+ * - 移动端：1列
+ * - 平板端：2列
+ * - 桌面端：3列
+ * 
+ * @returns {ComputedRef<number>} 网格列数
+ */
 const typeStatsGridCols = computed(() => {
   if (isMobile.value) return 1;
   if (isTablet.value) return 2;
   return 3;
 });
 
+/**
+ * 指标区域网格列数计算
+ * 
+ * 根据屏幕尺寸调整指标展示的网格布局。
+ * 移动端使用单列，其他设备使用三列布局。
+ * 
+ * @returns {ComputedRef<number>} 网格列数
+ */
 const metricsGridCols = computed(() => {
   if (isMobile.value) return 1;
   return 3;
