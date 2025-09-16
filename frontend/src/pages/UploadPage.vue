@@ -1,7 +1,9 @@
 <template>
-  <PageContainer :title="$t('upload.title')">
-    <div class="upload-container">
-      <n-card class="upload-card">
+  <PageContainer 
+    :title="$t('upload.title')"
+    :show-card="true"
+    card-class="upload-card"
+  >
         <n-form
           ref="formRef"
           :model="form"
@@ -65,18 +67,18 @@
 
           <!-- 提交操作区 -->
           <n-form-item>
-            <n-space 
-              justify="end" 
-              size="medium"
-              :vertical="isMobile"
-              :align="isMobile ? 'stretch' : 'center'"
-            >
+            <div style="display: flex; justify-content: flex-end; width: 100%;">
+              <n-space 
+                size="medium"
+                :vertical="isMobile"
+                :align="isMobile ? 'stretch' : 'center'"
+              >
               <n-button
                 size="large"
                 secondary
                 @click="handleReset"
               >
-                重置
+                {{ $t('common.reset') }}
               </n-button>
               <n-button
                 type="primary"
@@ -85,13 +87,12 @@
                 :disabled="!isFormValid"
                 @click="handleSubmit"
               >
-                提交
+                {{ $t('common.submit') }}
               </n-button>
-            </n-space>
+              </n-space>
+            </div>
           </n-form-item>
         </n-form>
-      </n-card>
-    </div>
   </PageContainer>
 </template>
 
@@ -245,20 +246,18 @@ defineExpose({
 </script>
 
 <style scoped>
-.upload-container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
+/* 上传卡片样式 */
 .upload-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: var(--border-radius-medium);
+  max-width: 600px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-/* 移动端适配 */
-@media (max-width: 480px) {
-  .upload-container {
-    margin: 0 var(--spacing-3);
+/* 移动端优化 */
+@media (max-width: 639px) {
+  .upload-card {
+    border-radius: var(--border-radius-md);
+    max-width: 100%;
   }
 }
 </style>

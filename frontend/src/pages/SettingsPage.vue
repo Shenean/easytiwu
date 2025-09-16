@@ -1,7 +1,7 @@
 <template>
   <PageContainer
     :title="$t('settings.title')"
-    card-class="settings-card"
+    :show-card="false"
     container-class="settings-container"
   >
     <div class="setting-section">
@@ -9,54 +9,20 @@
         <div class="setting-info">
           <div class="setting-header">
             <n-icon size="20" class="setting-icon">
-              <i class="i-ion-moon"></i>
+              <i class="i-ion-settings-outline"></i>
             </n-icon>
-            <h3 class="setting-title">{{ $t("settings.darkTheme") }}</h3>
+            <h3 class="setting-title">{{ $t("settings.theme.title") }}</h3>
           </div>
         </div>
 
         <div class="theme-toggle-container">
-          <n-button-group>
-            <n-button
-              :type="currentTheme === 'light' ? 'primary' : 'default'"
-              @click="setTheme('light')"
-              size="small"
-              :ghost="currentTheme !== 'light'"
-            >
-              <template #icon>
-                <n-icon>
-                  <i class="i-ion-sunny"></i>
-                </n-icon>
-              </template>
-              {{ $t('settings.lightTheme') }}
-            </n-button>
-            <n-button
-              :type="currentTheme === 'dark' ? 'primary' : 'default'"
-              @click="setTheme('dark')"
-              size="small"
-              :ghost="currentTheme !== 'dark'"
-            >
-              <template #icon>
-                <n-icon>
-                  <i class="i-ion-moon"></i>
-                </n-icon>
-              </template>
-              {{ $t('settings.darkTheme') }}
-            </n-button>
-            <n-button
-              :type="currentTheme === 'system' ? 'primary' : 'default'"
-              @click="setTheme('system')"
-              size="small"
-              :ghost="currentTheme !== 'system'"
-            >
-              <template #icon>
-                <n-icon>
-                  <i class="i-ion-desktop-outline"></i>
-                </n-icon>
-              </template>
-              {{ $t('settings.followSystem') }}
-            </n-button>
-          </n-button-group>
+          <n-select
+            v-model:value="currentTheme"
+            :options="themeOptions"
+            @update:value="setTheme"
+            size="small"
+            style="width: 120px"
+          />
         </div>
       </div>
     </div>
@@ -122,6 +88,22 @@ const languageOptions = [
   }
 ];
 
+// 主题选项
+const themeOptions = [
+  {
+    label: t('settings.theme.light'),
+    value: 'light' as Theme
+  },
+  {
+    label: t('settings.theme.dark'),
+    value: 'dark' as Theme
+  },
+  {
+    label: t('settings.theme.system'),
+    value: 'system' as Theme
+  }
+];
+
 const setGlobalTheme = inject<(theme: Theme) => void>("setGlobalTheme");
 const getGlobalTheme = inject<() => Theme>("getGlobalTheme");
 
@@ -157,9 +139,9 @@ function setTheme(theme: Theme) {
   if (setGlobalTheme) setGlobalTheme(currentTheme.value);
   
   const themeTexts = {
-    light: t("settings.lightTheme"),
-    dark: t("settings.darkTheme"),
-    system: t("settings.followSystem"),
+    light: t("settings.theme.light"),
+    dark: t("settings.theme.dark"),
+    system: t("settings.theme.system"),
   };
   message.success(t("settings.switchedTo", { theme: themeTexts[theme] }));
 }
@@ -285,6 +267,7 @@ function setLanguage(language: Language) {
 
   .setting-info {
     flex: 1;
+    min-width: 0; /* 允许文本截断 */
   }
 
   .setting-header {
@@ -294,12 +277,16 @@ function setLanguage(language: Language) {
 
   .setting-icon {
     font-size: var(--font-size-lg);
+    flex-shrink: 0;
   }
 
   .setting-title {
     font-size: var(--font-size-base);
     font-weight: 500;
     line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .setting-description {
@@ -310,9 +297,28 @@ function setLanguage(language: Language) {
 
   .theme-toggle-container {
     flex-shrink: 0;
+    min-width: 0;
   }
 
+  /* 平板端按钮组优化 */
+  .theme-toggle-container :deep(.n-button-group) {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    width: auto;
+  }
 
+  .theme-toggle-container :deep(.n-button) {
+    font-size: var(--font-size-xs);
+    padding: 0 var(--spacing-2);
+    min-width: auto;
+    white-space: nowrap;
+  }
+
+  .theme-toggle-container :deep(.n-button .n-button__content) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .language-toggle-container {
     flex-shrink: 0;
@@ -365,30 +371,88 @@ function setLanguage(language: Language) {
   .setting-row {
     gap: var(--spacing-3);
     min-height: var(--spacing-13); /* 52px */
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  .setting-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .setting-header {
     gap: var(--spacing-2);
+    overflow: hidden;
   }
 
   .setting-icon {
     font-size: var(--font-size-base);
+    flex-shrink: 0;
   }
 
   .setting-title {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .setting-description {
     font-size: var(--font-size-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
+  /* 手机端按钮组优化 */
+  .theme-toggle-container {
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: 40%;
+  }
 
+  .theme-toggle-container :deep(.n-button-group) {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    width: 100%;
+  }
 
+  .theme-toggle-container :deep(.n-button) {
+    font-size: 10px;
+    padding: 0 var(--spacing-1);
+    min-width: 0;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
+  .theme-toggle-container :deep(.n-button .n-button__content) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px;
+  }
 
+  .language-toggle-container {
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: 35%;
+  }
 
+  .language-toggle-container :deep(.n-select) {
+    min-width: 0;
+  }
+
+  .language-toggle-container :deep(.n-base-selection) {
+    min-width: 0;
+  }
+
+  .language-toggle-container :deep(.n-base-selection-label) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   :deep(.n-card__header) {
     padding: var(--spacing-4) var(--spacing-4) 0;
@@ -434,6 +498,42 @@ function setLanguage(language: Language) {
   .setting-row {
     min-height: var(--spacing-10);
     padding: var(--spacing-2) 0;
+    gap: var(--spacing-2);
+  }
+
+  .setting-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .setting-title {
+    font-size: 12px;
+  }
+
+  .setting-description {
+    font-size: 10px;
+  }
+
+  /* 超小屏幕按钮组优化 */
+  .theme-toggle-container {
+    max-width: 45%;
+  }
+
+  .theme-toggle-container :deep(.n-button) {
+    font-size: 9px;
+    padding: 0 2px;
+  }
+
+  .theme-toggle-container :deep(.n-button .n-button__content) {
+    font-size: 9px;
+  }
+
+  .language-toggle-container {
+    max-width: 40%;
+  }
+
+  .language-toggle-container :deep(.n-base-selection-label) {
+    font-size: 10px;
   }
 }
 

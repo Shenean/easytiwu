@@ -295,9 +295,10 @@ export function useTheme() {
     document.body.className = document.body.className.replace(/theme-\w+/g, '');
     document.body.classList.add(`theme-${theme}`);
 
-    // 更新CSS自定义属性以支持主题切换
+    // 为文档根元素添加/移除dark类，确保CSS变量正确应用
     const root = document.documentElement;
     if (theme === "dark") {
+      root.classList.add("dark");
       // ==================== 深色主题CSS变量 ====================
       root.style.setProperty("--app-bg-color", "#1e1e1e");              // 应用背景色
       root.style.setProperty("--app-text-color", "#f5f5f5");            // 主要文本色
@@ -305,6 +306,7 @@ export function useTheme() {
       root.style.setProperty("--app-card-bg", "#262626");               // 卡片背景色
       root.style.setProperty("--app-hover-color", "rgba(255, 255, 255, 0.05)"); // 悬停效果色
     } else {
+      root.classList.remove("dark");
       // ==================== 浅色主题CSS变量 ====================
       root.style.setProperty("--app-bg-color", "#ffffff");              // 应用背景色
       root.style.setProperty("--app-text-color", "#2c2c2c");            // 主要文本色

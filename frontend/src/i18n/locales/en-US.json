@@ -34,7 +34,8 @@
     "home": "Home",
     "backToHome": "Back to Home",
     "openMenu": "Open Navigation Menu",
-    "closeMenu": "Close Navigation Menu"
+    "closeMenu": "Close Navigation Menu",
+    "menu": "Menu"
   },
   "upload": {
     "title": "Upload Question Bank",
@@ -106,7 +107,7 @@
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",
     "theme": {
-      "title": "Dark Theme",
+      "title": "Theme Settings",
       "light": "Light Mode",
       "dark": "Dark Mode",
       "system": "Follow System",

@@ -59,7 +59,7 @@ const contentStyles = computed(() => {
   
   return {
     padding: paddingMap[props.contentPadding],
-    paddingTop: `calc(48px + ${paddingMap[props.contentPadding]})`, // 导航栏高度 + 内边距
+    paddingTop: `calc(var(--nav-height) + ${paddingMap[props.contentPadding]})`, // 导航栏高度 + 内边距
     marginTop: '0'
   }
 })
@@ -99,11 +99,11 @@ const containerClass = computed(() => {
   left: 0;
   right: 0;
   z-index: 1000;
-  height: 48px;
+  height: var(--nav-height);
   background-color: var(--n-card-color);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(var(--spacing-1));
+  -webkit-backdrop-filter: blur(var(--spacing-1));
+  box-shadow: var(--shadow-sm);
 }
 
 .app-content {
@@ -157,6 +157,6 @@ const containerClass = computed(() => {
 
 .app-footer {
   background-color: var(--n-card-color);
-  border-top: 1px solid var(--n-border-color);
+  border-top: var(--border-width-1) solid var(--color-border);
 }
 </style>

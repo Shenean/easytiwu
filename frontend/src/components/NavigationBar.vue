@@ -56,16 +56,21 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {MenuOutline} from "@vicons/ionicons5";
 import {mainMenuOptions} from "../config/menuOptions";
+import {useBreakpoints} from "@/composables/useBreakpoints";
+import {useTheme} from "@/composables/useTheme";
 
 const route = useRoute();
 const router = useRouter();
 
-// 响应式判断是否为移动端
-const isMobile = computed(() => window.innerWidth <= 767);
+// 使用响应式断点检测
+const { isMobile } = useBreakpoints();
+
+// 使用主题系统
+const { actualTheme } = useTheme();
 
 // 移动端菜单状态
 const showMobileMenu = ref(false);
@@ -94,20 +99,11 @@ const handleNavigateAndClose = (key: string) => {
   showMobileMenu.value = false;
 };
 
-// 监听窗口大小变化（轻量节流）
-let resizeTimer: number | null = null;
-onMounted(() => {
-  const onResize = () => {
-    if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(() => {
-      // 强制触发响应式更新（虽然 computed 已监听，但确保边界情况）
-    }, 150);
-  };
-  window.addEventListener("resize", onResize);
-  onUnmounted(() => {
-    window.removeEventListener("resize", onResize);
-    if (resizeTimer) clearTimeout(resizeTimer);
-  });
+// 主题变化时的处理逻辑
+watch(actualTheme, (newTheme) => {
+  // 主题切换时可以添加额外的处理逻辑
+  // 例如：更新页面标题、发送分析事件等
+  console.log(`主题已切换至: ${newTheme}`);
 });
 
 // 路由变化时关闭移动端菜单
@@ -123,19 +119,23 @@ watch(
 
 <style scoped>
 .navbar {
-  padding: 0 var(--spacing-sm); /* 更紧凑的左右边距 */
-  height: 48px; /* 紧凑高度：6×8基准 */
+  padding: 0 var(--spacing-sm);
+  height: var(--nav-height);
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 添加阴影增强层次感 */
-  position: fixed; /* 固定定位 */
-  top: 0; /* 固定在顶部 */
-  left: 0; /* 从左边开始 */
-  right: 0; /* 到右边结束 */
-  z-index: 1000; /* 确保在其他元素之上 */
-  background-color: var(--n-card-color, #ffffff); /* 确保有背景色，适配主题 */
-  backdrop-filter: blur(8px); /* 添加毛玻璃效果 */
-  -webkit-backdrop-filter: blur(8px); /* Safari兼容性 */
+  box-shadow: var(--shadow-sm);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  /* 主题适配的背景色 */
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(var(--spacing-1));
+  -webkit-backdrop-filter: blur(var(--spacing-1));
+  /* 主题切换过渡效果 */
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar-container {
@@ -152,25 +152,93 @@ watch(
   text-decoration: none;
   display: flex;
   align-items: center;
+  /* 主题适配的过渡效果 */
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+  opacity: 0.8;
 }
 
 .logo-img {
-  height: 32px; /* 紧凑Logo尺寸 */
+  height: var(--spacing-4);
   width: auto;
   object-fit: contain;
   user-select: none;
+  /* 主题适配的过渡效果 */
+  transition: filter 0.3s ease;
+}
+
+/* 暗色主题下的Logo适配 */
+:global(.dark) .logo-img {
+  filter: brightness(0.9) contrast(1.1);
 }
 
 /* 桌面端菜单样式优化 */
+:deep(.desktop-nav) {
+  background: transparent;
+}
+
 :deep(.desktop-nav .n-menu-item-content) {
-  padding: 0 var(--spacing-xs); /* 减少菜单项内边距 */
-  font-size: 14px;
+  padding: 0 var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  transition: color 0.2s ease;
 }
 
 :deep(.desktop-nav .n-menu-item) {
-  height: 48px; /* 与导航栏同高 */
+  height: var(--nav-height);
   display: flex;
   align-items: center;
+  border-radius: var(--border-radius-md);
+  transition: background-color 0.2s ease;
+}
+
+:deep(.desktop-nav .n-menu-item:hover .n-menu-item-content) {
+  color: var(--color-primary-600);
+}
+
+:deep(.desktop-nav .n-menu-item--selected .n-menu-item-content) {
+  color: var(--color-primary-600);
+  font-weight: var(--font-weight-semibold);
+}
+
+:deep(.desktop-nav .n-menu-item--disabled .n-menu-item-content) {
+  color: var(--color-text-disabled);
+}
+
+/* 移动端汉堡按钮样式 */
+.mobile-menu-btn {
+  margin-left: auto;
+  color: var(--color-text-primary);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-primary-600);
+}
+
+/* 移动端抽屉菜单样式优化 */
+:deep(.n-drawer .n-drawer-content) {
+  background-color: var(--color-surface);
+}
+
+:deep(.n-drawer .n-menu-item-content) {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  transition: color 0.2s ease;
+}
+
+:deep(.n-drawer .n-menu-item:hover .n-menu-item-content) {
+  color: var(--color-primary-600);
+}
+
+:deep(.n-drawer .n-menu-item--selected .n-menu-item-content) {
+  color: var(--color-primary-600);
+  font-weight: var(--font-weight-semibold);
 }
 
 /* 移动端适配 */
@@ -180,22 +248,12 @@ watch(
   }
 
   .navbar {
-    padding: 0 var(--spacing-xs); /* 移动端更紧凑 */
-    height: 48px;
-    /* 移动端保持固定定位 */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    padding: 0 var(--spacing-xs);
+    height: var(--nav-height);
   }
 
   .logo-img {
-    height: 28px; /* 移动端稍小 */
-  }
-
-  .mobile-menu-btn {
-    margin-left: auto; /* 确保靠右（虽然space-between已满足，保险） */
+    height: calc(var(--spacing-3) + var(--spacing-1));
   }
 }
 </style>

@@ -1,0 +1,286 @@
+/* ===== 移动端优化样式 ===== */
+
+/* 触摸友好的交互尺寸 */
+:root {
+  /* 移动端最小触摸目标尺寸 (44px) */
+  --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
+  --touch-target-large: 56px;
+  
+  /* 移动端间距优化 */
+  --mobile-spacing-xs: var(--spacing-1); /* 8px */
+  --mobile-spacing-sm: var(--spacing-2); /* 16px */
+  --mobile-spacing-md: var(--spacing-3); /* 24px */
+  --mobile-spacing-lg: var(--spacing-4); /* 32px */
+  
+  /* 移动端字体尺寸优化 */
+  --mobile-font-xs: 12px;
+  --mobile-font-sm: 14px;
+  --mobile-font-base: 16px;
+  --mobile-font-lg: 18px;
+  --mobile-font-xl: 20px;
+}
+
+/* 移动端基础优化 */
+@media (max-width: 767px) {
+  /* 确保所有可点击元素满足最小触摸目标 */
+  button,
+  .n-button,
+  .n-menu-item,
+  .n-card.clickable,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+  
+  /* 优化表单元素 */
+  .n-input,
+  .n-select,
+  .n-date-picker {
+    min-height: var(--touch-target-comfortable);
+  }
+  
+  /* 增加链接的点击区域 */
+  a {
+    padding: var(--spacing-1) var(--spacing-1-5);
+    margin: calc(-1 * var(--spacing-1)) calc(-1 * var(--spacing-1-5));
+  }
+  
+  /* 优化卡片间距 */
+  .n-card {
+    margin-bottom: var(--mobile-spacing-sm);
+  }
+  
+  /* 优化列表项间距 */
+  .n-list-item {
+    padding: var(--mobile-spacing-sm) var(--mobile-spacing-md);
+    min-height: var(--touch-target-comfortable);
+  }
+}
+
+/* 小屏幕设备优化 (< 480px) */
+@media (max-width: 479px) {
+  /* 更紧凑的间距 */
+  .page-container {
+    padding: var(--mobile-spacing-xs);
+  }
+  
+  /* 优化按钮组布局 */
+  .n-button-group {
+    flex-direction: column;
+    gap: var(--mobile-spacing-xs);
+  }
+  
+  .n-button-group .n-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* 优化表格在小屏幕上的显示 */
+  .n-data-table {
+    font-size: var(--mobile-font-sm);
+  }
+  
+  .n-data-table th,
+  .n-data-table td {
+    padding: var(--mobile-spacing-xs) var(--spacing-1-5);
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* 减少垂直间距 */
+  .page-container {
+    padding-top: var(--mobile-spacing-xs);
+    padding-bottom: var(--mobile-spacing-xs);
+  }
+  
+  /* 优化导航栏高度 */
+  .navbar {
+    height: var(--spacing-5); /* 40px */
+  }
+  
+  /* 紧凑的卡片布局 */
+  .n-card {
+    margin-bottom: var(--mobile-spacing-xs);
+  }
+  
+  .n-card .n-card__content {
+    padding: var(--mobile-spacing-sm);
+  }
+}
+
+/* 触摸设备特定优化 */
+@media (hover: none) and (pointer: coarse) {
+  /* 移除悬停效果，使用点击状态 */
+  .n-button:hover {
+    transform: none;
+  }
+  
+  .n-button:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* 优化卡片点击反馈 */
+  .n-card.clickable:active {
+    transform: scale(0.99);
+    transition: transform 0.1s ease;
+  }
+  
+  /* 增强焦点指示器 */
+  .n-input:focus,
+  .n-select:focus {
+    outline: var(--border-width-2) solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+/* 可访问性增强 */
+@media (prefers-reduced-motion: reduce) {
+  /* 减少动画效果 */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .n-button {
+    border: var(--border-width-2) solid currentColor;
+  }
+  
+  .n-card {
+    border: var(--border-width-1) solid var(--color-border-strong);
+  }
+}
+
+/* 移动端特定组件优化 */
+.mobile-optimized {
+  /* 底部安全区域适配 */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-optimized .bottom-actions {
+  /* 底部操作栏优化 */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--mobile-spacing-sm);
+  padding-bottom: calc(var(--mobile-spacing-sm) + env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  border-top: var(--border-width-1) solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+}
+
+.mobile-optimized .bottom-actions .n-button {
+  width: 100%;
+  height: var(--touch-target-large);
+  font-size: var(--mobile-font-base);
+  font-weight: 600;
+}
+
+/* 移动端导航优化 */
+@media (max-width: 767px) {
+  .mobile-nav {
+    /* 底部导航栏 */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--touch-target-large) + var(--mobile-spacing-sm));
+    background: var(--color-surface);
+    border-top: var(--border-width-1) solid var(--color-border);
+    padding: var(--mobile-spacing-xs) 0;
+    padding-bottom: calc(var(--mobile-spacing-xs) + env(safe-area-inset-bottom));
+  }
+  
+  .mobile-nav .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-target-min);
+    padding: var(--spacing-1-5);
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    transition: color 0.2s ease;
+  }
+  
+  .mobile-nav .nav-item.active {
+    color: var(--color-primary-600);
+  }
+  
+  .mobile-nav .nav-item .icon {
+    font-size: var(--mobile-font-lg);
+    margin-bottom: var(--spacing-1);
+  }
+  
+  .mobile-nav .nav-item .label {
+    font-size: var(--mobile-font-xs);
+    font-weight: 500;
+  }
+}
+
+/* 移动端表单优化 */
+@media (max-width: 767px) {
+  .mobile-form {
+    padding: var(--mobile-spacing-md);
+  }
+  
+  .mobile-form .n-form-item {
+    margin-bottom: var(--mobile-spacing-md);
+  }
+  
+  .mobile-form .n-form-item-label {
+    font-size: var(--mobile-font-base);
+    font-weight: 600;
+    margin-bottom: var(--mobile-spacing-xs);
+  }
+  
+  .mobile-form .n-input,
+  .mobile-form .n-select,
+  .mobile-form .n-textarea {
+    font-size: var(--mobile-font-base);
+  }
+  
+  /* 防止iOS缩放 */
+  .mobile-form input,
+  .mobile-form select,
+  .mobile-form textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* 移动端模态框优化 */
+@media (max-width: 767px) {
+  .n-modal {
+    margin: var(--mobile-spacing-sm);
+  }
+  
+  .n-modal .n-card {
+    max-height: calc(100vh - var(--mobile-spacing-lg));
+    overflow-y: auto;
+  }
+  
+  .n-modal .n-card__header {
+    padding: var(--mobile-spacing-md);
+    border-bottom: var(--border-width-1) solid var(--color-border);
+  }
+  
+  .n-modal .n-card__content {
+    padding: var(--mobile-spacing-md);
+  }
+  
+  .n-modal .n-card__action {
+    padding: var(--mobile-spacing-md);
+    border-top: var(--border-width-1) solid var(--color-border);
+    gap: var(--mobile-spacing-sm);
+  }
+}

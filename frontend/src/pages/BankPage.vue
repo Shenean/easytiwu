@@ -1,5 +1,9 @@
 <template>
-  <PageContainer :title="$t('bank.title')" card-class="bank-card">
+  <PageContainer 
+    :title="$t('bank.title')" 
+    :show-card="false"
+    container-class="bank-container"
+  >
     <!-- 空状态占位 -->
     <n-empty
       v-if="!loading && banks.length === 0"

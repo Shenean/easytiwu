@@ -60,18 +60,18 @@ function getCardButtonType(q: Question) {
 function getButtonStyle(q: Question) {
   const baseStyle = {
     width: '100%',
-    height: mobileMode ? '44px' : '40px',
-    minWidth: mobileMode ? '44px' : '40px',
-    fontSize: mobileMode ? '14px' : '16px',
-    fontWeight: '600',
-    borderRadius: mobileMode ? '8px' : '4px',
+    height: mobileMode ? 'var(--button-height-lg)' : 'var(--button-height-md)',
+        minWidth: mobileMode ? 'var(--button-height-lg)' : 'var(--button-height-md)',
+        fontSize: mobileMode ? 'var(--font-size-sm)' : 'var(--font-size-base)',
+        padding: '0',
+        borderRadius: mobileMode ? 'var(--border-radius-lg)' : 'var(--border-radius-sm)',
   };
 
   // 当前题目选中状态：仅改变边框样式，保持背景色不变
   if (q.id === currentQuestionId) {
     return {
       ...baseStyle,
-      border: `2px solid ${themeVars.value.primaryColor}`,
+      border: `var(--border-width-2) solid ${themeVars.value.primaryColor}`,
       borderStyle: 'solid',
     };
   }
@@ -87,23 +87,23 @@ function jumpToQuestion(id: number) {
 <style scoped>
 .answer-card-container {
   position: sticky;
-  top: 24px;
-  max-height: calc(100vh - 200px);
+  top: var(--spacing-3);
+  max-height: calc(100vh - var(--spacing-25));
   overflow-y: auto;
 }
 
 /* 自定义滚动条样式 */
 .answer-card-container::-webkit-scrollbar {
-  width: 8px;
+  width: var(--spacing-1);
 }
 
 .answer-card-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
+  background-color: var(--color-black-15);
+  border-radius: var(--border-radius-sm);
 }
 
 .answer-card-container::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: var(--color-black-25);
 }
 
 /* 移动端模式样式调整 */
@@ -113,14 +113,14 @@ function jumpToQuestion(id: number) {
 }
 
 .mobile-mode :deep(.n-card__header) {
-  padding: 12px 16px;
-  font-size: 16px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--n-border-color);
+  padding: var(--spacing-1-5) var(--spacing-2);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  border-bottom: var(--border-width-1) solid var(--color-border);
 }
 
 .mobile-mode :deep(.n-card__content) {
-  padding: 16px;
+  padding: var(--spacing-2);
 }
 
 /* 响应式隐藏 */
@@ -132,12 +132,12 @@ function jumpToQuestion(id: number) {
 
 @media (max-width: 480px) {
   .mobile-mode :deep(.n-card__header) {
-    padding: 12px;
-    font-size: 14px;
+    padding: var(--spacing-1-5);
+    font-size: var(--font-size-sm);
   }
 
   .mobile-mode :deep(.n-card__content) {
-    padding: 12px;
+    padding: var(--spacing-1-5);
   }
 }
 </style>

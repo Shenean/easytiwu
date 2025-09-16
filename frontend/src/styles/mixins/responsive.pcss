@@ -373,35 +373,7 @@
     @mixin xl-up { display: block; }
   }
 
-  /* 兼容旧版本类名 */
-  .mobile-only {
-    display: block;
-    @mixin md-up { display: none; }
-  }
 
-  .tablet-only {
-    display: none;
-    @mixin md { display: block; }
-  }
-
-  .desktop-only {
-    display: none;
-    @mixin lg-up { display: block; }
-  }
-
-  .mobile-up {
-    display: block;
-  }
-
-  .tablet-up {
-    display: none;
-    @mixin md-up { display: block; }
-  }
-
-  .desktop-up {
-    display: none;
-    @mixin lg-up { display: block; }
-  }
 }
 
 /* 生成响应式间距工具类 */

@@ -1,7 +1,7 @@
 <template>
   <PageContainer
     :title="t('statistics.title')"
-    card-class="stats-card"
+    :show-card="false"
     container-class="statistics-container"
   >
     <!-- 加载状态 -->
@@ -148,13 +148,13 @@ import type {ApiResponse, StatisticsOverview, TypeStats,} from "../types/statist
 
 /**
  * 数字格式化工具函数
- * 
+ *
  * 将数字转换为本地化格式的字符串，支持千分位分隔符。
  * 提供防御性编程，安全处理 null 和 undefined 值。
- * 
+ *
  * @param {number | null | undefined} value - 需要格式化的数字值
  * @returns {string} 格式化后的字符串，如 "1,234" 或 "0"
- * 
+ *
  * @example
  * ```typescript
  * formatNumber(1234)      // "1,234"
@@ -172,13 +172,13 @@ const { t } = useI18n();
 
 /**
  * 题型显示名称映射函数
- * 
+ *
  * 将后端返回的题型标识符转换为用户友好的显示名称。
  * 支持国际化，根据当前语言环境返回对应的题型名称。
- * 
+ *
  * @param {string} type - 题型标识符
  * @returns {string} 本地化的题型显示名称
- * 
+ *
  * @example
  * ```typescript
  * getTypeDisplayName('single')      // "单选题"
@@ -215,10 +215,10 @@ const { isMobile, isTablet } = useBreakpoints();
 
 /**
  * 概览区域网格列数计算
- * 
+ *
  * 根据屏幕尺寸动态调整网格布局的列数。
  * 移动端使用单列布局，其他设备使用双列布局。
- * 
+ *
  * @returns {ComputedRef<number>} 网格列数
  */
 const overviewGridCols = computed(() => {
@@ -228,12 +228,12 @@ const overviewGridCols = computed(() => {
 
 /**
  * 题型统计区域网格列数计算
- * 
+ *
  * 根据屏幕尺寸动态调整题型统计卡片的网格布局。
  * - 移动端：1列
  * - 平板端：2列
  * - 桌面端：3列
- * 
+ *
  * @returns {ComputedRef<number>} 网格列数
  */
 const typeStatsGridCols = computed(() => {
@@ -244,10 +244,10 @@ const typeStatsGridCols = computed(() => {
 
 /**
  * 指标区域网格列数计算
- * 
+ *
  * 根据屏幕尺寸调整指标展示的网格布局。
  * 移动端使用单列，其他设备使用三列布局。
- * 
+ *
  * @returns {ComputedRef<number>} 网格列数
  */
 const metricsGridCols = computed(() => {

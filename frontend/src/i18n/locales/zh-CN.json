@@ -34,7 +34,8 @@
     "home": "首页",
     "backToHome": "返回首页",
     "openMenu": "打开导航菜单",
-    "closeMenu": "关闭导航菜单"
+    "closeMenu": "关闭导航菜单",
+    "menu": "菜单"
   },
   "upload": {
     "title": "上传题库",
@@ -107,7 +108,7 @@
     "darkTheme": "暗色主题",
     "lightTheme": "亮色主题",
     "theme": {
-      "title": "暗色主题",
+      "title": "主题设置",
       "light": "浅色模式",
       "dark": "深色模式",
       "system": "跟随系统",

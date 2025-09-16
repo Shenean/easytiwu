@@ -116,36 +116,7 @@
   }
 }
 
-/* 兼容旧版本的断点类名 */
-@media (max-width: 767px) {
-  .mobile\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  .mobile\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .mobile\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .mobile\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  .tablet\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  .tablet\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .tablet\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .tablet\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
 
 /* 大屏幕 (lg: 1024-1279px) */
 @media (min-width: 1024px) and (max-width: 1279px) {
