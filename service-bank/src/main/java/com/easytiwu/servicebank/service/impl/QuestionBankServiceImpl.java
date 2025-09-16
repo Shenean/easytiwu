@@ -1,5 +1,6 @@
 package com.easytiwu.servicebank.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.exception.BusinessException;
 import com.easytiwu.servicebank.entity.QuestionBank;
@@ -27,16 +28,17 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 
     @Override
     public List<QuestionBank> getAllQuestionBanks() {
-        try {
-            log.info("开始查询所有题库");
-            // 查询所有记录，不加任何条件
-            List<QuestionBank> questionBanks = questionBankMapper.selectList(null);
-            log.info("查询到 {} 个题库", questionBanks.size());
-            return questionBanks;
-        } catch (Exception e) {
-            log.error("查询题库列表失败", e);
-            throw BusinessException.of(ErrorCode.BUSINESS_ERROR, "查询题库列表失败");
-        }
+        log.info("开始查询所有题库");
+
+        QueryWrapper<QuestionBank> wrapper = new QueryWrapper<>();
+        wrapper.select(
+                "id", "name", "description",
+                "total_count", "completed_count", "wrong_count"
+        );
+
+        List<QuestionBank> questionBanks = questionBankMapper.selectList(wrapper);
+        log.info("查询到 {} 个题库", questionBanks.size());
+        return questionBanks;
     }
 
     @Override

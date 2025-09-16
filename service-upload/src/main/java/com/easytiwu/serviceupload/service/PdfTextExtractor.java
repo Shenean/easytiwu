@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * @author sheny
+ */
 @Component
 public class PdfTextExtractor implements TextExtractor {
 
