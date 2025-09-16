@@ -171,6 +171,7 @@ nbdist/
 
 # Lingma（AI辅助工具）
 .lingma/
+.trae/
 
 # Git 相关（可选）
 .gitignore.swp
