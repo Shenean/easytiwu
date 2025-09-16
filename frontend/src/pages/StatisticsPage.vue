@@ -305,8 +305,6 @@ const fetchStatistics = async () => {
       throw new Error(t("statistics.errors.dataFormat"));
     }
   } catch (err: unknown) {
-    console.error("获取统计数据失败:", err);
-
     if (err && typeof err === "object" && "response" in err) {
       const axiosErr = err as {
         response: { status: number; data?: { message?: string } };

@@ -61,7 +61,7 @@
             <!-- 题目内容 -->
             <div
               class="question-stem"
-              v-html="currentQuestion?.content || ''"
+              v-html="sanitizeHtml(currentQuestion?.content || '')"
             ></div>
 
             <!-- 分割线 -->
@@ -176,6 +176,7 @@ import {useMessage} from "naive-ui";
 import {useRoute} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {AxiosError} from "axios";
+import DOMPurify from "dompurify";
 import {contentAPI} from "../api/config";
 import AnswerCard from "../components/common/AnswerCard.vue";
 
@@ -273,6 +274,15 @@ const canSubmit = computed(() => {
     : val !== null && val !== undefined && String(val) !== "";
 });
 
+/** HTML内容安全过滤 */
+const sanitizeHtml = (html: string): string => {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'span', 'div'],
+    ALLOWED_ATTR: ['class', 'style'],
+    FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input']
+  });
+};
+
 /** 获取题目 */
 async function fetchQuestions() {
   try {
@@ -291,9 +301,6 @@ async function fetchQuestions() {
       !contentAPI ||
       typeof (contentAPI as ContentAPI).getQuestions !== "function"
     ) {
-      console.error(
-        "contentAPI.getQuestions is not a function — 请检查 frontend/src/api/config.ts 的导出"
-      );
       message.error(t("message.internalError"));
       return;
     }
@@ -343,7 +350,6 @@ async function fetchQuestions() {
       message.error(t("message.dataFormatError"));
     }
   } catch (error) {
-    console.error("获取题目失败:", error);
     if (error instanceof AxiosError) {
       message.error(
         `${t("content.fetchQuestionsFailed")}: ${
@@ -416,9 +422,6 @@ async function submitAnswer() {
       !contentAPI ||
       typeof (contentAPI as ContentAPI).verifyAnswer !== "function"
     ) {
-      console.error(
-        "contentAPI.verifyAnswer is not a function — 请检查 frontend/src/api/config.ts 的导出"
-      );
       message.error(t("message.internalError"));
       return;
     }
@@ -452,7 +455,6 @@ async function submitAnswer() {
     // 触发响应式更新（浅拷贝数组）
     questionList.value = [...questionList.value];
   } catch (error) {
-    console.error("提交答案失败:", error);
     if (error instanceof AxiosError) {
       if (error.response) {
         const status = error.response.status;

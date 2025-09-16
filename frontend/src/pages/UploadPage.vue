@@ -160,7 +160,6 @@ function handleBeforeUpload(data: {
     return false;
   }
 
-  console.log("文件上传前处理:", fileName);
   return true;
 }
 
@@ -226,7 +225,6 @@ function handleSubmit() {
       form.value.description = "";
       form.value.file = [];
     } catch (err: unknown) {
-      console.error("Upload error:", err);
       if (err && typeof err === "object" && "response" in err) {
         const axiosErr = err as { response: { data?: string } };
         message.error(axiosErr.response?.data || "上传失败，请重试");

@@ -55,13 +55,9 @@ const api = axios.create({
  */
 api.interceptors.request.use(
   (config) => {
-    // 记录请求日志，便于调试
-    console.log('发送请求:', config.method?.toUpperCase(), config.url)
     return config
   },
   (error) => {
-    // 请求配置错误处理
-    console.error('请求错误:', error)
     return Promise.reject(error)
   }
 )
@@ -81,48 +77,24 @@ api.interceptors.request.use(
  */
 api.interceptors.response.use(
   (response) => {
-    // 记录成功响应日志
-    console.log('收到响应:', response.status, response.config.url)
     return response
   },
   (error) => {
-    // 记录错误响应日志
-    console.error('响应错误:', error.response?.status, error.response?.data || error.message)
-
     // 统一错误处理逻辑
     if (error.response) {
       // 服务器返回了错误状态码
-      const { status, data } = error.response
+      const { status } = error.response
+      // 静默处理各种HTTP状态码错误
       switch (status) {
         case 400:
-          console.error('请求参数错误:', data)
-          break
         case 401:
-          console.error('未授权访问')
-          break
         case 403:
-          console.error('禁止访问')
-          break
         case 404:
-          console.error('请求的资源不存在')
-          // 添加更详细的404错误信息，便于调试
-          if (error.config) {
-            console.error('请求URL:', error.config.baseURL + error.config.url)
-            console.error('请求方法:', error.config.method?.toUpperCase())
-          }
-          break
         case 500:
-          console.error('服务器内部错误')
-          break
         default:
-          console.error(`未知错误状态码: ${status}`)
+          // 静默处理错误
+          break
       }
-    } else if (error.request) {
-      // 请求已发出但没有收到响应（网络问题）
-      console.error('网络错误或服务器无响应')
-    } else {
-      // 请求配置阶段的错误
-      console.error('请求配置错误:', error.message)
     }
 
     // 将错误继续向上抛出，供调用方处理

@@ -115,7 +115,6 @@ async function fetchBanks() {
       message.error(res.data.message || t("message.fetchBanksFailed"));
     }
   } catch (err) {
-    console.error("[API Error] 获取题库失败:", err);
     if (err instanceof AxiosError) {
       message.error(
         `${t("message.requestFailed")}：${
@@ -144,7 +143,6 @@ function handlePractice(id: number) {
     });
     // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
-    console.error("路由跳转失败:", error);
     message.error(t("message.routeJumpFailed"));
   }
 }
@@ -160,7 +158,6 @@ function handleWrongSet(id: number) {
     });
     // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
-    console.error("路由跳转失败:", error);
     message.error(t("message.routeJumpFailed"));
   }
 }
@@ -196,7 +193,6 @@ async function handleDelete(id: number) {
       message.error(res.data.message || t("message.deleteFailed"));
     }
   } catch (err) {
-    console.error("[API Error] 删除失败:", err);
     if (err instanceof AxiosError) {
       message.error(
         `${t("message.deleteFailed")}：${

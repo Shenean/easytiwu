@@ -83,7 +83,7 @@ const handleNavigate = (key: string) => {
   if (key === currentRouteName.value) return;
   router.push({ name: key }).catch((err) => {
     if (err.name !== "NavigationDuplicated") {
-      console.warn("[Router] Navigation error:", err);
+      // 静默处理导航错误
     }
   });
 };
