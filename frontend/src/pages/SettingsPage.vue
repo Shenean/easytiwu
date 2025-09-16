@@ -9,7 +9,7 @@
         <div class="setting-info">
           <div class="setting-header">
             <n-icon size="20" class="setting-icon">
-              <i class="i-ion-settings-outline"></i>
+              <SettingsOutline />
             </n-icon>
             <h3 class="setting-title">{{ $t("settings.theme.title") }}</h3>
           </div>
@@ -32,7 +32,7 @@
         <div class="setting-info">
           <div class="setting-header">
             <n-icon size="20" class="setting-icon">
-              <i class="i-ion-language"></i>
+              <Language />
             </n-icon>
             <h3 class="setting-title">{{ $t("settings.language.title") }}</h3>
           </div>
@@ -52,7 +52,7 @@
     <div class="setting-section small">
       <div class="setting-header">
         <n-icon size="20" class="setting-icon">
-          <i class="i-ion-settings-outline"></i>
+          <SettingsOutline />
         </n-icon>
         <h3 class="setting-title">{{ $t("settings.other") }}</h3>
       </div>
@@ -67,6 +67,7 @@ import {useMessage} from "../utils/message";
 import {useI18n} from "vue-i18n";
 import {getCurrentLocale, getFullLocale, getSimpleLocale, setLocale} from "../i18n";
 import PageContainer from "../components/common/PageContainer.vue";
+import {Language, SettingsOutline} from "@vicons/ionicons5";
 
 type Theme = "light" | "dark" | "system";
 type Language = "zh" | "en";

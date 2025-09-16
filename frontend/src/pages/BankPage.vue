@@ -1,14 +1,14 @@
 <template>
-  <PageContainer 
-    :title="$t('bank.title')" 
+  <PageContainer
+    :title="$t('bank.title')"
     :show-card="false"
     container-class="bank-container"
   >
     <!-- 顶部操作栏 -->
     <div v-if="!loading && banks.length > 1" class="top-actions">
-      <n-button 
-        type="primary" 
-        size="medium" 
+      <n-button
+        type="primary"
+        size="medium"
         @click="showMergeModal = true"
         :disabled="banks.length < 2"
       >
@@ -29,100 +29,138 @@
       </template>
     </n-empty>
 
-    <!-- 移动端卡片列表 -->
+    <!-- 题库卡片列表 -->
     <div v-else class="banks-container">
-      <div v-for="bank in banks" :key="bank.id" class="bank-card-item">
-        <div class="bank-header">
-          <div class="bank-id">{{ $t("bank.id") }}: {{ bank.id }}</div>
-          <div class="bank-name">{{ bank.name }}</div>
-        </div>
+      <n-card
+        v-for="bank in banks"
+        :key="bank.id"
+        class="bank-card"
+        hoverable
+        size="small"
+        :bordered="true"
+      >
+        <template #header>
+          <div class="bank-header">
+            <n-text class="bank-name" strong>{{ bank.name }}</n-text>
+            <n-text class="bank-id" depth="3" :style="{ fontSize: '12px' }">
+              {{ $t("bank.id") }}: {{ bank.id }}
+            </n-text>
+          </div>
+        </template>
 
-        <div class="bank-description" v-if="bank.description">
-          {{ bank.description }}
-        </div>
+        <template #default>
+          <div class="bank-content">
+            <n-text
+              v-if="bank.description"
+              class="bank-description"
+              depth="2"
+              :style="{ fontSize: '13px', lineHeight: '1.4', marginBottom: '16px', display: 'block' }"
+            >
+              {{ bank.description }}
+            </n-text>
 
-        <n-grid :cols="3" :x-gap="8" :y-gap="8" class="bank-stats">
-          <n-grid-item>
-            <div class="stat-item">
-              <div class="stat-label">{{ $t("bank.totalQuestions") }}</div>
-              <div class="stat-value">{{ bank.totalCount }}</div>
-            </div>
-          </n-grid-item>
-          <n-grid-item>
-            <div class="stat-item">
-              <div class="stat-label">{{ $t("bank.completedQuestions") }}</div>
-              <div class="stat-value">{{ bank.completedCount }}</div>
-            </div>
-          </n-grid-item>
-          <n-grid-item>
-            <div class="stat-item">
-              <div class="stat-label">{{ $t("bank.errorQuestions") }}</div>
-              <div class="stat-value">{{ bank.wrongCount }}</div>
-            </div>
-          </n-grid-item>
-        </n-grid>
+            <n-grid :cols="3" :x-gap="8" :y-gap="8" class="bank-stats">
+              <n-grid-item>
+                <div class="stat-item">
+                  <n-text class="stat-label" depth="3" :style="{ fontSize: '12px' }">
+                    {{ $t("bank.totalQuestions") }}
+                  </n-text>
+                  <n-text class="stat-value" strong :style="{ fontSize: '14px' }">
+                    {{ bank.totalCount }}
+                  </n-text>
+                </div>
+              </n-grid-item>
+              <n-grid-item>
+                <div class="stat-item">
+                  <n-text class="stat-label" depth="3" :style="{ fontSize: '12px' }">
+                    {{ $t("bank.completedQuestions") }}
+                  </n-text>
+                  <n-text class="stat-value" strong :style="{ fontSize: '14px' }">
+                    {{ bank.completedCount }}
+                  </n-text>
+                </div>
+              </n-grid-item>
+              <n-grid-item>
+                <div class="stat-item">
+                  <n-text class="stat-label" depth="3" :style="{ fontSize: '12px' }">
+                    {{ $t("bank.errorQuestions") }}
+                  </n-text>
+                  <n-text class="stat-value" strong :style="{ fontSize: '14px' }">
+                    {{ bank.wrongCount }}
+                  </n-text>
+                </div>
+              </n-grid-item>
+            </n-grid>
+          </div>
+        </template>
 
-        <div class="bank-actions">
-          <n-button
-            type="primary"
-            size="medium"
-            class="action-button"
-            @click="handlePractice(bank.id)"
-            :aria-label="`练习题库 ${bank.name}`"
-          >
-            {{ $t("bank.startPractice") }}
-          </n-button>
-          <n-button
-            type="default"
-            size="medium"
-            class="action-button"
-            @click="handleWrongSet(bank.id)"
-            :aria-label="`查看错题集 ${bank.name}`"
-          >
-            {{ $t("bank.errorCollection") }}
-          </n-button>
-          <n-button
-            type="default"
-            ghost
-            size="medium"
-            class="action-button"
-            @click="confirmDelete(bank.id)"
-            :aria-label="`删除题库 ${bank.name}`"
-          >
-            {{ $t("bank.delete") }}
-          </n-button>
-        </div>
-      </div>
+        <template #action>
+          <div class="bank-actions">
+            <n-button
+              type="primary"
+              size="small"
+              class="action-button"
+              @click="handlePractice(bank.id)"
+              :aria-label="`练习题库 ${bank.name}`"
+            >
+              {{ $t("bank.startPractice") }}
+            </n-button>
+            <n-button
+              type="default"
+              size="small"
+              class="action-button"
+              @click="handleWrongSet(bank.id)"
+              :aria-label="`查看错题集 ${bank.name}`"
+            >
+              {{ $t("bank.errorCollection") }}
+            </n-button>
+            <n-button
+              type="default"
+              ghost
+              size="small"
+              class="action-button"
+              @click="confirmDelete(bank.id)"
+              :aria-label="`删除题库 ${bank.name}`"
+            >
+              {{ $t("bank.delete") }}
+            </n-button>
+          </div>
+        </template>
+      </n-card>
     </div>
 
     <!-- 合并题库弹窗 -->
-    <n-modal 
-      v-model:show="showMergeModal" 
-      preset="dialog" 
+    <n-modal
+      v-model:show="showMergeModal"
+      preset="dialog"
       :title="$t('bank.mergeTitle')"
       :positive-text="$t('bank.confirmMerge')"
       :negative-text="$t('message.cancel')"
       @positive-click="handleMergeSubmit"
       @negative-click="resetMergeForm"
       :loading="mergeLoading"
-      style="width: 90%; max-width: 500px;"
+      style="width: 90%; max-width: 500px"
     >
       <div class="merge-form">
         <!-- 题库选择 -->
         <div class="form-section">
           <n-text class="form-label">{{ $t("bank.selectBanks") }}</n-text>
-          <n-text depth="3" class="form-hint">{{ $t("bank.selectTwoBanksHint") }}</n-text>
+          <n-text depth="3" class="form-hint">{{
+            $t("bank.selectTwoBanksHint")
+          }}</n-text>
           <div class="bank-list">
-            <div 
-              v-for="bank in banks" 
-              :key="bank.id" 
+            <div
+              v-for="bank in banks"
+              :key="bank.id"
               class="bank-option"
-              :class="{ 'selected': selectedBanks.includes(bank.id) }"
+              :class="{ selected: selectedBanks.includes(bank.id) }"
               @click="toggleBankSelection(bank.id)"
             >
-              <n-checkbox 
+              <n-checkbox
                 :checked="selectedBanks.includes(bank.id)"
-                :disabled="!selectedBanks.includes(bank.id) && selectedBanks.length >= 2"
+                :disabled="
+                  !selectedBanks.includes(bank.id) && selectedBanks.length >= 2
+                "
                 @update:checked="(checked) => handleBankCheck(bank.id, checked)"
               />
               <div class="bank-info">
@@ -135,12 +173,12 @@
 
         <!-- 新题库名称 -->
         <div class="form-section">
-          <n-form-item 
+          <n-form-item
             :label="$t('bank.newBankName')"
             :validation-status="nameError ? 'error' : undefined"
             :feedback="nameError"
           >
-            <n-input 
+            <n-input
               v-model:value="mergeForm.name"
               :placeholder="$t('bank.newBankNamePlaceholder')"
               @blur="validateName"
@@ -152,7 +190,7 @@
         <!-- 描述信息 -->
         <div class="form-section">
           <n-form-item :label="$t('bank.description')">
-            <n-input 
+            <n-input
               v-model:value="mergeForm.description"
               type="textarea"
               :placeholder="$t('bank.descriptionPlaceholder')"
@@ -167,13 +205,13 @@
 
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {NCheckbox, NFormItem, NGrid, NGridItem, NInput, NModal, NText, useDialog, useMessage} from "naive-ui";
+import {NCard, NCheckbox, NFormItem, NGrid, NGridItem, NInput, NModal, NText, useDialog, useMessage,} from "naive-ui";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import axios, {AxiosError} from "axios";
 
 import PageContainer from "../components/common/PageContainer.vue";
-import type {ApiResponse, QuestionBank} from '@/types/common';
+import type {ApiResponse, QuestionBank} from "@/types/common";
 
 // ================== 状态管理 ==================
 const message = useMessage();
@@ -188,10 +226,10 @@ const showMergeModal = ref(false);
 const mergeLoading = ref(false);
 const selectedBanks = ref<number[]>([]);
 const mergeForm = ref({
-  name: '',
-  description: ''
+  name: "",
+  description: "",
 });
-const nameError = ref('');
+const nameError = ref("");
 
 // ================== 数据获取 ==================
 /**
@@ -316,7 +354,11 @@ function toggleBankSelection(bankId: number) {
  * 处理复选框状态变化
  */
 function handleBankCheck(bankId: number, checked: boolean) {
-  if (checked && !selectedBanks.value.includes(bankId) && selectedBanks.value.length < 2) {
+  if (
+    checked &&
+    !selectedBanks.value.includes(bankId) &&
+    selectedBanks.value.length < 2
+  ) {
     selectedBanks.value.push(bankId);
   } else if (!checked) {
     const index = selectedBanks.value.indexOf(bankId);
@@ -331,14 +373,14 @@ function handleBankCheck(bankId: number, checked: boolean) {
  */
 function validateName() {
   if (!mergeForm.value.name.trim()) {
-    nameError.value = t('bank.nameRequired');
+    nameError.value = t("bank.nameRequired");
     return false;
   }
   if (mergeForm.value.name.trim().length < 2) {
-    nameError.value = t('bank.nameTooShort');
+    nameError.value = t("bank.nameTooShort");
     return false;
   }
-  nameError.value = '';
+  nameError.value = "";
   return true;
 }
 
@@ -347,18 +389,18 @@ function validateName() {
  */
 function validateMergeForm() {
   let isValid = true;
-  
+
   // 验证题库选择 - 必须选择2个
   if (selectedBanks.value.length !== 2) {
-    message.error(t('bank.selectTwoBanksError'));
+    message.error(t("bank.selectTwoBanksError"));
     isValid = false;
   }
-  
+
   // 验证名称
   if (!validateName()) {
     isValid = false;
   }
-  
+
   return isValid;
 }
 
@@ -368,10 +410,10 @@ function validateMergeForm() {
 function resetMergeForm() {
   selectedBanks.value = [];
   mergeForm.value = {
-    name: '',
-    description: ''
+    name: "",
+    description: "",
   };
-  nameError.value = '';
+  nameError.value = "";
 }
 
 /**
@@ -381,38 +423,41 @@ async function handleMergeSubmit() {
   if (!validateMergeForm()) {
     return false;
   }
-  
+
   mergeLoading.value = true;
   try {
     const requestData = {
       bankId1: selectedBanks.value[0],
       bankId2: selectedBanks.value[1],
       name: mergeForm.value.name.trim(),
-      description: mergeForm.value.description.trim()
+      description: mergeForm.value.description.trim(),
     };
-    
-    const res = await axios.post<ApiResponse<QuestionBank>>('/api/bank/merge', requestData);
-    
+
+    const res = await axios.post<ApiResponse<QuestionBank>>(
+      "/api/bank/merge",
+      requestData
+    );
+
     if (res.data.code === 200) {
-      message.success(t('bank.mergeSuccess'));
+      message.success(t("bank.mergeSuccess"));
       showMergeModal.value = false;
       resetMergeForm();
       // 刷新题库列表
       await fetchBanks();
       return true;
     } else {
-      message.error(res.data.message || t('bank.mergeFailed'));
+      message.error(res.data.message || t("bank.mergeFailed"));
       return false;
     }
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t('bank.mergeFailed')}：${
-          err.response?.data?.message || t('message.unknownError')
+        `${t("bank.mergeFailed")}：${
+          err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
-      message.error(`${t('bank.mergeFailed')}，${t('message.retryLater')}`);
+      message.error(`${t("bank.mergeFailed")}，${t("message.retryLater")}`);
     }
     return false;
   } finally {
@@ -515,11 +560,11 @@ defineExpose({
     padding: 0;
     margin-bottom: var(--spacing-3);
   }
-  
+
   .bank-option {
     padding: var(--spacing-2);
   }
-  
+
   .bank-info {
     margin-left: var(--spacing-2);
   }
@@ -529,15 +574,15 @@ defineExpose({
   .top-actions {
     margin-bottom: var(--spacing-2);
   }
-  
+
   .form-section {
     margin-bottom: var(--spacing-3);
   }
-  
+
   .bank-list {
     max-height: 150px;
   }
-  
+
   .bank-option {
     padding: var(--spacing-2);
   }
@@ -561,71 +606,46 @@ defineExpose({
   }
 }
 
-/* 卡片容器样式 - 紧凑型布局 */
+/* 卡片容器样式 - 响应式网格布局 */
 .banks-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2); /* 16px - 更紧凑的卡片间距 */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 桌面端每行三个 */
+  gap: var(--spacing-3); /* 24px - 紧凑卡片间距 */
   padding: 0;
 }
 
-.bank-card-item {
-  border-radius: var(--card-border-radius);
-  padding: var(--spacing-4); /* 32px - 紧凑型内边距 */
-  box-shadow: var(--card-unified-shadow);
-  border: none;
-  position: relative;
-  overflow: hidden;
-  width: var(--card-standard-width);
-  max-width: var(--card-content-max-width);
+.bank-card {
+  width: 100%; /* 自适应容器宽度 */
+  max-width: 320px; /* 限制最大宽度，保持紧凑 */
   margin: 0 auto;
-  transition: all 0.3s ease; /* 包含变形动画 */
-  background: var(--color-surface);
 }
 
-.bank-card-item:hover {
-  box-shadow: var(--card-unified-shadow-hover);
-  transform: translateY(-2px); /* 轻微上浮效果 */
-}
+/* 使用Naive UI卡片的内置hover效果，无需自定义 */
 
 .bank-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--spacing-2); /* 16px */
   flex-wrap: wrap;
   gap: var(--spacing-1); /* 8px - 紧凑间距 */
 }
 
-.bank-id {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  padding: var(--spacing-1) var(--spacing-2);
-  /* 4px 8px */
-  border-radius: var(--border-radius-xs);
-  font-weight: 500;
-}
+/* bank-id 样式现在通过 n-text 的 depth 属性控制 */
 
+/* bank-name 样式现在通过 n-text 的 strong 属性控制 */
 .bank-name {
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  color: var(--color-text-primary);
   flex: 1;
   min-width: 0;
   word-break: break-word;
   line-height: 1.3;
 }
 
+/* bank-description 样式现在通过 n-text 的内联样式控制 */
 .bank-description {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  line-height: 1.4;
-  margin-bottom: var(--spacing-2); /* 16px - 紧凑间距 */
   word-break: break-word;
 }
 
 .bank-stats {
-  margin-bottom: var(--spacing-3); /* 24px */
   padding: var(--spacing-2); /* 16px - 紧凑内边距 */
   background: var(--color-bg-soft);
   border-radius: var(--border-radius-sm);
@@ -635,17 +655,15 @@ defineExpose({
   text-align: center;
 }
 
+/* stat-label 样式现在通过 n-text 的 depth 和内联样式控制 */
 .stat-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
   margin-bottom: 4px; /* 4px - 固定紧凑间距 */
-  font-weight: 500;
+  display: block;
 }
 
+/* stat-value 样式现在通过 n-text 的 strong 和内联样式控制 */
 .stat-value {
-  font-size: var(--font-size-base); /* 16px - 紧凑字体大小 */
-  font-weight: 600; /* 稍微减轻字重 */
-  color: var(--color-text-primary);
+  display: block;
 }
 
 .bank-actions {
@@ -656,10 +674,7 @@ defineExpose({
 
 .action-button {
   flex: 1;
-  min-width: 80px; /* 紧凑最小宽度 */
-  height: 36px; /* 紧凑高度 */
-  font-size: var(--font-size-sm);
-  padding: var(--spacing-1) var(--spacing-2); /* 8px 16px */
+  min-width: 70px; /* 更紧凑最小宽度 */
 }
 
 /* 空状态提示按钮动画 */
@@ -668,17 +683,15 @@ defineExpose({
   border-radius: var(--border-radius-md);
 }
 
-/* 移动端适配 - 紧凑型布局 */
+/* 移动端适配 - 单列布局 */
 @media (max-width: 768px) {
   .banks-container {
+    grid-template-columns: 1fr; /* 移动端每行一个 */
     gap: var(--spacing-2); /* 16px - 保持紧凑间距 */
   }
 
-  .bank-card-item {
-    padding: var(--spacing-3); /* 24px - 平板紧凑内边距 */
-    border-radius: var(--card-border-radius);
+  .bank-card {
     width: var(--card-tablet-width);
-    box-shadow: var(--card-tablet-shadow);
   }
 
   .bank-header {
@@ -686,22 +699,9 @@ defineExpose({
     gap: var(--spacing-1); /* 8px */
   }
 
-  .bank-name {
-    font-size: var(--font-size-base);
-  }
-
-  .bank-description {
-    font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-2); /* 16px - 保持紧凑 */
-  }
-
   .bank-stats {
     padding: var(--spacing-2); /* 16px - 紧凑内边距 */
     margin-bottom: var(--spacing-3); /* 24px */
-  }
-
-  .stat-value {
-    font-size: var(--font-size-base);
   }
 
   .bank-actions {
@@ -710,9 +710,6 @@ defineExpose({
 
   .action-button {
     min-width: 72px; /* 紧凑最小宽度 */
-    height: 32px; /* 紧凑高度 */
-    font-size: var(--font-size-xs);
-    padding: 6px 12px; /* 紧凑内边距 */
   }
 
   .bank-card {
@@ -766,22 +763,12 @@ defineExpose({
 
 @media (max-width: var(--breakpoint-mobile)) {
   .banks-container {
+    grid-template-columns: 1fr; /* 移动端每行一个 */
     gap: var(--spacing-2); /* 16px - 保持紧凑间距 */
   }
 
-  .bank-card-item {
-    padding: var(--spacing-3); /* 24px - 移动端紧凑内边距 */
+  .bank-card {
     width: var(--card-mobile-width);
-    box-shadow: var(--card-mobile-shadow);
-  }
-
-  .bank-name {
-    font-size: var(--font-size-sm);
-  }
-
-  .bank-description {
-    font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-2); /* 16px */
   }
 
   .bank-stats {
@@ -789,19 +776,8 @@ defineExpose({
     margin-bottom: var(--spacing-2); /* 16px - 更紧凑 */
   }
 
-  .stat-label {
-    font-size: var(--font-size-xs);
-  }
-
-  .stat-value {
-    font-size: var(--font-size-sm);
-  }
-
   .action-button {
     min-width: 64px; /* 移动端最小宽度 */
-    height: 28px; /* 移动端紧凑高度 */
-    font-size: var(--font-size-xs);
-    padding: 4px 8px; /* 移动端紧凑内边距 */
   }
 
   .bank-card {
@@ -843,9 +819,10 @@ defineExpose({
   }
 }
 
-/* 超小屏幕优化 - 紧凑型布局 */
+/* 超小屏幕优化 - 单列布局 */
 @media (max-width: 360px) {
   .banks-container {
+    grid-template-columns: 1fr; /* 超小屏每行一个 */
     gap: var(--spacing-1); /* 8px - 超紧凑间距 */
   }
 
@@ -883,9 +860,10 @@ defineExpose({
   }
 }
 
-/* 横屏模式优化 - 紧凑型布局 */
+/* 横屏模式优化 - 保持网格布局 */
 @media (max-height: 500px) and (orientation: landscape) {
   .banks-container {
+    grid-template-columns: repeat(2, 1fr); /* 横屏保持两列 */
     gap: var(--spacing-1); /* 8px - 横屏紧凑间距 */
   }
 

@@ -30,6 +30,7 @@
 import type {MenuOption} from "naive-ui";
 import {h} from "vue";
 import i18n from "../i18n";
+import {CloudUploadOutline, LibraryOutline, SettingsOutline, StatsChartOutline} from "@vicons/ionicons5";
 
 /**
  * 菜单项元信息接口
@@ -127,7 +128,7 @@ export const mainMenuOptions: ExtendedMenuOption[] = [
      */
     label: () => i18n.global.t('navigation.upload'),
     key: "upload",
-    icon: () => h("i", { class: "i-ion-cloud-upload-outline" }),
+    icon: () => h(CloudUploadOutline),
   },
   {
     /** 
@@ -136,7 +137,7 @@ export const mainMenuOptions: ExtendedMenuOption[] = [
      */
     label: () => i18n.global.t('navigation.bank'),
     key: "bank",
-    icon: () => h("i", { class: "i-ion-library-outline" }),
+    icon: () => h(LibraryOutline),
   },
   {
     /** 
@@ -145,7 +146,7 @@ export const mainMenuOptions: ExtendedMenuOption[] = [
      */
     label: () => i18n.global.t('navigation.statistics'),
     key: "statistics",
-    icon: () => h("i", { class: "i-ion-stats-chart-outline" }),
+    icon: () => h(StatsChartOutline),
   },
   {
     /** 
@@ -154,6 +155,6 @@ export const mainMenuOptions: ExtendedMenuOption[] = [
      */
     label: () => i18n.global.t('navigation.settings'),
     key: "settings",
-    icon: () => h("i", { class: "i-ion-settings-outline" }),
+    icon: () => h(SettingsOutline),
   },
 ];
