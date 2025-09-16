@@ -1,57 +1,54 @@
 package com.easytiwu.serviceupload.service;
 
-import com.easytiwu.serviceupload.util.CharsetDetector;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import com.easytiwu.serviceupload.service.impl.TextExtractor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Objects;
 
-/**
- * @author sheny
- */
 @Service
 public class FileParsingService {
 
-    public boolean isSupportedFile(String filename) {
-        String fname = filename.toLowerCase();
-        return fname.endsWith(".pdf") || fname.endsWith(".docx") || fname.endsWith(".txt");
+    // Spring 自动注入所有 TextExtractor 实现类
+    private final List<TextExtractor> extractors;
+
+    /**
+     * 构造函数注入
+     */
+    @Autowired
+    public FileParsingService(List<TextExtractor> extractors) {
+        this.extractors = extractors;
     }
 
     /**
-     * Extracts text content from the given file. Supports PDF, Word (.docx), and TXT.
+     * 判断是否支持该文件
+     */
+    public boolean isSupportedFile(String filename) {
+        String lowerName = filename.toLowerCase();
+        return extractors.stream()
+                .anyMatch(extractor -> extractor.supports(lowerName));
+    }
+
+    /**
+     * 提取文本内容，自动选择合适的提取器
      */
     public String extractText(MultipartFile file) throws IOException {
-        String fname = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
+        String filename = Objects.requireNonNull(file.getOriginalFilename());
         try (InputStream in = file.getInputStream()) {
-            if (fname.endsWith(".pdf")) {
-                // Use PDFBox to extract text from PDF
-                byte[] pdfBytes = in.readAllBytes();
-                try (PDDocument pdfDoc = Loader.loadPDF(pdfBytes)) {
-                    PDFTextStripper stripper = new PDFTextStripper();
-                    return stripper.getText(pdfDoc);
+            for (TextExtractor extractor : extractors) {
+                if (extractor.supports(filename)) {
+                    try {
+                        return extractor.extract(in);
+                    } catch (Exception e) {
+                        throw new IOException("文本提取失败: " + filename, e);
+                    }
                 }
-            } else if (fname.endsWith(".docx")) {
-                // Use POI XWPF for .docx files
-                try (XWPFDocument docx = new XWPFDocument(in);
-                     XWPFWordExtractor extractor = new XWPFWordExtractor(docx)) {
-                    return extractor.getText();
-                }
-            } else if (fname.endsWith(".txt")) {
-                // 读取全部字节，自动检测编码
-                byte[] bytes = in.readAllBytes();
-                Charset charset = CharsetDetector.detectCharset(bytes);
-                return new String(bytes, charset);
-            } else {
-                throw new IOException("Unsupported file format: " + fname);
             }
+            throw new IOException("不支持的文件格式: " + filename);
         }
     }
 }
