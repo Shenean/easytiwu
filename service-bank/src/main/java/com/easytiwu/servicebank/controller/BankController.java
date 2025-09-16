@@ -2,14 +2,15 @@ package com.easytiwu.servicebank.controller;
 
 import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.result.Result;
+import com.easytiwu.servicebank.dto.MergeBankRequest;
 import com.easytiwu.servicebank.entity.QuestionBank;
 import com.easytiwu.servicebank.service.QuestionBankService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -76,6 +77,33 @@ public class BankController {
             return Result.success();
         } else {
             return Result.error(ErrorCode.BUSINESS_ERROR, "删除失败");
+        }
+    }
+
+    /**
+     * 合并两个题库并创建新题库
+     *
+     * @param request 合并请求参数
+     * @return 新题库ID
+     */
+    @PostMapping("/merge")
+    public Result<Long> mergeBanks(@Validated @RequestBody MergeBankRequest request) {
+        log.info("接收到合并题库请求: bankId1={}, bankId2={}, name={}",
+                request.getBankId1(), request.getBankId2(), request.getName());
+
+        try {
+            Long newBankId = questionBankService.mergeAndCreateNewBank(
+                    request.getBankId1(),
+                    request.getBankId2(),
+                    request.getName(),
+                    request.getDescription()
+            );
+            log.info("题库合并成功，新题库ID: {}", newBankId);
+            return Result.success(newBankId);
+        } catch (Exception e) {
+            log.error("合并题库时发生异常", e);
+            // BusinessException 会被统一异常处理器捕获，此处可直接抛出
+            throw e;
         }
     }
 }
