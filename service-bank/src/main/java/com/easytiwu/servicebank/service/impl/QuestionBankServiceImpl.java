@@ -6,6 +6,7 @@ import com.easytiwu.commonexception.exception.BusinessException;
 import com.easytiwu.servicebank.entity.QuestionBank;
 import com.easytiwu.servicebank.mapper.QuestionBankMapper;
 import com.easytiwu.servicebank.service.QuestionBankService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +18,11 @@ import java.util.List;
  * @author sheny
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class QuestionBankServiceImpl implements QuestionBankService {
 
     private final QuestionBankMapper questionBankMapper;
-
-    public QuestionBankServiceImpl(QuestionBankMapper questionBankMapper) {
-        this.questionBankMapper = questionBankMapper;
-    }
 
     @Override
     public List<QuestionBank> getAllQuestionBanks() {
