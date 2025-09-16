@@ -90,6 +90,13 @@
 			<artifactId>resilience4j-spring-boot3</artifactId>
 		</dependency>
 
+		<!-- 字符编码自动检测 -->
+		<dependency>
+			<groupId>com.googlecode.juniversalchardet</groupId>
+			<artifactId>juniversalchardet</artifactId>
+            <version>1.0.3</version>
+		</dependency>
+
 		<!-- 通用异常处理模块 -->
 		<dependency>
 			<groupId>com.easytiwu</groupId>

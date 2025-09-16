@@ -163,6 +163,13 @@
                 <version>${jakarta.validation.version}</version>
             </dependency>
 
+            <!-- 字符编码自动检测 -->
+            <dependency>
+                <groupId>com.googlecode.juniversalchardet</groupId>
+                <artifactId>juniversalchardet</artifactId>
+                <version>1.0.3</version>
+            </dependency>
+
             <!-- ===== 日志框架 Log4j2 ===== -->
             <!-- 排除 Spring Boot 默认的 Logback，使用 Log4j2 -->
             <dependency>
