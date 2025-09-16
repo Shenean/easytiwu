@@ -18,9 +18,5 @@ export interface StatisticsTableRow {
   correctCount: number
 }
 
-export interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  message?: string
-  code?: number
-}
+// ApiResponse 接口已移至 common.ts 统一管理
+export type { ApiResponse } from './common'

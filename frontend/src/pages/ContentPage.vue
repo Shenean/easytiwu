@@ -184,28 +184,7 @@ import QuestionAnswer from "../components/common/QuestionAnswer.vue";
 import PageContainer from "../components/common/PageContainer.vue";
 
 /** 类型定义 */
-interface Question {
-  id: number;
-  content: string;
-  type: "single" | "multiple" | "true_false" | "fill_blank" | "short_answer";
-  options: { label: string; text: string }[];
-  userAnswer: string | null;
-  correctAnswer: string;
-  analysis: string;
-  isCompleted: number;
-  isCorrect: number | null;
-}
-
-type AnswerValue = string | number | boolean | (string | number)[] | null;
-
-interface AnswerVerificationResponse {
-  isCorrect: boolean;
-  correctAnswer: string;
-  analysis: string;
-  message: string;
-  questionId: number;
-  userAnswer: string;
-}
+import type {AnswerValue, AnswerVerificationResponse, Question} from '@/types/common';
 
 /** 路由 params */
 interface RouteParams {

@@ -30,15 +30,10 @@
 <script setup lang="ts">
 import {NGrid, NGridItem, useThemeVars} from "naive-ui";
 import {useI18n} from "vue-i18n";
+import type {Question} from '@/types/common';
 
 const { t } = useI18n();
 const themeVars = useThemeVars();
-
-interface Question {
-  id: number;
-  isCompleted: number;
-  isCorrect: number | null;
-}
 
 interface Props {
   questions: Question[];

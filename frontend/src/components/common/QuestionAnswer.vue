@@ -44,23 +44,10 @@
 import {computed} from 'vue'
 import {NCheckbox, NCheckboxGroup, NInput, NRadio, NRadioGroup, NSpace} from 'naive-ui'
 import {useI18n} from 'vue-i18n'
+/** 类型声明 */
+import type {AnswerValue, Question} from '@/types/common'
 
 const { t } = useI18n()
-
-/** 类型声明 */
-interface Question {
-  id: number
-  content: string
-  type: 'single' | 'multiple' | 'true_false' | 'fill_blank' | 'short_answer'
-  options: { label: string; text: string }[]
-  userAnswer: string | null
-  correctAnswer: string
-  analysis: string
-  isCompleted: number
-  isCorrect: number | null
-}
-
-type AnswerValue = string | number | boolean | (string | number)[] | null
 
 /** props / emits */
 const props = defineProps<{

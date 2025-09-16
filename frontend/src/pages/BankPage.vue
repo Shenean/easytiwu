@@ -89,23 +89,7 @@ import {useI18n} from "vue-i18n";
 import axios, {AxiosError} from "axios";
 
 import PageContainer from "../components/common/PageContainer.vue";
-
-// 定义统一响应格式
-interface ApiResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-  timestamp: number;
-}
-
-interface QuestionBank {
-  id: number;
-  name: string;
-  description: string;
-  totalCount: number;
-  completedCount: number;
-  wrongCount: number;
-}
+import type {ApiResponse, QuestionBank} from '@/types/common';
 
 // ================== 状态管理 ==================
 const message = useMessage();
