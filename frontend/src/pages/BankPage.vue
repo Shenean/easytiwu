@@ -111,7 +111,7 @@
         <!-- 题库选择 -->
         <div class="form-section">
           <n-text class="form-label">{{ $t("bank.selectBanks") }}</n-text>
-          <n-text depth="3" class="form-hint">{{ $t("bank.selectBanksHint") }}</n-text>
+          <n-text depth="3" class="form-hint">{{ $t("bank.selectTwoBanksHint") }}</n-text>
           <div class="bank-list">
             <div 
               v-for="bank in banks" 
@@ -348,9 +348,9 @@ function validateName() {
 function validateMergeForm() {
   let isValid = true;
   
-  // 验证题库选择
-  if (selectedBanks.value.length < 1 || selectedBanks.value.length > 2) {
-    message.error(t('bank.selectBanksError'));
+  // 验证题库选择 - 必须选择2个
+  if (selectedBanks.value.length !== 2) {
+    message.error(t('bank.selectTwoBanksError'));
     isValid = false;
   }
   
@@ -386,7 +386,7 @@ async function handleMergeSubmit() {
   try {
     const requestData = {
       bankId1: selectedBanks.value[0],
-      bankId2: selectedBanks.value[1] || selectedBanks.value[0], // 如果只选择一个，则复制自己
+      bankId2: selectedBanks.value[1],
       name: mergeForm.value.name.trim(),
       description: mergeForm.value.description.trim()
     };
