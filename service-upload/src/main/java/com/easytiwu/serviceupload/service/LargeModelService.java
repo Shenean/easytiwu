@@ -158,6 +158,13 @@ public class LargeModelService {
 
         String output = result.getOutput().getText().trim();
         String[] lines = output.split("\n");
+        
+        // 限制最多处理100行数据
+        if (lines.length > 100) {
+            String errorMsg = String.format("大模型返回的数据超过100行限制，实际行数: %d", lines.length);
+            logger.error(errorMsg);
+            throw BusinessException.of(ErrorCode.BUSINESS_ERROR, errorMsg);
+        }
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i].trim();
