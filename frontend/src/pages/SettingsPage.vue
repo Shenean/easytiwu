@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import {inject, onMounted, onUnmounted, ref} from "vue";
+import {NIcon, NSelect} from "naive-ui";
 import {useMessage} from "../utils/message";
 import {useI18n} from "vue-i18n";
 import {getCurrentLocale, getFullLocale, getSimpleLocale, setLocale} from "../i18n";

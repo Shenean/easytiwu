@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import {computed, h, onMounted, ref} from "vue";
 import type {DataTableColumns} from "naive-ui";
-import {NDataTable, NGrid, NGridItem, NTag} from "naive-ui";
+import {NAlert, NButton, NCard, NDataTable, NEmpty, NGrid, NGridItem, NSpin, NStatistic, NTag} from "naive-ui";
 import {useI18n} from "vue-i18n";
 
 import {statisticsAPI} from "../api/config";

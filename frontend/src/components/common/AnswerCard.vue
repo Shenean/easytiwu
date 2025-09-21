@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {NGrid, NGridItem, useThemeVars} from "naive-ui";
+import {NButton, NCard, NGrid, NGridItem, useThemeVars} from "naive-ui";
 import {useI18n} from "vue-i18n";
 import type {Question} from '@/types/common';
 

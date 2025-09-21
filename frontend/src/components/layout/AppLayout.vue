@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import {computed} from 'vue'
+import {NLayout, NLayoutContent, NLayoutFooter, NLayoutHeader} from 'naive-ui'
 import NavigationBar from '../NavigationBar.vue'
 
 interface Props {

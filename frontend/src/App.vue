@@ -1,10 +1,6 @@
 <template>
-  <n-config-provider
-    :theme="naiveTheme"
-    :theme-overrides="themeOverrides"
-    :locale="naiveLocale"
-    :date-locale="naiveDateLocale"
-  >
+  <n-config-provider :theme="naiveTheme" :theme-overrides="themeOverrides" :locale="naiveLocale"
+    :date-locale="naiveDateLocale">
     <n-dialog-provider>
       <n-message-provider>
         <AppLayout container-size="xl" content-padding="md">
@@ -17,7 +13,7 @@
 
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted} from "vue";
-import {dateEnUS, dateZhCN, enUS, zhCN} from "naive-ui";
+import {dateEnUS, dateZhCN, enUS, NConfigProvider, NDialogProvider, NMessageProvider, zhCN} from "naive-ui";
 import {useThemeProvider} from "./composables/useTheme";
 import {getCurrentLocale} from "./i18n";
 import AppLayout from "./components/layout/AppLayout.vue";
@@ -57,7 +53,6 @@ onUnmounted(() => {
 </script>
 
 <style>
-
 * {
   transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -80,6 +75,4 @@ body {
   margin: 0;
   padding: 0;
 }
-
-
 </style>

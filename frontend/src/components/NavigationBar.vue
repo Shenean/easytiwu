@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import {computed} from "vue";
+import {NLayoutHeader, NMenu} from "naive-ui";
 import {useRoute, useRouter} from "vue-router";
 import {mainMenuOptions} from "../config/menuOptions";
 import {useI18n} from "vue-i18n";
