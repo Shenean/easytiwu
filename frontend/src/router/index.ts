@@ -1,13 +1,11 @@
 import {createRouter, createWebHistory, type RouteRecordRaw,} from "vue-router";
-import UploadPage from "../pages/UploadPage.vue";
 import BankPage from "../pages/BankPage.vue";
 import ContentPage from "../pages/ContentPage.vue";
 import StatisticsPage from "../pages/StatisticsPage.vue";
 import SettingsPage from "../pages/SettingsPage.vue";
 
 const routes: RouteRecordRaw[] = [
-  { path: "/", redirect: "/upload" },
-  { path: "/upload", name: "upload", component: UploadPage },
+  { path: "/", redirect: "/bank" },
   { path: "/bank", name: "bank", component: BankPage },
   {
     path: "/content/:bankId/:type",

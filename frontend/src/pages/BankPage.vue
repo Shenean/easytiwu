@@ -1,10 +1,16 @@
 <template>
   <PageContainer :title="t('bank.title')" :show-card="false" container-class="bank-container">
     <!-- 顶部操作栏 -->
-    <div v-if="!loading && banks.length > 1" class="top-actions">
-      <n-button type="primary" size="medium" @click="showMergeModal = true" :disabled="banks.length < 2">
-        {{ t("bank.merge") }}
-      </n-button>
+    <div v-if="!loading" class="top-actions">
+      <n-space size="medium">
+        <n-button type="primary" size="medium" @click="showUploadModal = true">
+          {{ t("bank.upload") }}
+        </n-button>
+        <n-button v-if="banks.length > 1" type="primary" size="medium" @click="showMergeModal = true"
+          :disabled="banks.length < 2">
+          {{ t("bank.merge") }}
+        </n-button>
+      </n-space>
     </div>
 
     <!-- 空状态占位 -->
@@ -21,6 +27,45 @@
       <n-data-table :columns="tableColumns" :data="banks" :loading="loading" :pagination="false" :bordered="true"
         :single-line="false" size="medium" class="bank-table" />
     </div>
+
+    <!-- 上传题库弹窗 -->
+    <n-modal v-model:show="showUploadModal" preset="dialog" :title="t('bank.upload')"
+      :positive-text="t('common.submit')" :negative-text="t('message.cancel')" @positive-click="handleUploadSubmit"
+      @negative-click="resetUploadForm" :loading="uploadLoading" style="width: 90%; max-width: 600px">
+      <div class="upload-form">
+        <n-form ref="uploadFormRef" :model="uploadForm" :rules="uploadRules" label-placement="left" label-width="80"
+          size="medium">
+          <n-form-item :label="t('bank.name')" path="name">
+            <n-input v-model:value="uploadForm.name" :placeholder="t('bank.newBankNamePlaceholder')" maxlength="15"
+              show-count clearable :aria-label="t('bank.name')" />
+          </n-form-item>
+
+          <n-form-item :label="t('bank.description')" path="description">
+            <n-input v-model:value="uploadForm.description" :placeholder="t('bank.descriptionPlaceholder')"
+              type="textarea" maxlength="30" show-count clearable autosize :aria-label="t('bank.description')" />
+          </n-form-item>
+
+          <n-form-item :label="t('bank.file')" path="file">
+            <n-upload v-model:file-list="uploadForm.file" :accept="'.docx,.pdf,.txt'" :max="1" :multiple="false"
+              action="#" :custom-request="handleUploadCustomRequest" @before-upload="handleUploadBeforeUpload">
+              <n-upload-dragger>
+                <div style="margin-bottom: var(--spacing-3)">
+                  <n-icon size="48" :depth="3">
+                    <ArchiveIcon />
+                  </n-icon>
+                </div>
+                <n-text style="font-size: var(--font-size-base)">
+                  {{ t("bank.uploadText") }}
+                </n-text>
+                <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
+                  {{ t("bank.uploadHint") }}
+                </n-p>
+              </n-upload-dragger>
+            </n-upload>
+          </n-form-item>
+        </n-form>
+      </div>
+    </n-modal>
 
     <!-- 合并题库弹窗 -->
     <n-modal v-model:show="showMergeModal" preset="dialog" :title="t('bank.mergeTitle')"
@@ -69,25 +114,32 @@
 
 <script setup lang="ts">
 import {computed, h, onMounted, ref} from "vue";
-import type {DataTableColumns} from "naive-ui";
+import type {DataTableColumns, FormInst, UploadCustomRequestOptions, UploadFileInfo} from "naive-ui";
 import {
   NButton,
   NCheckbox,
   NDataTable,
   NFormItem,
+  NIcon,
   NInput,
   NModal,
+  NP,
   NSpace,
   NText,
+  NUpload,
+  NUploadDragger,
   useDialog,
   useMessage,
 } from "naive-ui";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import axios, {AxiosError} from "axios";
+import {ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
 
 import PageContainer from "../components/common/PageContainer.vue";
 import type {ApiResponse, QuestionBank} from "@/types/common";
+import {bankFormRules} from "../validation/rulesBank";
+import {uploadAPI} from "../api/config";
 
 // ================== 状态管理 ==================
 const message = useMessage();
@@ -96,6 +148,23 @@ const router = useRouter();
 const { t } = useI18n();
 const banks = ref<QuestionBank[]>([]);
 const loading = ref(false);
+
+// ================== 上传功能状态 ==================
+interface UploadForm {
+  name: string;
+  description: string;
+  file: UploadFileInfo[];
+}
+
+const showUploadModal = ref(false);
+const uploadLoading = ref(false);
+const uploadFormRef = ref<FormInst | null>(null);
+const uploadForm = ref<UploadForm>({
+  name: "",
+  description: "",
+  file: [],
+});
+const uploadRules = bankFormRules;
 
 // ================== 表格配置 ==================
 const tableColumns = computed<DataTableColumns<QuestionBank>>(() => [
@@ -413,6 +482,114 @@ async function handleMergeSubmit() {
   }
 }
 
+// ================== 上传功能处理 ==================
+/**
+ * 上传前校验文件
+ */
+function handleUploadBeforeUpload(data: {
+  file: UploadFileInfo;
+  fileList: UploadFileInfo[];
+}) {
+  const file = data.file;
+  const fileName = file.file?.name || file.name || "未知文件";
+
+  // 文件类型校验
+  const allowedTypes = [".docx", ".pdf", ".txt"];
+  const fileExtension = fileName
+    .toLowerCase()
+    .substring(fileName.lastIndexOf("."));
+  if (!allowedTypes.includes(fileExtension)) {
+    message.error(
+      `不支持的文件格式，请选择 ${allowedTypes.join("、")} 格式的文件`
+    );
+    return false;
+  }
+
+  // 文件大小校验（20MB）
+  const maxSize = 20 * 1024 * 1024;
+  if (file.file && file.file.size > maxSize) {
+    message.error("文件大小不能超过 20MB");
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * 自定义上传请求（阻止默认上传行为）
+ */
+function handleUploadCustomRequest(options: UploadCustomRequestOptions) {
+  // 阻止默认上传，文件将在表单提交时统一处理
+  options.onFinish();
+}
+
+/**
+ * 重置上传表单
+ */
+function resetUploadForm() {
+  uploadForm.value = {
+    name: "",
+    description: "",
+    file: [],
+  };
+}
+
+/**
+ * 处理上传提交
+ */
+async function handleUploadSubmit() {
+  if (!uploadFormRef.value) {
+    return false;
+  }
+
+  return new Promise<boolean>((resolve) => {
+    uploadFormRef.value!.validate(async (errors) => {
+      if (errors) {
+        const firstError =
+          Object.values(errors)
+            .flat()
+            .find((err) => err.message)?.message || "请检查表单输入";
+        message.error(firstError);
+        resolve(false);
+        return;
+      }
+
+      uploadLoading.value = true;
+      try {
+        if (!uploadForm.value.file[0]?.file) {
+          message.error("请选择有效的文件");
+          resolve(false);
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("name", uploadForm.value.name);
+        formData.append("description", uploadForm.value.description);
+        formData.append("file", uploadForm.value.file[0].file as Blob);
+
+        await uploadAPI.uploadFile(formData);
+
+        message.success("上传成功 🎉");
+        showUploadModal.value = false;
+        resetUploadForm();
+        // 刷新题库列表
+        await fetchBanks();
+        resolve(true);
+      } catch (err: unknown) {
+        if (err && typeof err === "object" && "response" in err) {
+          const axiosErr = err as { response: { data?: string } };
+          message.error(axiosErr.response?.data || "上传失败，请重试");
+        } else {
+          message.error("上传失败，请重试");
+        }
+        resolve(false);
+      } finally {
+        uploadLoading.value = false;
+      }
+    });
+  });
+}
+
 // ================== 生命周期 ==================
 onMounted(() => {
   fetchBanks();
@@ -442,6 +619,11 @@ defineExpose({
 
 .bank-table {
   background: var(--color-bg-base);
+}
+
+/* 上传弹窗样式 */
+.upload-form {
+  padding: var(--spacing-2) 0;
 }
 
 /* 合并弹窗样式 */

@@ -27,7 +27,6 @@
     "noData": "暂无数据"
   },
   "navigation": {
-    "upload": "上传题库",
     "bank": "题库列表",
     "statistics": "数据统计",
     "settings": "设置",
@@ -37,26 +36,7 @@
     "closeMenu": "关闭导航菜单",
     "menu": "菜单"
   },
-  "upload": {
-    "title": "上传题库",
-    "bankName": "题库名",
-    "bankNamePlaceholder": "请输入题库名",
-    "description": "描述",
-    "descriptionPlaceholder": "请输入描述（可选）",
-    "file": "文件",
-    "uploadText": "点击或者拖动文件到该区域来上传",
-    "uploadHint": "支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB",
-    "dragToUpload": "点击或者拖动文件到该区域来上传",
-    "supportedFormats": "支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB",
-    "unsupportedFormat": "不支持的文件格式，请选择 {formats} 格式的文件",
-    "fileTooLarge": "文件大小不能超过 20MB",
-    "uploadSuccess": "上传成功",
-    "uploadFailed": "上传失败",
-    "processing": "处理中...",
-    "selectFile": "请选择文件",
-    "fileRequired": "请选择要上传的文件",
-    "nameRequired": "请输入题库名称"
-  },
+
   "bank": {
     "title": "题库列表",
     "noData": "暂无题库数据",
@@ -76,7 +56,7 @@
     "practiceBank": "练习题库 {name}",
     "viewWrongSet": "查看错题集 {name}",
     "id": "ID",
-    "merge": "合并题库",
+    "merge": "合并",
     "mergeTitle": "合并题库",
     "confirmMerge": "确认合并",
     "selectBanks": "选择题库",
@@ -91,7 +71,11 @@
     "nameRequired": "题库名称不能为空",
     "nameTooShort": "题库名称至少需要2个字符",
     "mergeSuccess": "题库合并成功",
-    "mergeFailed": "题库合并失败"
+    "mergeFailed": "题库合并失败",
+    "upload": "上传",
+    "file": "文件",
+    "uploadText": "点击或者拖动文件到该区域来上传",
+    "uploadHint": "支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB"
   },
   "statistics": {
     "title": "数据统计",
