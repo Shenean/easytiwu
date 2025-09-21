@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@vicons/ionicons5": "^0.13.0",
-    "@vueuse/core": "^13.9.0",
+
     "axios": "^1.11.0",
     "dompurify": "^3.2.6",
     "pinia": "^3.0.3",
@@ -35,7 +35,7 @@
     "postcss": "^8.4.32",
     "postcss-custom-properties": "^13.3.2",
     "postcss-import": "^15.1.0",
-    "postcss-mixins": "^9.0.4",
+
     "postcss-nested": "^6.0.1",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.43.0",

@@ -1,31 +1,17 @@
-/**
- * 样式系统入口文件
- * 统一导入所有样式变量、Mixin和基础样式
- */
-
-/* ===== CSS变量系统 ===== */
 @import "./spacing-constants.css";
 @import "./design-tokens.css";
 
-/* ===== Mixin系统 ===== */
-@import "./mixins/index.css";
 
-/* ===== 基础样式 ===== */
 @import "./components.css";
 
-/* ===== 移动端优化 ===== */
-@import "./mobile-optimizations.css";
 
-/* ===== 全局重置和基础样式 ===== */
-
-/* 全局盒模型重置 */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* 根元素样式 */
+
 html {
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
@@ -40,15 +26,11 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  /* 主题相关的颜色由App.vue和主题系统管理 */
+
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ===== 工具类 ===== */
 
-/* 间距工具类已在 spacing-constants.css 中统一定义 */
-
-/* ===== 文本工具类 ===== */
 
 .text-xs {
   font-size: var(--font-size-xs);
@@ -104,7 +86,7 @@ body {
   color: var(--color-text-inverse);
 }
 
-/* ===== 布局工具类 ===== */
+
 
 .flex {
   display: flex;
@@ -192,7 +174,7 @@ body {
   gap: var(--spacing-8);
 }
 
-/* ===== 边框工具类 ===== */
+
 
 .border {
   border: var(--border-default);
@@ -248,7 +230,7 @@ body {
   border-radius: var(--border-radius-full);
 }
 
-/* ===== 阴影工具类 ===== */
+
 
 .shadow-none {
   box-shadow: var(--shadow-none);
@@ -288,7 +270,7 @@ body {
   box-shadow: var(--shadow-error);
 }
 
-/* ===== 过渡工具类 ===== */
+
 
 .transition-none {
   transition: none;
@@ -303,7 +285,7 @@ body {
   transition: var(--transition-slow);
 }
 
-/* ===== 位置工具类 ===== */
+
 
 .relative {
   position: relative;
@@ -349,7 +331,7 @@ body {
   z-index: var(--z-index-tooltip);
 }
 
-/* ===== 宽度和高度工具类 ===== */
+
 
 .w-full {
   width: 100%;
@@ -432,7 +414,7 @@ body {
   max-width: var(--max-width-full);
 }
 
-/* ===== 减少动画偏好支持 ===== */
+
 @media (prefers-reduced-motion: reduce) {
   .transition-fast,
   .transition-base,
@@ -445,7 +427,7 @@ body {
   }
 }
 
-/* ===== 高对比度支持 ===== */
+
 @media (prefers-contrast: high) {
   .border,
   .border-t,
@@ -453,56 +435,5 @@ body {
   .border-l,
   .border-r {
     border-width: var(--border-width-2);
-  }
-}
-
-/* ===== 调试工具 ===== */
-
-/* 开发环境下的断点调试 */
-.debug-breakpoint {
-  position: fixed;
-  top: var(--spacing-2);
-  right: var(--spacing-2);
-  background: var(--color-modal-backdrop);
-  color: white;
-  padding: var(--spacing-1) var(--spacing-2);
-  font-size: var(--font-size-xs);
-  border-radius: var(--border-radius-sm);
-  z-index: var(--z-index-tooltip);
-  pointer-events: none;
-  font-family: var(--font-family-mono);
-}
-
-.debug-breakpoint::after {
-  content: "XS";
-}
-
-@media (min-width: var(--breakpoint-sm)) {
-  .debug-breakpoint::after {
-    content: "SM";
-  }
-}
-
-@media (min-width: var(--breakpoint-md)) {
-  .debug-breakpoint::after {
-    content: "MD";
-  }
-}
-
-@media (min-width: var(--breakpoint-lg)) {
-  .debug-breakpoint::after {
-    content: "LG";
-  }
-}
-
-@media (min-width: var(--breakpoint-xl)) {
-  .debug-breakpoint::after {
-    content: "XL";
-  }
-}
-
-@media (min-width: var(--breakpoint-2xl)) {
-  .debug-breakpoint::after {
-    content: "XXL";
   }
 }

@@ -1,20 +1,12 @@
 <template>
-  <PageContainer
-    :title="t('statistics.title')"
-    :show-card="false"
-    container-class="statistics-container"
-  >
+  <PageContainer :title="t('statistics.title')" :show-card="false" container-class="statistics-container">
     <!-- 加载状态 -->
-    <div
-      v-if="loading"
-      class="loading-container"
-      style="
+    <div v-if="loading" class="loading-container" style="
         height: 400px;
         display: flex;
         align-items: center;
         justify-content: center;
-      "
-    >
+      ">
       <n-spin size="large">
         <template #description>
           {{ t("statistics.loading") }}
@@ -25,95 +17,35 @@
     <!-- 内容区域 -->
     <template v-if="!loading">
       <!-- 错误提示 -->
-      <n-alert
-        v-if="error"
-        type="error"
-        :title="error"
-        style="margin-bottom: 16px"
-      />
+      <n-alert v-if="error" type="error" :title="error" style="margin-bottom: 16px" />
 
       <!-- 统计数据内容 -->
       <div v-else-if="stats">
         <!-- 总览统计 -->
         <n-card class="overview-summary-card" size="small">
-          <n-grid
-            :cols="overviewGridCols"
-            :x-gap="24"
-            :y-gap="24"
-            class="overview-grid"
-          >
+          <n-grid :cols="2" :x-gap="24" :y-gap="24" class="overview-grid">
             <n-grid-item>
               <div class="overview-item">
-                <n-statistic
-                  :label="t('statistics.bankTotal')"
-                  :value="formatNumber(stats.bankTotal)"
-                />
+                <n-statistic :label="t('statistics.bankTotal')" :value="formatNumber(stats.bankTotal)" />
               </div>
             </n-grid-item>
             <n-grid-item>
               <div class="overview-item">
-                <n-statistic
-                  :label="t('statistics.questionTotal')"
-                  :value="formatNumber(stats.questionTotal)"
-                />
+                <n-statistic :label="t('statistics.questionTotal')" :value="formatNumber(stats.questionTotal)" />
               </div>
             </n-grid-item>
           </n-grid>
         </n-card>
 
-        <!-- 题型统计 -->
+        <!-- 题型统计表格 -->
         <div class="type-stats-section">
-          <n-grid
-            :cols="typeStatsGridCols"
-            :x-gap="16"
-            :y-gap="16"
-            class="type-stats-grid"
-          >
-            <n-grid-item v-for="stat in typeStats" :key="stat.originalType">
-              <n-card class="type-stat-card" size="small">
-                <div class="type-stat-header">
-                  <h4 class="type-title">{{ stat.type }}</h4>
-                  <n-tag type="info" size="small" class="percentage-tag">
-                    {{ stat.percentage }}%
-                  </n-tag>
-                </div>
-
-                <div class="type-stat-content">
-                  <n-grid
-                    :cols="metricsGridCols"
-                    :x-gap="16"
-                    :y-gap="8"
-                    class="stats-metrics"
-                  >
-                    <n-grid-item>
-                      <div class="metric-item">
-                        <div class="metric-value">{{ stat.total }}</div>
-                        <div class="metric-label">
-                          {{ t("statistics.totalQuestions") }}
-                        </div>
-                      </div>
-                    </n-grid-item>
-                    <n-grid-item>
-                      <div class="metric-item">
-                        <div class="metric-value">{{ stat.completed }}</div>
-                        <div class="metric-label">
-                          {{ t("statistics.completed") }}
-                        </div>
-                      </div>
-                    </n-grid-item>
-                    <n-grid-item>
-                      <div class="metric-item">
-                        <div class="metric-value">{{ stat.accuracy }}%</div>
-                        <div class="metric-label">
-                          {{ t("statistics.accuracy") }}
-                        </div>
-                      </div>
-                    </n-grid-item>
-                  </n-grid>
-                </div>
-              </n-card>
-            </n-grid-item>
-          </n-grid>
+          <n-card class="stats-table-card" size="small">
+            <template #header>
+              <h3 class="table-title">{{ t('statistics.typeStatistics') }}</h3>
+            </template>
+            <n-data-table :columns="tableColumns" :data="typeStats" :pagination="false" :bordered="false" size="small"
+              class="stats-table" />
+          </n-card>
         </div>
       </div>
 
@@ -123,12 +55,7 @@
 
     <!-- 刷新按钮 -->
     <template #action>
-      <n-button
-        @click="refreshData"
-        :loading="loading"
-        type="primary"
-        size="small"
-      >
+      <n-button @click="refreshData" :loading="loading" type="primary" size="small">
         {{ t("statistics.refresh") }}
       </n-button>
     </template>
@@ -136,14 +63,15 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
-import {NGrid, NGridItem} from "naive-ui";
+import {computed, h, onMounted, ref} from "vue";
+import type {DataTableColumns} from "naive-ui";
+import {NDataTable, NGrid, NGridItem, NTag} from "naive-ui";
 import {useI18n} from "vue-i18n";
 
 import {statisticsAPI} from "../api/config";
 import PageContainer from "../components/common/PageContainer.vue";
 
-import {useBreakpoints} from "../composables/useBreakpoints";
+
 import type {ApiResponse, StatisticsOverview, TypeStats,} from "../types/statistics";
 
 /**
@@ -208,54 +136,7 @@ const loading = ref(false);
 /** 错误状态 */
 const error = ref<string | null>(null);
 
-// ==================== 响应式布局管理 ====================
-
-/** 断点检测 Hook */
-const { isMobile, isTablet } = useBreakpoints();
-
-/**
- * 概览区域网格列数计算
- *
- * 根据屏幕尺寸动态调整网格布局的列数。
- * 移动端使用单列布局，其他设备使用双列布局。
- *
- * @returns {ComputedRef<number>} 网格列数
- */
-const overviewGridCols = computed(() => {
-  if (isMobile.value) return 1;
-  return 2;
-});
-
-/**
- * 题型统计区域网格列数计算
- *
- * 根据屏幕尺寸动态调整题型统计卡片的网格布局。
- * - 移动端：1列
- * - 平板端：2列
- * - 桌面端：3列
- *
- * @returns {ComputedRef<number>} 网格列数
- */
-const typeStatsGridCols = computed(() => {
-  if (isMobile.value) return 1;
-  if (isTablet.value) return 2;
-  return 3;
-});
-
-/**
- * 指标区域网格列数计算
- *
- * 根据屏幕尺寸调整指标展示的网格布局。
- * 移动端使用单列，其他设备使用三列布局。
- *
- * @returns {ComputedRef<number>} 网格列数
- */
-const metricsGridCols = computed(() => {
-  if (isMobile.value) return 1;
-  return 3;
-});
-
-// 题型统计卡片数据
+// 题型统计表格数据
 const typeStats = computed(() => {
   if (!stats.value?.byType) return [];
 
@@ -280,6 +161,58 @@ const typeStats = computed(() => {
     }
   );
 });
+
+// 表格列定义
+const tableColumns: DataTableColumns = [
+  {
+    title: t('statistics.questionType'),
+    key: 'type',
+    width: 120,
+    render: (row: any) => {
+      return row.type;
+    }
+  },
+  {
+    title: t('statistics.totalQuestions'),
+    key: 'total',
+    width: 100,
+    align: 'center',
+    render: (row: any) => {
+      return formatNumber(row.total);
+    }
+  },
+  {
+    title: t('statistics.completed'),
+    key: 'completed',
+    width: 100,
+    align: 'center',
+    render: (row: any) => {
+      return formatNumber(row.completed);
+    }
+  },
+  {
+    title: t('statistics.completionRate'),
+    key: 'percentage',
+    width: 120,
+    align: 'center',
+    render: (row: any) => {
+      const percentage = row.percentage;
+      const type = percentage >= 80 ? 'success' : percentage >= 60 ? 'warning' : 'error';
+      return h(NTag, { type, size: 'small' }, { default: () => `${percentage}%` });
+    }
+  },
+  {
+    title: t('statistics.accuracy'),
+    key: 'accuracy',
+    width: 100,
+    align: 'center',
+    render: (row: any) => {
+      const accuracy = row.accuracy;
+      const type = accuracy >= 80 ? 'success' : accuracy >= 60 ? 'warning' : 'error';
+      return h(NTag, { type, size: 'small' }, { default: () => `${accuracy}%` });
+    }
+  }
+];
 
 // 获取统计数据
 const fetchStatistics = async () => {
@@ -388,11 +321,9 @@ onMounted(() => {
 /* 总览统计样式 */
 .overview-summary-card {
   margin-bottom: var(--spacing-md);
-  background: linear-gradient(
-    135deg,
-    var(--n-color) 0%,
-    var(--n-color-embedded) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--n-color) 0%,
+      var(--n-color-embedded) 100%);
   border: none;
   border-radius: var(--card-border-radius);
   box-shadow: var(--card-unified-shadow);
@@ -415,76 +346,56 @@ onMounted(() => {
   padding: var(--spacing-2);
 }
 
-/* 题型统计区域 */
+/* 题型统计表格区域 */
 .type-stats-section {
   margin-top: 0;
 }
 
-.type-stats-grid {
-  margin: 0;
-}
-
-.type-stat-card {
+.stats-table-card {
   border: none;
   border-radius: var(--card-border-radius);
   box-shadow: var(--card-unified-shadow);
   transition: all 0.3s ease;
   background: var(--n-color);
-  width: var(--card-standard-width);
+  width: 100%;
+  max-width: var(--card-content-max-width);
   margin: 0 auto;
 }
 
-.type-stat-card:hover {
+.stats-table-card:hover {
   box-shadow: var(--card-unified-shadow-hover);
-  transform: translateY(calc(-1 * var(--spacing-1)));
 }
 
-.type-stat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-3);
-  padding-bottom: var(--spacing-2);
-  border-bottom: 1px solid var(--n-divider-color);
-}
-
-.type-title {
+.table-title {
   margin: 0;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   font-weight: 600;
   color: var(--n-text-color-1);
 }
 
-.percentage-tag {
-  font-weight: 600;
+.stats-table {
+  width: 100%;
 }
 
-.type-stat-content {
-  padding: 0;
-}
+/* 表格响应式优化 */
+@media (max-width: 768px) {
+  .stats-table-card {
+    margin: 0;
+    border-radius: var(--card-border-radius);
+  }
 
-.stats-metrics {
-  margin-bottom: 0;
-}
+  :deep(.n-data-table) {
+    font-size: var(--font-size-sm);
+  }
 
-.metric-item {
-  text-align: center;
-  padding: var(--spacing-2) var(--spacing-1); /* 8px 4px */
-}
+  :deep(.n-data-table .n-data-table-th) {
+    padding: var(--spacing-2) var(--spacing-1);
+    font-size: var(--font-size-xs);
+  }
 
-.metric-value {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--n-primary-color);
-  margin-bottom: var(--spacing-1); /* 4px */
-  line-height: 1.1;
-}
-
-.metric-label {
-  font-size: var(--font-size-xs);
-  color: var(--n-text-color-2);
-  font-weight: 500;
-  line-height: 1.2;
+  :deep(.n-data-table .n-data-table-td) {
+    padding: var(--spacing-2) var(--spacing-1);
+  }
 }
 
 /* 统计数字样式优化 */
@@ -501,205 +412,36 @@ onMounted(() => {
   margin-bottom: var(--spacing-1);
 }
 
-/* 紧凑卡片内边距 */
+/* 卡片内边距 */
 :deep(.overview-summary-card .n-card__content) {
   padding: var(--card-padding-desktop);
 }
 
-:deep(.type-stat-card .n-card__content) {
+:deep(.stats-table-card .n-card__content) {
   padding: var(--card-padding-md);
 }
 
-/* 进度条样式优化 */
-:deep(.n-progress .n-progress-graph .n-progress-graph-line-fill) {
-  transition: all 0.3s ease;
+/* 表格样式优化 */
+:deep(.n-data-table) {
+  border-radius: var(--card-border-radius);
+}
+
+:deep(.n-data-table .n-data-table-th) {
+  background-color: var(--n-color-embedded);
+  font-weight: 600;
+  color: var(--n-text-color-1);
+}
+
+:deep(.n-data-table .n-data-table-td) {
+  border-bottom: 1px solid var(--n-divider-color);
+}
+
+:deep(.n-data-table .n-data-table-tr:hover .n-data-table-td) {
+  background-color: var(--n-color-hover);
 }
 
 /* 加载状态样式 */
 :deep(.n-spin-content) {
-  min-height: var(--spacing-50); /* 50 * 4px */
-}
-
-/* 移动端适配 */
-@media (max-width: 1023px) {
-  .statistics-container {
-    padding: var(--container-responsive-padding-tablet);
-    max-width: 100%;
-  }
-
-  .stats-card {
-    border-radius: var(--card-border-radius-tablet);
-    box-shadow: var(--card-shadow-tablet);
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-/* 超小屏幕优化 */
-@media (max-width: 360px) {
-  .statistics-container {
-    padding: var(--spacing-1) var(--spacing-2);
-  }
-
-  .stats-card {
-    border-radius: var(--spacing-2);
-  }
-
-  .overview-summary-card,
-  .type-stat-card {
-    padding: var(--spacing-2);
-  }
-
-  .grid {
-    gap: var(--spacing-2);
-  }
-
-  .metric-item {
-    padding: var(--spacing-2);
-  }
-}
-
-/* 平板端布局优化 */
-@media (max-width: var(--breakpoint-tablet)) {
-  .overview-summary-card {
-    width: 100%;
-    box-shadow: var(--card-shadow-tablet);
-  }
-
-  .type-stat-card {
-    width: 100%;
-    box-shadow: var(--card-shadow-tablet);
-  }
-
-  .overview-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-3);
-  }
-
-  .overview-item {
-    padding: var(--spacing-2);
-  }
-
-  .type-stats-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2);
-  }
-
-  .stats-metrics {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2);
-    margin-bottom: 0;
-  }
-
-  .metric-item {
-    padding: var(--spacing-2);
-    background: var(--n-color-embedded);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--n-border-color);
-  }
-
-  .metric-value {
-    font-size: var(--font-size-base);
-  }
-
-  .type-stat-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-2); /* 8px */
-    margin-bottom: var(--spacing-sm);
-    padding-bottom: var(--spacing-2);
-  }
-
-  .type-title {
-    font-size: var(--font-size-sm);
-  }
-
-  :deep(.overview-summary-card .n-card__content) {
-    padding: var(--spacing-3);
-  }
-
-  :deep(.type-stat-card .n-card__content) {
-    padding: var(--spacing-3);
-  }
-
-  :deep(.n-statistic-value) {
-    font-size: var(--font-size-lg);
-  }
-}
-
-@media (max-width: var(--breakpoint-mobile)) {
-  .statistics-container {
-    padding: var(--spacing-2) var(--spacing-3);
-  }
-
-  .stats-card {
-    border-radius: var(--spacing-2);
-    box-shadow: var(--card-shadow-medium);
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .overview-summary-card {
-    width: 100%;
-    box-shadow: var(--card-shadow-medium);
-  }
-
-  .type-stat-card {
-    width: 100%;
-    box-shadow: var(--card-shadow-medium);
-  }
-
-  .overview-grid {
-    gap: var(--spacing-2);
-  }
-
-  .overview-item {
-    padding: var(--spacing-2);
-  }
-
-  .type-stats-grid {
-    gap: var(--spacing-2);
-  }
-
-  .stats-metrics {
-    gap: var(--spacing-2);
-  }
-
-  .metric-item {
-    padding: var(--spacing-2);
-  }
-
-  .metric-value {
-    font-size: var(--font-size-sm);
-  }
-
-  .metric-label {
-    font-size: var(--font-size-xs);
-  }
-
-  .type-title {
-    font-size: var(--font-size-sm);
-  }
-
-  .type-stat-header {
-    margin-bottom: var(--spacing-2); /* 8px */
-    padding-bottom: var(--spacing-1); /* 4px */
-  }
-
-  :deep(.overview-summary-card .n-card__content) {
-    padding: var(--spacing-2);
-  }
-
-  :deep(.type-stat-card .n-card__content) {
-    padding: var(--spacing-2);
-  }
-
-  :deep(.n-statistic-value) {
-    font-size: var(--font-size-base);
-  }
-
-  :deep(.n-statistic-label) {
-    font-size: var(--font-size-xs);
-  }
+  min-height: var(--spacing-50);
 }
 </style>

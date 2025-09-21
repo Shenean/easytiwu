@@ -577,58 +577,10 @@
   }
 }
 
-/* ===== 响应式断点系统 ===== */
+/* ===== 桌面端容器配置 ===== */
 :root {
-  /* 新的标准断点定义 - 基于移动优先设计原则 */
-  --breakpoint-xs: 0px;     /* 超小屏幕（手机竖屏） */
-  --breakpoint-sm: 640px;   /* 小屏幕（手机横屏） */
-  --breakpoint-md: 768px;   /* 中等屏幕（平板竖屏） */
-  --breakpoint-lg: 1024px;  /* 大屏幕（平板横屏/小桌面） */
-  --breakpoint-xl: 1280px;  /* 超大屏幕（桌面） */
-  --breakpoint-xxl: 1536px; /* 超超大屏幕（大桌面） */
-
-  /* 兼容旧版本的断点别名 */
-  --breakpoint-mobile: var(--breakpoint-sm);   /* 移动端：640px */
-  --breakpoint-tablet: var(--breakpoint-md);   /* 平板端：768px */
-  --breakpoint-desktop: var(--breakpoint-lg);  /* 桌面端：1024px */
-  --breakpoint-wide: var(--breakpoint-xl);     /* 宽屏：1280px */
-  --breakpoint-large: var(--breakpoint-xxl);   /* 超宽屏：1536px */
-
-  /* 语义化断点别名 */
-  --breakpoint-s: var(--breakpoint-sm);
-  --breakpoint-m: var(--breakpoint-md);
-  --breakpoint-l: var(--breakpoint-lg);
-  --breakpoint-xl-alias: var(--breakpoint-xl);
-  --breakpoint-xxl-alias: var(--breakpoint-xxl);
-
-  /* 容器最大宽度 - 基于新的断点系统 */
-  --container-xs-width: 100%;     /* 超小屏幕：全宽 */
-  --container-sm-width: 540px;    /* 小屏幕容器 */
-  --container-md-width: 720px;    /* 中等屏幕容器 */
-  --container-lg-width: 960px;    /* 大屏幕容器 */
-  --container-xl-width: 1140px;   /* 超大屏幕容器 */
-  --container-xxl-width: 1320px;  /* 超超大屏幕容器 */
-  
-  /* 兼容旧版本的容器宽度 */
-  --container-max-width: var(--container-xxl-width); /* 超宽屏容器 */
-  --container-wide-width: var(--container-xl-width); /* 宽屏容器 */
-  --container-desktop-width: var(--container-lg-width); /* 桌面容器 */
-  --container-tablet-width: var(--container-md-width); /* 平板容器 */
-  --container-mobile-width: var(--container-sm-width); /* 移动容器 */
-
-  /* 栅格系统配置 */
-  --grid-columns-xs: 4;   /* 超小屏幕：4列 */
-  --grid-columns-sm: 8;   /* 小屏幕：8列 */
-  --grid-columns-md: 12;  /* 中等屏幕：12列 */
-  --grid-columns-lg: 16;  /* 大屏幕：16列 */
-  --grid-columns-xl: 20;  /* 超大屏幕：20列 */
-  --grid-columns-xxl: 24; /* 超超大屏幕：24列 */
-
-  /* 栅格间距配置（基于8px基础单位） */
-  --grid-gutter-xs: 8px;   /* 1 * 8px */
-  --grid-gutter-sm: 12px;  /* 1.5 * 8px */
-  --grid-gutter-md: 16px;  /* 2 * 8px */
-  --grid-gutter-lg: 20px;  /* 2.5 * 8px */
-  --grid-gutter-xl: 24px;  /* 3 * 8px */
-  --grid-gutter-xxl: 32px; /* 4 * 8px */
+  /* 桌面端容器最大宽度 */
+  --container-max-width: 1320px;
+  --container-desktop-width: 1140px;
+  --container-wide-width: 1280px;
 }

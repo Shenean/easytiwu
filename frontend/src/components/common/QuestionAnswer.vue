@@ -34,8 +34,8 @@
 
     <!-- 填空 / 简答 -->
     <div v-else-if="question.type === 'fill_blank' || question.type === 'short_answer'">
-      <n-input v-model:value="inputValue" type="textarea" :placeholder="t('questionAnswer.inputPlaceholder')" :autosize="{ minRows: 2, maxRows: 6 }"
-        :disabled="false" clearable />
+      <n-input v-model:value="inputValue" type="textarea" :placeholder="t('questionAnswer.inputPlaceholder')"
+        :autosize="{ minRows: 2, maxRows: 6 }" :disabled="false" clearable />
     </div>
   </div>
 </template>

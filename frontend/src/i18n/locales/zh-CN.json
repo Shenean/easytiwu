@@ -79,11 +79,11 @@
     "merge": "合并题库",
     "mergeTitle": "合并题库",
     "confirmMerge": "确认合并",
-   "selectBanks": "选择题库",
-      "selectBanksHint": "请选择1-2个题库进行合并",
-      "selectTwoBanksHint": "请选择2个题库进行合并",
-      "selectBanksError": "请选择1-2个题库",
-      "selectTwoBanksError": "请选择2个题库进行合并",
+    "selectBanks": "选择题库",
+    "selectBanksHint": "请选择1-2个题库进行合并",
+    "selectTwoBanksHint": "请选择2个题库进行合并",
+    "selectBanksError": "请选择1-2个题库",
+    "selectTwoBanksError": "请选择2个题库进行合并",
     "newBankName": "新题库名称",
     "newBankNamePlaceholder": "请输入合并后的题库名称",
     "description": "描述信息",
@@ -103,6 +103,9 @@
     "accuracy": "正确率",
     "noData": "暂无统计数据",
     "refresh": "刷新数据",
+    "questionType": "题型",
+    "completionRate": "完成率",
+    "typeStatistics": "题型统计",
     "questionTypes": {
       "single": "单选题",
       "fillBlank": "填空题",
@@ -142,16 +145,16 @@
     "themeChanged": "主题已切换",
     "languageChanged": "语言已切换",
     "language": {
-        "title": "语言设置",
-        "chinese": "中文",
-        "english": "English",
-        "switchTo": "切换到{language}",
-        "switched": "已切换到{language}",
-        "description": "切换应用程序的显示语言，支持中文和英文"
-      },
+      "title": "语言设置",
+      "chinese": "中文",
+      "english": "English",
+      "switchTo": "切换到{language}",
+      "switched": "已切换到{language}",
+      "description": "切换应用程序的显示语言，支持中文和英文"
+    },
     "other": "其他设置",
-     "moreFeatures": "更多功能即将推出",
-     "followSystem": "跟随系统"
+    "moreFeatures": "更多功能即将推出",
+    "followSystem": "跟随系统"
   },
   "answerCard": {
     "title": "答题卡"

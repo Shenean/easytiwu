@@ -4,14 +4,9 @@
     <div v-if="title" class="page-header">
       <h1 class="page-title">{{ title }}</h1>
     </div>
-    
+
     <!-- 简化的内容包装器 -->
-    <component 
-      :is="wrapperComponent" 
-      v-bind="wrapperProps"
-      :class="wrapperClass"
-      :style="wrapperStyle"
-    >
+    <component :is="wrapperComponent" v-bind="wrapperProps" :class="wrapperClass" :style="wrapperStyle">
       <slot />
     </component>
   </div>
@@ -75,7 +70,7 @@ const wrapperProps = computed(() => {
       segmented: props.segmented
     }
   }
-  
+
   if (props.useGrid) {
     return {
       cols: props.cols,
@@ -84,7 +79,7 @@ const wrapperProps = computed(() => {
       responsive: props.responsive
     }
   }
-  
+
   return {}
 })
 
@@ -106,7 +101,8 @@ const wrapperStyle = computed(() => ({
 <style scoped>
 .page-container {
   width: 100%;
-  padding: var(--spacing-md); /* 16px */
+  padding: var(--spacing-md);
+  /* 16px */
 }
 
 .page-header {
@@ -123,9 +119,10 @@ const wrapperStyle = computed(() => ({
 
 @media (max-width: 639px) {
   .page-container {
-    padding: var(--spacing-sm); /* 8px */
+    padding: var(--spacing-sm);
+    /* 8px */
   }
-  
+
   .page-title {
     font-size: var(--font-size-lg);
   }

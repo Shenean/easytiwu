@@ -1,15 +1,6 @@
 module.exports = {
   plugins: {
-    // PostCSS Mixins - 支持 @mixin 和 @define-mixin 语法
-    'postcss-mixins': {
-      // 指定 mixin 文件的搜索路径
-      mixinsFiles: [
-        './src/styles/mixins/**/*.css'
-      ],
-      // 启用 mixin 内容替换
-      mixinsDir: './src/styles/mixins'
-    },
-    
+
     // PostCSS Nested - 支持嵌套语法
     'postcss-nested': {},
     

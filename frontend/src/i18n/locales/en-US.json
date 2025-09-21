@@ -102,6 +102,9 @@
     "accuracy": "Accuracy",
     "noData": "No statistics data available",
     "refresh": "Refresh Data",
+    "questionType": "Question Type",
+    "completionRate": "Completion Rate",
+    "typeStatistics": "Type Statistics",
     "questionTypes": {
       "single": "Single Choice",
       "fillBlank": "Fill in the Blank",

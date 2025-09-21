@@ -873,70 +873,7 @@
   line-height: 2;
 }
 
-/* ==================== 响应式工具类 ==================== */
 
-@media (max-width: 480px) {
-  .mobile\:hidden {
-    display: none;
-  }
-  .mobile\:block {
-    display: block;
-  }
-  .mobile\:flex {
-    display: flex;
-  }
-  .mobile\:text-center {
-    text-align: center;
-  }
-  .mobile\:text-left {
-    text-align: left;
-  }
-  .mobile\:w-full {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .tablet\:hidden {
-    display: none;
-  }
-  .tablet\:block {
-    display: block;
-  }
-  .tablet\:flex {
-    display: flex;
-  }
-  .tablet\:text-center {
-    text-align: center;
-  }
-  .tablet\:text-left {
-    text-align: left;
-  }
-  .tablet\:w-full {
-    width: 100%;
-  }
-}
-
-@media (min-width: 769px) {
-  .desktop\:hidden {
-    display: none;
-  }
-  .desktop\:block {
-    display: block;
-  }
-  .desktop\:flex {
-    display: flex;
-  }
-  .desktop\:text-center {
-    text-align: center;
-  }
-  .desktop\:text-left {
-    text-align: left;
-  }
-  .desktop\:w-auto {
-    width: auto;
-  }
-}
 
 /* ==================== 打印样式 ==================== */
 

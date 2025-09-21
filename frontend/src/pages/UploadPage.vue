@@ -32,7 +32,7 @@
 
       <n-form-item>
         <div style="display: flex; justify-content: flex-end; width: 100%;">
-          <n-space size="medium" :vertical="isMobile" :align="isMobile ? 'stretch' : 'center'">
+          <n-space size="medium" :vertical="false" align="center">
             <n-button size="large" secondary @click="handleReset">
               {{ t('common.reset') }}
             </n-button>
@@ -53,7 +53,7 @@ import {useMessage} from "naive-ui";
 import {useI18n} from "vue-i18n";
 import {ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
 import {uploadAPI} from "../api/config";
-import {useBreakpoints} from "../composables/useBreakpoints";
+
 
 import PageContainer from "../components/common/PageContainer.vue";
 import {bankFormRules} from "../validation/rulesBank";
@@ -68,7 +68,7 @@ const formRef = ref<FormInst | null>(null);
 const message = useMessage();
 const { t } = useI18n();
 const submitting = ref(false);
-const { isMobile } = useBreakpoints();
+
 
 const form = ref<UploadForm>({
   name: "",

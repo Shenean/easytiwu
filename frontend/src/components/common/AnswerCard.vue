@@ -1,25 +1,9 @@
 <template>
-  <n-card
-    :title="t('answerCard.title')"
-    size="small"
-    class="answer-card-container"
-    :class="{ 'mobile-mode': mobileMode }"
-  >
-    <n-grid
-      :cols="mobileMode ? '5' : '8'"
-      :x-gap="mobileMode ? 8 : 12"
-      :y-gap="mobileMode ? 8 : 12"
-      responsive="screen"
-    >
+  <n-card :title="t('answerCard.title')" size="small" class="answer-card-container">
+    <n-grid :cols="5" :x-gap="12" :y-gap="12">
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
-        <n-button
-          :type="getCardButtonType(q)"
-          :size="mobileMode ? 'small' : 'medium'"
-          @click="jumpToQuestion(q.id)"
-          :focusable="true"
-          class="answer-card-btn"
-          :style="getButtonStyle(q)"
-        >
+        <n-button :type="getCardButtonType(q)" size="medium" @click="jumpToQuestion(q.id)" :focusable="true"
+          class="answer-card-btn" :style="getButtonStyle(q)">
           {{ index + 1 }}
         </n-button>
       </n-grid-item>
@@ -38,13 +22,11 @@ const themeVars = useThemeVars();
 interface Props {
   questions: Question[];
   currentQuestionId?: number;
-  mobileMode?: boolean;
 }
 
 const {
   questions,
   currentQuestionId,
-  mobileMode = false,
 } = defineProps<Props>();
 
 const emit = defineEmits<{
@@ -60,14 +42,13 @@ function getCardButtonType(q: Question) {
 function getButtonStyle(q: Question) {
   const baseStyle = {
     width: '100%',
-    height: mobileMode ? 'var(--button-height-lg)' : 'var(--button-height-md)',
-        minWidth: mobileMode ? 'var(--button-height-lg)' : 'var(--button-height-md)',
-        fontSize: mobileMode ? 'var(--font-size-sm)' : 'var(--font-size-base)',
-        padding: '0',
-        borderRadius: mobileMode ? 'var(--border-radius-lg)' : 'var(--border-radius-sm)',
+    height: 'var(--button-height-md)',
+    minWidth: 'var(--button-height-md)',
+    fontSize: 'var(--font-size-base)',
+    padding: '0',
+    borderRadius: 'var(--border-radius-sm)',
   };
 
-  // 当前题目选中状态：仅改变边框样式，保持背景色不变
   if (q.id === currentQuestionId) {
     return {
       ...baseStyle,
@@ -92,7 +73,6 @@ function jumpToQuestion(id: number) {
   overflow-y: auto;
 }
 
-/* 自定义滚动条样式 */
 .answer-card-container::-webkit-scrollbar {
   width: var(--spacing-1);
 }
@@ -104,40 +84,5 @@ function jumpToQuestion(id: number) {
 
 .answer-card-container::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-black-25);
-}
-
-/* 移动端模式样式调整 */
-.mobile-mode {
-  position: static;
-  max-height: none;
-}
-
-.mobile-mode :deep(.n-card__header) {
-  padding: var(--spacing-1-5) var(--spacing-2);
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  border-bottom: var(--border-width-1) solid var(--color-border);
-}
-
-.mobile-mode :deep(.n-card__content) {
-  padding: var(--spacing-2);
-}
-
-/* 响应式隐藏 */
-@media (max-width: 768px) {
-  .answer-card-container:not(.mobile-mode) {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .mobile-mode :deep(.n-card__header) {
-    padding: var(--spacing-1-5);
-    font-size: var(--font-size-sm);
-  }
-
-  .mobile-mode :deep(.n-card__content) {
-    padding: var(--spacing-1-5);
-  }
 }
 </style>
