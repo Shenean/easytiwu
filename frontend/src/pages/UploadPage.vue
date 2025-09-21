@@ -1,98 +1,48 @@
 <template>
-  <PageContainer 
-    :title="$t('upload.title')"
-    :show-card="true"
-    card-class="upload-card"
-  >
-        <n-form
-          ref="formRef"
-          :model="form"
-          :rules="rules"
-          label-placement="left"
-          label-width="80"
-          size="large"
-        >
-          <!-- 题库名 -->
-          <n-form-item :label="$t('upload.bankName')" path="name">
-            <n-input
-              v-model:value="form.name"
-              :placeholder="$t('upload.bankNamePlaceholder')"
-              maxlength="15"
-              show-count
-              clearable
-              :aria-label="$t('upload.bankName')"
-            />
-          </n-form-item>
+  <PageContainer :title="t('upload.title')" :show-card="true" card-class="upload-card">
+    <n-form ref="formRef" :model="form" :rules="rules" label-placement="left" label-width="80" size="large">
+      <n-form-item :label="t('upload.bankName')" path="name">
+        <n-input v-model:value="form.name" :placeholder="t('upload.bankNamePlaceholder')" maxlength="15" show-count
+          clearable :aria-label="t('upload.bankName')" />
+      </n-form-item>
 
-          <!-- 描述 -->
-          <n-form-item :label="$t('upload.description')" path="description">
-            <n-input
-              v-model:value="form.description"
-              :placeholder="$t('upload.descriptionPlaceholder')"
-              type="textarea"
-              maxlength="30"
-              show-count
-              clearable
-              autosize
-              :aria-label="$t('upload.description')"
-            />
-          </n-form-item>
+      <n-form-item :label="t('upload.description')" path="description">
+        <n-input v-model:value="form.description" :placeholder="t('upload.descriptionPlaceholder')" type="textarea"
+          maxlength="30" show-count clearable autosize :aria-label="t('upload.description')" />
+      </n-form-item>
 
-          <!-- 文件上传 -->
-          <n-form-item :label="$t('upload.file')" path="file">
-            <n-upload
-              v-model:file-list="form.file"
-              :accept="'.docx,.pdf,.txt'"
-              :max="1"
-              :multiple="false"
-              action="#"
-              :custom-request="handleCustomRequest"
-              @before-upload="handleBeforeUpload"
-            >
-              <n-upload-dragger>
-                <div style="margin-bottom: var(--spacing-3)">
-                  <n-icon size="48" :depth="3">
-                    <ArchiveIcon />
-                  </n-icon>
-                </div>
-                <n-text style="font-size: var(--font-size-base)">
-                  {{ $t("upload.uploadText") }}
-                </n-text>
-                <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
-                  {{ $t("upload.uploadHint") }}
-                </n-p>
-              </n-upload-dragger>
-            </n-upload>
-          </n-form-item>
-
-          <!-- 提交操作区 -->
-          <n-form-item>
-            <div style="display: flex; justify-content: flex-end; width: 100%;">
-              <n-space 
-                size="medium"
-                :vertical="isMobile"
-                :align="isMobile ? 'stretch' : 'center'"
-              >
-              <n-button
-                size="large"
-                secondary
-                @click="handleReset"
-              >
-                {{ $t('common.reset') }}
-              </n-button>
-              <n-button
-                type="primary"
-                size="large"
-                :loading="submitting"
-                :disabled="!isFormValid"
-                @click="handleSubmit"
-              >
-                {{ $t('common.submit') }}
-              </n-button>
-              </n-space>
+      <n-form-item :label="t('upload.file')" path="file">
+        <n-upload v-model:file-list="form.file" :accept="'.docx,.pdf,.txt'" :max="1" :multiple="false" action="#"
+          :custom-request="handleCustomRequest" @before-upload="handleBeforeUpload">
+          <n-upload-dragger>
+            <div style="margin-bottom: var(--spacing-3)">
+              <n-icon size="48" :depth="3">
+                <ArchiveIcon />
+              </n-icon>
             </div>
-          </n-form-item>
-        </n-form>
+            <n-text style="font-size: var(--font-size-base)">
+              {{ t("upload.uploadText") }}
+            </n-text>
+            <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
+              {{ t("upload.uploadHint") }}
+            </n-p>
+          </n-upload-dragger>
+        </n-upload>
+      </n-form-item>
+
+      <n-form-item>
+        <div style="display: flex; justify-content: flex-end; width: 100%;">
+          <n-space size="medium" :vertical="isMobile" :align="isMobile ? 'stretch' : 'center'">
+            <n-button size="large" secondary @click="handleReset">
+              {{ t('common.reset') }}
+            </n-button>
+            <n-button type="primary" size="large" :loading="submitting" :disabled="!isFormValid" @click="handleSubmit">
+              {{ t('common.submit') }}
+            </n-button>
+          </n-space>
+        </div>
+      </n-form-item>
+    </n-form>
   </PageContainer>
 </template>
 
@@ -100,6 +50,7 @@
 import {computed, ref} from "vue";
 import type {FormInst, UploadCustomRequestOptions, UploadFileInfo,} from "naive-ui";
 import {useMessage} from "naive-ui";
+import {useI18n} from "vue-i18n";
 import {ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
 import {uploadAPI} from "../api/config";
 import {useBreakpoints} from "../composables/useBreakpoints";
@@ -115,6 +66,7 @@ interface UploadForm {
 
 const formRef = ref<FormInst | null>(null);
 const message = useMessage();
+const { t } = useI18n();
 const submitting = ref(false);
 const { isMobile } = useBreakpoints();
 

@@ -1,168 +1,43 @@
 <template>
-  <PageContainer
-    :title="$t('bank.title')"
-    :show-card="false"
-    container-class="bank-container"
-  >
+  <PageContainer :title="t('bank.title')" :show-card="false" container-class="bank-container">
     <!-- 顶部操作栏 -->
     <div v-if="!loading && banks.length > 1" class="top-actions">
-      <n-button
-        type="primary"
-        size="medium"
-        @click="showMergeModal = true"
-        :disabled="banks.length < 2"
-      >
-        {{ $t("bank.merge") }}
+      <n-button type="primary" size="medium" @click="showMergeModal = true" :disabled="banks.length < 2">
+        {{ t("bank.merge") }}
       </n-button>
     </div>
 
     <!-- 空状态占位 -->
-    <n-empty
-      v-if="!loading && banks.length === 0"
-      :description="$t('bank.noData')"
-      size="large"
-    >
+    <n-empty v-if="!loading && banks.length === 0" :description="t('bank.noData')" size="large">
       <template #extra>
         <n-button type="primary" size="small" @click="fetchBanks">
-          {{ $t("bank.refresh") }}
+          {{ t("bank.refresh") }}
         </n-button>
       </template>
     </n-empty>
 
-    <!-- 题库卡片列表 -->
-    <div v-else class="banks-container">
-      <n-card
-        v-for="bank in banks"
-        :key="bank.id"
-        class="bank-card"
-        hoverable
-        size="small"
-        :bordered="true"
-      >
-        <template #header>
-          <div class="bank-header">
-            <n-text class="bank-name" strong>{{ bank.name }}</n-text>
-            <n-text class="bank-id" depth="3" :style="{ fontSize: '12px' }">
-              {{ $t("bank.id") }}: {{ bank.id }}
-            </n-text>
-          </div>
-        </template>
-
-        <template #default>
-          <div class="bank-content">
-            <n-text
-              v-if="bank.description"
-              class="bank-description"
-              depth="2"
-              :style="{ fontSize: '13px', lineHeight: '1.4', marginBottom: '16px', display: 'block' }"
-            >
-              {{ bank.description }}
-            </n-text>
-
-            <n-grid :cols="3" :x-gap="8" :y-gap="8" class="bank-stats">
-              <n-grid-item>
-                <div class="stat-item">
-                  <n-text class="stat-label" depth="3" :style="{ fontSize: '12px' }">
-                    {{ $t("bank.totalQuestions") }}
-                  </n-text>
-                  <n-text class="stat-value" strong :style="{ fontSize: '14px' }">
-                    {{ bank.totalCount }}
-                  </n-text>
-                </div>
-              </n-grid-item>
-              <n-grid-item>
-                <div class="stat-item">
-                  <n-text class="stat-label" depth="3" :style="{ fontSize: '12px' }">
-                    {{ $t("bank.completedQuestions") }}
-                  </n-text>
-                  <n-text class="stat-value" strong :style="{ fontSize: '14px' }">
-                    {{ bank.completedCount }}
-                  </n-text>
-                </div>
-              </n-grid-item>
-              <n-grid-item>
-                <div class="stat-item">
-                  <n-text class="stat-label" depth="3" :style="{ fontSize: '12px' }">
-                    {{ $t("bank.errorQuestions") }}
-                  </n-text>
-                  <n-text class="stat-value" strong :style="{ fontSize: '14px' }">
-                    {{ bank.wrongCount }}
-                  </n-text>
-                </div>
-              </n-grid-item>
-            </n-grid>
-          </div>
-        </template>
-
-        <template #action>
-          <div class="bank-actions">
-            <n-button
-              type="primary"
-              size="small"
-              class="action-button"
-              @click="handlePractice(bank.id)"
-              :aria-label="`练习题库 ${bank.name}`"
-            >
-              {{ $t("bank.startPractice") }}
-            </n-button>
-            <n-button
-              type="default"
-              size="small"
-              class="action-button"
-              @click="handleWrongSet(bank.id)"
-              :aria-label="`查看错题集 ${bank.name}`"
-            >
-              {{ $t("bank.errorCollection") }}
-            </n-button>
-            <n-button
-              type="default"
-              ghost
-              size="small"
-              class="action-button"
-              @click="confirmDelete(bank.id)"
-              :aria-label="`删除题库 ${bank.name}`"
-            >
-              {{ $t("bank.delete") }}
-            </n-button>
-          </div>
-        </template>
-      </n-card>
+    <!-- 题库表格 -->
+    <div v-else class="table-container">
+      <n-data-table :columns="tableColumns" :data="banks" :loading="loading" :pagination="false" :bordered="true"
+        :single-line="false" size="medium" class="bank-table" />
     </div>
 
     <!-- 合并题库弹窗 -->
-    <n-modal
-      v-model:show="showMergeModal"
-      preset="dialog"
-      :title="$t('bank.mergeTitle')"
-      :positive-text="$t('bank.confirmMerge')"
-      :negative-text="$t('message.cancel')"
-      @positive-click="handleMergeSubmit"
-      @negative-click="resetMergeForm"
-      :loading="mergeLoading"
-      style="width: 90%; max-width: 500px"
-    >
+    <n-modal v-model:show="showMergeModal" preset="dialog" :title="t('bank.mergeTitle')"
+      :positive-text="t('bank.confirmMerge')" :negative-text="t('message.cancel')" @positive-click="handleMergeSubmit"
+      @negative-click="resetMergeForm" :loading="mergeLoading" style="width: 90%; max-width: 500px">
       <div class="merge-form">
         <!-- 题库选择 -->
         <div class="form-section">
-          <n-text class="form-label">{{ $t("bank.selectBanks") }}</n-text>
+          <n-text class="form-label">{{ t("bank.selectBanks") }}</n-text>
           <n-text depth="3" class="form-hint">{{
-            $t("bank.selectTwoBanksHint")
+            t("bank.selectTwoBanksHint")
           }}</n-text>
           <div class="bank-list">
-            <div
-              v-for="bank in banks"
-              :key="bank.id"
-              class="bank-option"
-              :class="{ selected: selectedBanks.includes(bank.id) }"
-              @click="toggleBankSelection(bank.id)"
-            >
-              <n-checkbox
-                :checked="selectedBanks.includes(bank.id)"
-                :disabled="
-                  !selectedBanks.includes(bank.id) && selectedBanks.length >= 2
-                "
-                @update:checked="(checked) => handleBankCheck(bank.id, checked)"
-              />
+            <div v-for="bank in banks" :key="bank.id" class="bank-option"
+              :class="{ selected: selectedBanks.includes(bank.id) }" @click="toggleBankSelection(bank.id)">
+              <n-checkbox :checked="selectedBanks.includes(bank.id)" :disabled="!selectedBanks.includes(bank.id) && selectedBanks.length >= 2
+                " @update:checked="(checked) => handleBankCheck(bank.id, checked)" />
               <div class="bank-info">
                 <div class="bank-option-name">{{ bank.name }}</div>
                 <div class="bank-option-id">ID: {{ bank.id }}</div>
@@ -173,29 +48,18 @@
 
         <!-- 新题库名称 -->
         <div class="form-section">
-          <n-form-item
-            :label="$t('bank.newBankName')"
-            :validation-status="nameError ? 'error' : undefined"
-            :feedback="nameError"
-          >
-            <n-input
-              v-model:value="mergeForm.name"
-              :placeholder="$t('bank.newBankNamePlaceholder')"
-              @blur="validateName"
-              @input="nameError = ''"
-            />
+          <n-form-item :label="t('bank.newBankName')" :validation-status="nameError ? 'error' : undefined"
+            :feedback="nameError">
+            <n-input v-model:value="mergeForm.name" :placeholder="t('bank.newBankNamePlaceholder')" @blur="validateName"
+              @input="nameError = ''" />
           </n-form-item>
         </div>
 
         <!-- 描述信息 -->
         <div class="form-section">
-          <n-form-item :label="$t('bank.description')">
-            <n-input
-              v-model:value="mergeForm.description"
-              type="textarea"
-              :placeholder="$t('bank.descriptionPlaceholder')"
-              :autosize="{ minRows: 3, maxRows: 5 }"
-            />
+          <n-form-item :label="t('bank.description')">
+            <n-input v-model:value="mergeForm.description" type="textarea"
+              :placeholder="t('bank.descriptionPlaceholder')" :autosize="{ minRows: 3, maxRows: 5 }" />
           </n-form-item>
         </div>
       </div>
@@ -204,8 +68,20 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-import {NCard, NCheckbox, NFormItem, NGrid, NGridItem, NInput, NModal, NText, useDialog, useMessage,} from "naive-ui";
+import {computed, h, onMounted, ref} from "vue";
+import type {DataTableColumns} from "naive-ui";
+import {
+  NButton,
+  NCheckbox,
+  NDataTable,
+  NFormItem,
+  NInput,
+  NModal,
+  NSpace,
+  NText,
+  useDialog,
+  useMessage,
+} from "naive-ui";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import axios, {AxiosError} from "axios";
@@ -220,6 +96,81 @@ const router = useRouter();
 const { t } = useI18n();
 const banks = ref<QuestionBank[]>([]);
 const loading = ref(false);
+
+// ================== 表格配置 ==================
+const tableColumns = computed<DataTableColumns<QuestionBank>>(() => [
+  {
+    title: t("bank.id"),
+    key: "id",
+    width: 80,
+    align: "center",
+  },
+  {
+    title: t("bank.name"),
+    key: "name",
+    minWidth: 200,
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: t("bank.description"),
+    key: "description",
+    minWidth: 250,
+    ellipsis: {
+      tooltip: true
+    },
+    render(row) {
+      return row.description || "-";
+    }
+  },
+  {
+    title: t("bank.totalQuestions"),
+    key: "totalCount",
+    width: 120,
+    align: "center",
+  },
+  {
+    title: t("bank.completedQuestions"),
+    key: "completedCount",
+    width: 120,
+    align: "center",
+  },
+  {
+    title: t("bank.errorQuestions"),
+    key: "wrongCount",
+    width: 120,
+    align: "center",
+  },
+  {
+    title: t("bank.actions"),
+    key: "actions",
+    width: 280,
+    align: "center",
+    render(row) {
+      return h(NSpace, { size: "small" }, {
+        default: () => [
+          h(NButton, {
+            type: "primary",
+            size: "small",
+            onClick: () => handlePractice(row.id)
+          }, { default: () => t("bank.startPractice") }),
+          h(NButton, {
+            type: "default",
+            size: "small",
+            onClick: () => handleWrongSet(row.id)
+          }, { default: () => t("bank.errorCollection") }),
+          h(NButton, {
+            type: "error",
+            size: "small",
+            ghost: true,
+            onClick: () => confirmDelete(row.id)
+          }, { default: () => t("bank.delete") })
+        ]
+      });
+    }
+  }
+]);
 
 // ================== 合并功能状态 ==================
 const showMergeModal = ref(false);
@@ -249,8 +200,7 @@ async function fetchBanks() {
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t("message.requestFailed")}：${
-          err.response?.data?.message || t("message.unknownError")
+        `${t("message.requestFailed")}：${err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
@@ -327,8 +277,7 @@ async function handleDelete(id: number) {
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t("message.deleteFailed")}：${
-          err.response?.data?.message || t("message.unknownError")
+        `${t("message.deleteFailed")}：${err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
@@ -452,8 +401,7 @@ async function handleMergeSubmit() {
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t("bank.mergeFailed")}：${
-          err.response?.data?.message || t("message.unknownError")
+        `${t("bank.mergeFailed")}：${err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
@@ -478,14 +426,22 @@ defineExpose({
 </script>
 
 <style scoped>
-/* 页面容器样式已移至 PageContainer 组件 */
-
 /* 顶部操作栏样式 */
 .top-actions {
   display: flex;
   justify-content: flex-end;
   margin-bottom: var(--spacing-4);
-  padding: 0 var(--spacing-2);
+}
+
+/* 表格容器样式 */
+.table-container {
+  background: var(--color-bg-base);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.bank-table {
+  background: var(--color-bg-base);
 }
 
 /* 合并弹窗样式 */
@@ -554,44 +510,25 @@ defineExpose({
   color: var(--color-text-secondary);
 }
 
-/* 移动端适配 */
-@media (max-width: 768px) {
-  .top-actions {
-    padding: 0;
-    margin-bottom: var(--spacing-3);
-  }
-
-  .bank-option {
-    padding: var(--spacing-2);
-  }
-
-  .bank-info {
-    margin-left: var(--spacing-2);
-  }
+/* 表格样式优化 */
+:deep(.n-data-table-th) {
+  background-color: var(--color-bg-soft);
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
-@media (max-width: var(--breakpoint-mobile)) {
-  .top-actions {
-    margin-bottom: var(--spacing-2);
-  }
-
-  .form-section {
-    margin-bottom: var(--spacing-3);
-  }
-
-  .bank-list {
-    max-height: 150px;
-  }
-
-  .bank-option {
-    padding: var(--spacing-2);
-  }
+:deep(.n-data-table-td) {
+  vertical-align: middle;
 }
 
-.empty-state {
-  padding: var(--spacing-12) 0;
-  text-align: center;
-  animation: fadeIn 0.5s ease-out;
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  background-color: var(--color-bg-soft);
+}
+
+/* 空状态动画 */
+:deep(.n-empty .n-button) {
+  animation: fadeIn 0.3s ease 0.2s backwards;
+  border-radius: var(--border-radius-md);
 }
 
 @keyframes fadeIn {
@@ -603,290 +540,6 @@ defineExpose({
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* 卡片容器样式 - 响应式网格布局 */
-.banks-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 桌面端每行三个 */
-  gap: var(--spacing-3); /* 24px - 紧凑卡片间距 */
-  padding: 0;
-}
-
-.bank-card {
-  width: 100%; /* 自适应容器宽度 */
-  max-width: 320px; /* 限制最大宽度，保持紧凑 */
-  margin: 0 auto;
-}
-
-/* 使用Naive UI卡片的内置hover效果，无需自定义 */
-
-.bank-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: var(--spacing-1); /* 8px - 紧凑间距 */
-}
-
-/* bank-id 样式现在通过 n-text 的 depth 属性控制 */
-
-/* bank-name 样式现在通过 n-text 的 strong 属性控制 */
-.bank-name {
-  flex: 1;
-  min-width: 0;
-  word-break: break-word;
-  line-height: 1.3;
-}
-
-/* bank-description 样式现在通过 n-text 的内联样式控制 */
-.bank-description {
-  word-break: break-word;
-}
-
-.bank-stats {
-  padding: var(--spacing-2); /* 16px - 紧凑内边距 */
-  background: var(--color-bg-soft);
-  border-radius: var(--border-radius-sm);
-}
-
-.stat-item {
-  text-align: center;
-}
-
-/* stat-label 样式现在通过 n-text 的 depth 和内联样式控制 */
-.stat-label {
-  margin-bottom: 4px; /* 4px - 固定紧凑间距 */
-  display: block;
-}
-
-/* stat-value 样式现在通过 n-text 的 strong 和内联样式控制 */
-.stat-value {
-  display: block;
-}
-
-.bank-actions {
-  display: flex;
-  gap: var(--spacing-1); /* 8px - 紧凑按钮间距 */
-  flex-wrap: wrap;
-}
-
-.action-button {
-  flex: 1;
-  min-width: 70px; /* 更紧凑最小宽度 */
-}
-
-/* 空状态提示按钮动画 */
-:deep(.n-empty .n-button) {
-  animation: fadeIn 0.3s ease 0.2s backwards;
-  border-radius: var(--border-radius-md);
-}
-
-/* 移动端适配 - 单列布局 */
-@media (max-width: 768px) {
-  .banks-container {
-    grid-template-columns: 1fr; /* 移动端每行一个 */
-    gap: var(--spacing-2); /* 16px - 保持紧凑间距 */
-  }
-
-  .bank-card {
-    width: var(--card-tablet-width);
-  }
-
-  .bank-header {
-    margin-bottom: var(--spacing-2); /* 16px */
-    gap: var(--spacing-1); /* 8px */
-  }
-
-  .bank-stats {
-    padding: var(--spacing-2); /* 16px - 紧凑内边距 */
-    margin-bottom: var(--spacing-3); /* 24px */
-  }
-
-  .bank-actions {
-    gap: var(--spacing-1); /* 8px - 紧凑按钮间距 */
-  }
-
-  .action-button {
-    min-width: 72px; /* 紧凑最小宽度 */
-  }
-
-  .bank-card {
-    margin: var(--spacing-4);
-    border-radius: var(--border-radius-lg);
-  }
-
-  .table-container {
-    margin: 0 calc(-1 * var(--spacing-4));
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
-
-  .mobile-table {
-    font-size: var(--font-size-sm);
-    min-width: var(--spacing-163);
-    /* 652px */
-  }
-
-  :deep(.n-data-table-th) {
-    padding: var(--spacing-3) var(--spacing-2) !important;
-    /* 12px 8px */
-    font-size: var(--font-size-xs);
-    white-space: nowrap;
-  }
-
-  :deep(.n-data-table-td) {
-    padding: var(--spacing-3) var(--spacing-2) !important;
-    font-size: var(--font-size-xs);
-    vertical-align: middle;
-  }
-
-  :deep(.action-btn) {
-    min-width: var(--spacing-13);
-    padding: var(--spacing-2) var(--spacing-2);
-    /* 8px 8px */
-    font-size: var(--font-size-xs);
-    margin: 0 var(--spacing-1);
-  }
-
-  .empty-state {
-    padding: var(--spacing-10) var(--spacing-5);
-  }
-
-  /* 优化表格行高 */
-  :deep(.n-data-table-tr) {
-    min-height: var(--spacing-15);
-  }
-}
-
-@media (max-width: var(--breakpoint-mobile)) {
-  .banks-container {
-    grid-template-columns: 1fr; /* 移动端每行一个 */
-    gap: var(--spacing-2); /* 16px - 保持紧凑间距 */
-  }
-
-  .bank-card {
-    width: var(--card-mobile-width);
-  }
-
-  .bank-stats {
-    padding: var(--spacing-2); /* 16px */
-    margin-bottom: var(--spacing-2); /* 16px - 更紧凑 */
-  }
-
-  .action-button {
-    min-width: 64px; /* 移动端最小宽度 */
-  }
-
-  .bank-card {
-    margin: var(--spacing-3);
-    width: var(--card-mobile-width);
-    box-shadow: var(--card-mobile-shadow);
-  }
-
-  .mobile-table {
-    font-size: var(--font-size-xs);
-    min-width: var(--spacing-150);
-    /* 600px */
-  }
-
-  :deep(.n-data-table-th) {
-    padding: var(--spacing-2) var(--spacing-2) !important;
-    font-size: var(--font-size-xs);
-  }
-
-  :deep(.n-data-table-td) {
-    padding: var(--spacing-3) var(--spacing-2) !important;
-    font-size: var(--font-size-xs);
-  }
-
-  :deep(.action-btn) {
-    min-width: var(--spacing-11);
-    padding: var(--spacing-1) var(--spacing-2);
-    font-size: var(--font-size-xs);
-    margin: 0 var(--spacing-1);
-  }
-
-  .empty-state {
-    padding: var(--spacing-8) var(--spacing-md);
-  }
-
-  /* 进一步优化小屏幕表格 */
-  :deep(.n-data-table-tr) {
-    min-height: var(--spacing-14);
-  }
-}
-
-/* 超小屏幕优化 - 单列布局 */
-@media (max-width: 360px) {
-  .banks-container {
-    grid-template-columns: 1fr; /* 超小屏每行一个 */
-    gap: var(--spacing-1); /* 8px - 超紧凑间距 */
-  }
-
-  .bank-card-item {
-    padding: var(--spacing-2); /* 16px - 超紧凑内边距 */
-  }
-
-  .bank-stats {
-    padding: var(--spacing-1); /* 8px - 超紧凑统计区域 */
-    margin-bottom: var(--spacing-2); /* 16px */
-  }
-
-  .action-button {
-    min-width: 56px; /* 超小屏最小宽度 */
-    height: 24px; /* 超小屏高度 */
-    font-size: 10px; /* 更小字体 */
-    padding: 2px 6px; /* 超紧凑内边距 */
-  }
-
-  .mobile-table {
-    min-width: var(--spacing-138);
-    /* 552px */
-  }
-
-  :deep(.action-btn) {
-    min-width: var(--spacing-10);
-    padding: var(--spacing-1) var(--spacing-1);
-    font-size: var(--font-size-2xs);
-  }
-
-  :deep(.n-data-table-th),
-  :deep(.n-data-table-td) {
-    padding: var(--spacing-2) var(--spacing-1) !important;
-    font-size: var(--font-size-xs);
-  }
-}
-
-/* 横屏模式优化 - 保持网格布局 */
-@media (max-height: 500px) and (orientation: landscape) {
-  .banks-container {
-    grid-template-columns: repeat(2, 1fr); /* 横屏保持两列 */
-    gap: var(--spacing-1); /* 8px - 横屏紧凑间距 */
-  }
-
-  .bank-card-item {
-    padding: var(--spacing-2); /* 16px - 横屏紧凑内边距 */
-  }
-
-  .bank-stats {
-    padding: var(--spacing-1); /* 8px */
-    margin-bottom: var(--spacing-2); /* 16px */
-  }
-
-  .empty-state {
-    padding: var(--spacing-3); /* 24px - 紧凑空状态 */
-  }
-
-  :deep(.n-data-table-tr) {
-    min-height: var(--spacing-11);
-  }
-
-  :deep(.n-data-table-th),
-  :deep(.n-data-table-td) {
-    padding: var(--spacing-2) var(--spacing-2) !important;
   }
 }
 </style>

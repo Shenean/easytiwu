@@ -60,6 +60,8 @@
     "title": "Question Bank List",
     "noData": "No question bank data",
     "refresh": "Refresh Data",
+    "name": "Bank Name",
+    "actions": "Actions",
     "totalQuestions": "Total Questions",
     "completedQuestions": "Completed",
     "errorQuestions": "Wrong Questions",

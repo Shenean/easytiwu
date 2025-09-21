@@ -1,6 +1,6 @@
 <template>
   <PageContainer
-    :title="$t('settings.title')"
+    :title="t('settings.title')"
     :show-card="false"
     container-class="settings-container"
   >
@@ -11,7 +11,7 @@
             <n-icon size="20" class="setting-icon">
               <SettingsOutline />
             </n-icon>
-            <h3 class="setting-title">{{ $t("settings.theme.title") }}</h3>
+            <h3 class="setting-title">{{ t("settings.theme.title") }}</h3>
           </div>
         </div>
 
@@ -34,7 +34,7 @@
             <n-icon size="20" class="setting-icon">
               <Language />
             </n-icon>
-            <h3 class="setting-title">{{ $t("settings.language.title") }}</h3>
+            <h3 class="setting-title">{{ t("settings.language.title") }}</h3>
           </div>
         </div>
         <div class="language-toggle-container">
@@ -54,9 +54,9 @@
         <n-icon size="20" class="setting-icon">
           <SettingsOutline />
         </n-icon>
-        <h3 class="setting-title">{{ $t("settings.other") }}</h3>
+        <h3 class="setting-title">{{ t("settings.other") }}</h3>
       </div>
-      <div class="setting-description">{{ $t("settings.moreFeatures") }}</div>
+      <div class="setting-description">{{ t("settings.moreFeatures") }}</div>
     </div>
   </PageContainer>
 </template>

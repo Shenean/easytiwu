@@ -61,6 +61,8 @@
     "title": "题库列表",
     "noData": "暂无题库数据",
     "refresh": "刷新数据",
+    "name": "题库名称",
+    "actions": "操作",
     "totalQuestions": "总题数",
     "completedQuestions": "已完成",
     "errorQuestions": "错题数",
