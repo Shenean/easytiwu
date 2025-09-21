@@ -1,6 +1,6 @@
 <template>
   <n-card :title="t('answerCard.title')" size="small" class="answer-card-container">
-    <n-grid :cols="5" :x-gap="12" :y-gap="12">
+    <n-grid :cols="5" :x-gap="8" :y-gap="8">
       <n-grid-item v-for="(q, index) in questions" :key="q.id">
         <n-button :type="getCardButtonType(q)" size="medium" @click="jumpToQuestion(q.id)" :focusable="true"
           class="answer-card-btn" :style="getButtonStyle(q)">
@@ -41,12 +41,13 @@ function getCardButtonType(q: Question) {
 
 function getButtonStyle(q: Question) {
   const baseStyle = {
-    width: '100%',
     height: 'var(--button-height-md)',
-    minWidth: 'var(--button-height-md)',
     fontSize: 'var(--font-size-base)',
     padding: '0',
     borderRadius: 'var(--border-radius-sm)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 
   if (q.id === currentQuestionId) {
@@ -54,6 +55,7 @@ function getButtonStyle(q: Question) {
       ...baseStyle,
       border: `var(--border-width-2) solid ${themeVars.value.primaryColor}`,
       borderStyle: 'solid',
+      boxShadow: `0 0 0 2px ${themeVars.value.primaryColorSuppl}20`,
     };
   }
 
@@ -71,6 +73,21 @@ function jumpToQuestion(id: number) {
   top: var(--spacing-3);
   max-height: calc(100vh - var(--spacing-25));
   overflow-y: auto;
+  padding: var(--spacing-1);
+}
+
+.answer-card-container :deep(.n-card__content) {
+  padding: var(--spacing-1);
+}
+
+.answer-card-btn {
+  transition: all 0.2s ease-in-out;
+  aspect-ratio: 1;
+}
+
+.answer-card-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .answer-card-container::-webkit-scrollbar {

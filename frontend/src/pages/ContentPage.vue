@@ -443,7 +443,6 @@ watch(currentQuestion, () => {
 </script>
 
 <style scoped>
-
 .content-layout {
   display: flex;
   gap: 24px;
@@ -461,7 +460,7 @@ watch(currentQuestion, () => {
 .sidebar {
   position: sticky;
   top: 80px;
-  width: 300px;
+  width: 400px;
   height: calc(100vh - 80px);
   overflow-y: auto;
   flex-shrink: 0;
@@ -548,9 +547,6 @@ watch(currentQuestion, () => {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-
-
-
 
 .bottom-actions {
   position: fixed;

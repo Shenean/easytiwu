@@ -18,7 +18,6 @@ import {computed} from 'vue'
 interface Props {
   title?: string
   showCard?: boolean
-  maxWidth?: string
   size?: 'small' | 'medium' | 'large'
   bordered?: boolean
   segmented?: boolean | { content?: boolean; footer?: boolean }
@@ -35,7 +34,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   showCard: true,
-  maxWidth: 'var(--container-medium-width)',
   size: 'large',
   bordered: true,
   segmented: true,
@@ -92,21 +90,17 @@ const wrapperClass = computed(() => {
 })
 
 // 计算包装器样式
-const wrapperStyle = computed(() => ({
-  maxWidth: props.maxWidth,
-  margin: '0 auto'
-}))
+const wrapperStyle = computed(() => ({}))
 </script>
 
 <style scoped>
 .page-container {
   width: 100%;
-  padding: var(--spacing-md);
-  /* 16px */
 }
 
 .page-header {
   margin-bottom: var(--spacing-lg);
+  padding: 0 var(--spacing-sm);
 }
 
 .page-title {
@@ -118,9 +112,8 @@ const wrapperStyle = computed(() => ({
 }
 
 @media (max-width: 639px) {
-  .page-container {
-    padding: var(--spacing-sm);
-    /* 8px */
+  .page-header {
+    padding: 0 var(--spacing-xs);
   }
 
   .page-title {

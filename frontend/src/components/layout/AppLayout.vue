@@ -56,7 +56,7 @@ const contentStyles = computed(() => {
     md: 'var(--spacing-3)',
     lg: 'var(--spacing-4)'
   }
-  
+
   return {
     padding: paddingMap[props.contentPadding],
     paddingTop: `calc(var(--nav-height) + ${paddingMap[props.contentPadding]})`,
@@ -67,19 +67,19 @@ const contentStyles = computed(() => {
 
 const containerClass = computed(() => {
   const classes = []
-  
+
 
   if (props.containerSize !== 'full') {
     classes.push(`container-${props.containerSize}`)
   }
-  
 
-  
+
+
 
   if (props.containerClass) {
     classes.push(props.containerClass)
   }
-  
+
   return classes.join(' ')
 })
 </script>
