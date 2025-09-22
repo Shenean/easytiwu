@@ -178,7 +178,6 @@
     "bankId": "Bank ID",
     "wrongQuestions": "Wrong Questions Practice",
     "allPractice": "All Practice",
-    "questionTypePractice": "Practice by Type",
     "currentBank": "Current Bank: {bankName} - {practiceType}, Total {count} questions",
     "fetchQuestionsFailed": "Failed to fetch questions",
     "questionNotFound": "Question not found",

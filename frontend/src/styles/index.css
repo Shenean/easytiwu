@@ -1,16 +1,12 @@
-@import "./spacing-constants.css";
 @import "./design-tokens.css";
 
-
 @import "./components.css";
-
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
-
 
 html {
   font-family: var(--font-family-base);
@@ -29,8 +25,6 @@ body {
 
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-
 
 .text-xs {
   font-size: var(--font-size-xs);
@@ -85,8 +79,6 @@ body {
 .text-inverse {
   color: var(--color-text-inverse);
 }
-
-
 
 .flex {
   display: flex;
@@ -174,8 +166,6 @@ body {
   gap: var(--spacing-8);
 }
 
-
-
 .border {
   border: var(--border-default);
 }
@@ -230,8 +220,6 @@ body {
   border-radius: var(--border-radius-full);
 }
 
-
-
 .shadow-none {
   box-shadow: var(--shadow-none);
 }
@@ -270,8 +258,6 @@ body {
   box-shadow: var(--shadow-error);
 }
 
-
-
 .transition-none {
   transition: none;
 }
@@ -284,8 +270,6 @@ body {
 .transition-slow {
   transition: var(--transition-slow);
 }
-
-
 
 .relative {
   position: relative;
@@ -330,8 +314,6 @@ body {
 .z-tooltip {
   z-index: var(--z-index-tooltip);
 }
-
-
 
 .w-full {
   width: 100%;
@@ -414,7 +396,6 @@ body {
   max-width: var(--max-width-full);
 }
 
-
 @media (prefers-reduced-motion: reduce) {
   .transition-fast,
   .transition-base,
@@ -426,7 +407,6 @@ body {
     transform: none;
   }
 }
-
 
 @media (prefers-contrast: high) {
   .border,

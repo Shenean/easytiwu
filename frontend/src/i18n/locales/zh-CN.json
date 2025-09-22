@@ -182,7 +182,6 @@
     "bankId": "题库ID",
     "wrongQuestions": "错题练习",
     "allPractice": "全部练习",
-    "questionTypePractice": "题型练习",
     "currentBank": "当前题库：{bankName} - {practiceType}，共 {count} 题",
     "fetchQuestionsFailed": "获取题目失败",
     "questionNotFound": "题目不存在",
