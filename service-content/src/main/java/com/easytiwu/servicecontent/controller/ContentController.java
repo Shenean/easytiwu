@@ -3,7 +3,8 @@ package com.easytiwu.servicecontent.controller;
 import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.exception.BusinessException;
 import com.easytiwu.servicecontent.dto.QuestionDTO;
-import com.easytiwu.servicecontent.service.QuestionQueryService;
+import com.easytiwu.servicecontent.service.AnswerVerificationServiceInterface;
+import com.easytiwu.servicecontent.service.QuestionQueryServiceInterface;
 import lombok.Data;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +20,13 @@ import java.util.List;
 @RequestMapping({"/api/content", "/content"})
 public class ContentController {
 
-    private final QuestionQueryService questionQueryService;
+    private final QuestionQueryServiceInterface questionQueryService;
+    private final AnswerVerificationServiceInterface answerVerificationService;
 
-    public ContentController(QuestionQueryService questionQueryService) {
+    public ContentController(QuestionQueryServiceInterface questionQueryService,
+                             AnswerVerificationServiceInterface answerVerificationService) {
         this.questionQueryService = questionQueryService;
+        this.answerVerificationService = answerVerificationService;
     }
 
     @PostMapping("/questions")
@@ -52,7 +56,7 @@ public class ContentController {
         if (req.getUserAnswer() == null || req.getUserAnswer().trim().isEmpty()) {
             throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 userAnswer 不能为空");
         }
-        return questionQueryService.verifyAnswer(req.getQuestionId(), req.getUserAnswer());
+        return answerVerificationService.verifyAnswer(req.getQuestionId(), req.getUserAnswer());
     }
 
     @Data
