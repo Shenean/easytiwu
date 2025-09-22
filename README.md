@@ -1,7 +1,6 @@
 # EasyTiwu · AI 智能刷题工具
 
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)  
-[![Stars](https://img.shields.io/github/stars/Shenean/easytiwu)](https://github.com/Shenean/easytiwu/stargazers)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE) [![Stars](https://img.shields.io/github/stars/Shenean/easytiwu)](https://github.com/Shenean/easytiwu/stargazers)
 
 ---
 
