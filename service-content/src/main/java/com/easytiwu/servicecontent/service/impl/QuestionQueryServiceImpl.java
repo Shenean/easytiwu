@@ -54,7 +54,7 @@ public class QuestionQueryServiceImpl implements QuestionQueryServiceInterface {
         questionType = questionType.trim().toLowerCase();
 
         // 可选：进一步限制合法类型（假设支持的题型如下）
-        Set<String> validTypes = Set.of("single", "multiple", "true_false", "fill_in");
+        Set<String> validTypes = Set.of("single", "multiple", "true_false", "fill_blank", "short_answer");
         if (!validTypes.contains(questionType)) {
             return Collections.emptyList();
         }
