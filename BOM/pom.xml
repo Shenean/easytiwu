@@ -5,7 +5,7 @@
 
     <groupId>com.easytiwu</groupId>
     <artifactId>easytiwu-dependencies-bom</artifactId>
-    <version>1.2.0</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
     <name>EasyTiwu Dependencies BOM</name>
 
@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.4.3</version>
         <relativePath/>
     </parent>
 
@@ -22,7 +22,7 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- 平台版本 -->
-        <spring-boot.version>3.5.0</spring-boot.version>
+        <spring-boot.version>3.4.3</spring-boot.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
 
         <!-- 业务常用库版本 -->
@@ -33,11 +33,22 @@
         <mysql.connector.version>8.4.0</mysql.connector.version>
         <dashscope.version>2.21.8</dashscope.version>
         <lombok.version>1.18.34</lombok.version>
-        <resilience4j.version>2.3.0</resilience4j.version>
+        <resilience4j.version>2.2.0</resilience4j.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
-        
+
         <!-- 日志框架版本 -->
         <log4j2.version>2.24.3</log4j2.version>
+
+        <!-- docx4j 版本 -->
+        <docx4j.version>11.4.5</docx4j.version>
+        <jaxb.version>4.0.3</jaxb.version>
+        
+        <!-- EasyTiwu内部模块版本 -->
+        <easytiwu-common-exception.version>0.0.1-SNAPSHOT</easytiwu-common-exception.version>
+        <easytiwu-starter-db.version>0.0.1-SNAPSHOT</easytiwu-starter-db.version>
+        
+        <!-- 其他依赖版本 -->
+        <juniversalchardet.version>2.5.0</juniversalchardet.version>
     </properties>
 
     <dependencyManagement>
@@ -78,6 +89,38 @@
                 <artifactId>pdfbox-tools</artifactId>
                 <version>${pdfbox.version}</version>
                 <optional>true</optional>
+            </dependency>
+
+            <!-- ===== docx4j & JAXB（Java 11+ 需要） ===== -->
+            <!-- 核心 -->
+            <dependency>
+                <groupId>org.docx4j</groupId>
+                <artifactId>docx4j-core</artifactId>
+                <version>${docx4j.version}</version>
+            </dependency>
+            <!-- 如果你需要 FO 导出功能 -->
+            <dependency>
+                <groupId>org.docx4j</groupId>
+                <artifactId>docx4j-export-fo</artifactId>
+                <version>${docx4j.version}</version>
+            </dependency>
+            <!-- 如果你需要 XHTML 导入 -->
+            <dependency>
+                <groupId>org.docx4j</groupId>
+                <artifactId>docx4j-ImportXHTML</artifactId>
+                <version>${docx4j.version}</version>
+            </dependency>
+            <!-- JAXB 实现 -->
+            <dependency>
+                <groupId>org.docx4j</groupId>
+                <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+                <version>${docx4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb.version}</version>
             </dependency>
 
             <!-- ===== JSON ===== -->
@@ -155,6 +198,12 @@
                 <artifactId>resilience4j-spring-boot3</artifactId>
                 <version>${resilience4j.version}</version>
             </dependency>
+            <!-- 添加RxJava3依赖以解决RxJava3OnClasspathCondition类找不到的问题 -->
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-rxjava3</artifactId>
+                <version>${resilience4j.version}</version>
+            </dependency>
 
             <!-- ===== 验证框架 ===== -->
             <dependency>
@@ -163,69 +212,48 @@
                 <version>${jakarta.validation.version}</version>
             </dependency>
 
-            <!-- 字符编码自动检测 -->
+            <!-- ===== 字符编码检测 ===== -->
             <dependency>
-                <groupId>com.googlecode.juniversalchardet</groupId>
+                <groupId>com.github.albfernandez</groupId>
                 <artifactId>juniversalchardet</artifactId>
-                <version>1.0.3</version>
-            </dependency>
-
-            <!-- ===== 日志框架 Log4j2 ===== -->
-            <!-- 排除 Spring Boot 默认的 Logback，使用 Log4j2 -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-logging</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>${juniversalchardet.version}</version>
             </dependency>
             
-            <!-- Log4j2 核心依赖 -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-log4j2</artifactId>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>${log4j2.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j2.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-slf4j2-impl</artifactId>
-                <version>${log4j2.version}</version>
-            </dependency>
-            
-            <!-- Log4j2 异步日志支持 -->
-            <dependency>
-                <groupId>com.lmax</groupId>
-                <artifactId>disruptor</artifactId>
-                <version>3.4.4</version>
-            </dependency>
-
-            <!-- ===== 内部模块 ===== -->
+            <!-- ===== EasyTiwu内部模块 ===== -->
             <dependency>
                 <groupId>com.easytiwu</groupId>
                 <artifactId>common-exception</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${easytiwu-common-exception.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.easytiwu</groupId>
                 <artifactId>starter-db</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${easytiwu-starter-db.version}</version>
+            </dependency>
+
+            <!-- ===== 其他工具 ===== -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.17.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

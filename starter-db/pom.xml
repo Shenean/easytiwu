@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.easytiwu</groupId>
             <artifactId>common-exception</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- Spring Boot 基础依赖 -->
@@ -85,7 +84,13 @@
 
     <build>
         <plugins>
-            <!-- 插件版本统一在父 POM 或 BOM 中定义 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
