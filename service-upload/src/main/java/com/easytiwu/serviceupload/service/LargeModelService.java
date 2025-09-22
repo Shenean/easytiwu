@@ -1,8 +1,8 @@
 package com.easytiwu.serviceupload.service;
 
-import com.alibaba.dashscope.aigc.generation.Generation;
-import com.alibaba.dashscope.aigc.generation.GenerationParam;
-import com.alibaba.dashscope.aigc.generation.GenerationResult;
+import com.alibaba.dashscope.app.Application;
+import com.alibaba.dashscope.app.ApplicationParam;
+import com.alibaba.dashscope.app.ApplicationResult;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.ApiException;
@@ -28,8 +28,7 @@ import java.time.Duration;
 import java.util.Arrays;
 
 /**
- * 调用 Qwen 大模型，将题目文本转为 JSON
- * 
+ * 调用 Model Studio 的 Application（智能体）将题目文本转为 JSON
  * @author sheny
  */
 @Service
@@ -37,11 +36,15 @@ public class LargeModelService {
     private static final Logger logger = LoggerFactory.getLogger(LargeModelService.class);
     private static final String QWEN_CB = "qwenService";
 
-    private final Generation generationClient;
+    private final Application applicationClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${llm.dashscope.api-key}")
     private String dashscopeApiKey;
+
+    // Model Studio 中创建的 Application ID（必需）
+    @Value("${llm.dashscope.app-id}")
+    private String dashscopeAppId;
 
     @Value("${llm.dashscope.read-timeout:300}")
     private int readTimeoutSeconds;
@@ -50,30 +53,20 @@ public class LargeModelService {
     private int connectTimeoutSeconds;
 
     public LargeModelService() {
-        this.generationClient = new Generation();
+        this.applicationClient = new Application();
     }
 
-    /**
-     * Spring初始化后配置连接池
-     * 使用@PostConstruct确保@Value注解的值已经注入
-     */
     @PostConstruct
     public void initializeConnectionPool() {
         try {
             configureConnectionPool(connectTimeoutSeconds, readTimeoutSeconds);
         } catch (Exception e) {
             logger.error("Failed to initialize connection pool: {}", e.getMessage(), e);
-            // 添加详细的日志记录
-            logger.error("Connection pool initialization failed with error: {}, StackTrace: {}", 
-                         e.getMessage(), 
-                         Arrays.toString(e.getStackTrace()));
-            // 不重新抛出异常，避免影响服务启动
+            logger.error("Connection pool initialization failed with error: {}, StackTrace: {}",
+                    e.getMessage(), Arrays.toString(e.getStackTrace()));
         }
     }
 
-    /**
-     * 配置DashScope连接池参数，包括超时设置
-     */
     private static void configureConnectionPool(int connectTimeoutSeconds, int readTimeoutSeconds) {
         try {
             Constants.connectionConfigurations = ConnectionConfigurations.builder()
@@ -92,11 +85,6 @@ public class LargeModelService {
         }
     }
 
-    /**
-     * 从配置文件中读取 system prompt
-     * 
-     * @return system prompt 内容
-     */
     private String loadSystemPrompt() {
         try {
             ClassPathResource resource = new ClassPathResource("prompts/parser_prompt.txt");
@@ -104,36 +92,31 @@ public class LargeModelService {
             byte[] bytes = inputStream.readAllBytes();
             return new String(bytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            String errorMsg = String.format("加载系统提示词失败，资源路径: %s，错误信息: %s", 
-                                          "prompts/parser_prompt.txt", e.getMessage());
+            String errorMsg = String.format("加载系统提示词失败，资源路径: %s，错误信息: %s",
+                    "prompts/parser_prompt.txt", e.getMessage());
             logger.error(errorMsg, e);
             throw new SystemException(ErrorCode.INTERNAL_SERVER_ERROR, errorMsg, e);
         }
     }
 
     @CircuitBreaker(name = QWEN_CB, fallbackMethod = "fallbackQuestionsJson")
-    public String generateQuestionsJson(String textContent)
-            throws ApiException {
-
+    public String generateQuestionsJson(String textContent) throws ApiException {
         String systemPrompt = loadSystemPrompt();
         Message systemMsg = Message.builder().role(Role.SYSTEM.getValue()).content(systemPrompt).build();
         Message userMsg = Message.builder().role(Role.USER.getValue()).content(textContent).build();
 
-        GenerationParam param = GenerationParam.builder()
+        ApplicationParam param = ApplicationParam.builder()
                 .apiKey(dashscopeApiKey)
-                .model("qwen-flash")
+                .appId(dashscopeAppId)
                 .messages(Arrays.asList(systemMsg, userMsg))
-                .temperature(0.1f)
-                .topP(0.8)
-                .maxTokens(30000)
                 .build();
 
-        logger.info("Calling Qwen model API with DashScope...");
-        GenerationResult result;
+        logger.info("Calling Model Studio Application (agent) with DashScope...");
+        ApplicationResult result;
         try {
-            result = generationClient.call(param);
+            result = applicationClient.call(param);
         } catch (ApiException e) {
-            String errorMsg = String.format("调用大模型API失败: %s", e.getMessage());
+            String errorMsg = String.format("调用智能体Application API失败: %s", e.getMessage());
             logger.error(errorMsg, e);
             throw BusinessException.of(ErrorCode.BAD_REQUEST, errorMsg);
         } catch (NoApiKeyException e) {
@@ -145,23 +128,22 @@ public class LargeModelService {
             logger.error("{}: {}", errorMsg, e.getMessage(), e);
             throw new BusinessException(ErrorCode.PARAM_MISSING, e);
         } catch (Exception e) {
-            String errorMsg = String.format("调用大模型服务时发生未知错误: %s", e.getMessage());
+            String errorMsg = String.format("调用智能体服务时发生未知错误: %s", e.getMessage());
             logger.error(errorMsg, e);
             throw new SystemException(ErrorCode.INTERNAL_SERVER_ERROR, errorMsg, e);
         }
 
         if (result.getOutput() == null) {
-            String errorMsg = "从大模型API收到无效响应";
+            String errorMsg = "从智能体Application收到无效响应";
             logger.error(errorMsg);
             throw BusinessException.of(ErrorCode.BUSINESS_ERROR, errorMsg);
         }
 
         String output = result.getOutput().getText().trim();
         String[] lines = output.split("\n");
-        
-        // 限制最多处理100行数据
+
         if (lines.length > 100) {
-            String errorMsg = String.format("大模型返回的数据超过100行限制，实际行数: %d", lines.length);
+            String errorMsg = String.format("智能体返回的数据超过100行限制，实际行数: %d", lines.length);
             logger.error(errorMsg);
             throw BusinessException.of(ErrorCode.BUSINESS_ERROR, errorMsg);
         }
@@ -184,4 +166,8 @@ public class LargeModelService {
         return output;
     }
 
+    private String fallbackQuestionsJson(String textContent, Throwable t) {
+        logger.warn("Fallback triggered for textContent: {}, reason: {}", textContent, t == null ? "null" : t.getMessage());
+        return "[]";
+    }
 }

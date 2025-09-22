@@ -34,11 +34,12 @@ mybatis-plus:
       id-type: AUTO
       logic-delete-field: deleted
       logic-delete-value: 1
-      logic-not-delete-value: 0   
+      logic-not-delete-value: 0
 
 # 服务特有配置
 llm:
   dashscope:
     api-key: sk-282b5b70ba484626baa755e617b3e7d4
+    app-id: cb6a41f66a474dc2963b4a755222d4c8
     read-timeout: 300
     connect-timeout: 120
