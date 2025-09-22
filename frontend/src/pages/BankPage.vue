@@ -109,6 +109,19 @@
         </div>
       </div>
     </n-modal>
+
+    <!-- 题型练习选择弹窗 -->
+    <n-modal v-model:show="showQuestionTypeModal" preset="dialog" :title="t('bank.questionTypePractice')"
+      :positive-text="t('common.confirm')" :negative-text="t('message.cancel')" @positive-click="handleQuestionTypeSubmit"
+      @negative-click="resetQuestionTypeForm" style="width: 90%; max-width: 500px">
+      <div class="question-type-form">
+        <n-form ref="questionTypeFormRef" :model="questionTypeForm">
+          <n-form-item :label="t('bank.selectQuestionType')">
+            <n-select v-model:value="questionTypeForm.questionType" :options="questionTypeOptions" />
+          </n-form-item>
+        </n-form>
+      </div>
+    </n-modal>
   </PageContainer>
 </template>
 
@@ -126,6 +139,7 @@ import {
   NInput,
   NModal,
   NP,
+  NSelect,
   NSpace,
   NText,
   NUpload,
@@ -216,7 +230,7 @@ const tableColumns = computed<DataTableColumns<QuestionBank>>(() => [
   {
     title: t("bank.actions"),
     key: "actions",
-    width: 280,
+    width: 350,
     align: "center",
     render(row) {
       return h(NSpace, { size: "small" }, {
@@ -226,6 +240,11 @@ const tableColumns = computed<DataTableColumns<QuestionBank>>(() => [
             size: "small",
             onClick: () => handlePractice(row.id)
           }, { default: () => t("bank.startPractice") }),
+          h(NButton, {
+            type: "default",
+            size: "small",
+            onClick: () => handleQuestionTypePractice(row.id)
+          }, { default: () => t("bank.questionTypePractice") }),
           h(NButton, {
             type: "default",
             size: "small",
@@ -252,6 +271,23 @@ const mergeForm = ref({
   description: "",
 });
 const nameError = ref("");
+
+// ================== 题型练习状态 ==================
+const showQuestionTypeModal = ref(false);
+const currentBankId = ref<number | null>(null);
+const questionTypeFormRef = ref<FormInst | null>(null);
+const questionTypeForm = ref({
+  questionType: ""
+});
+
+// 题型选项
+const questionTypeOptions = computed(() => [
+  { label: t('statistics.questionTypes.single'), value: 'single' },
+  { label: t('statistics.questionTypes.multiple'), value: 'multiple' },
+  { label: t('statistics.questionTypes.fillBlank'), value: 'fill_blank' },
+  { label: t('statistics.questionTypes.trueFalse'), value: 'true_false' },
+  { label: t('statistics.questionTypes.shortAnswer'), value: 'short_answer' }
+]);
 
 // ================== 数据获取 ==================
 /**
@@ -592,6 +628,64 @@ async function handleUploadSubmit() {
   });
 }
 
+// ================== 题型练习功能处理 ==================
+/**
+ * 处理题型练习
+ */
+function handleQuestionTypePractice(bankId: number) {
+  currentBankId.value = bankId;
+  showQuestionTypeModal.value = true;
+}
+
+/**
+ * 重置题型练习表单
+ */
+function resetQuestionTypeForm() {
+  questionTypeForm.value = {
+    questionType: ""
+  };
+  currentBankId.value = null;
+}
+
+/**
+ * 处理题型练习提交
+ */
+async function handleQuestionTypeSubmit() {
+  if (!questionTypeForm.value.questionType) {
+    message.error(t('bank.selectQuestionTypeError'));
+    return false;
+  }
+
+  if (!currentBankId.value) {
+    message.error(t('message.unknownError'));
+    return false;
+  }
+
+  try {
+    const targetBank = banks.value.find((b) => b.id === currentBankId.value);
+    const bankName = targetBank?.name || `ID: ${currentBankId.value}`;
+    
+    router.push({
+      name: "content",
+      params: { 
+        bankId: currentBankId.value.toString(), 
+        type: "question-type"
+      },
+      query: { 
+        bankName: bankName,
+        questionType: questionTypeForm.value.questionType
+      },
+    });
+    
+    showQuestionTypeModal.value = false;
+    resetQuestionTypeForm();
+    return true;
+  } catch (error) {
+    message.error(t("message.routeJumpFailed"));
+    return false;
+  }
+}
+
 // ================== 生命周期 ==================
 onMounted(() => {
   fetchBanks();
@@ -605,31 +699,26 @@ defineExpose({
 </script>
 
 <style scoped>
-/* 顶部操作栏样式 */
+.bank-container {
+  padding: var(--spacing-sm);
+}
+
 .top-actions {
-  display: flex;
-  justify-content: flex-end;
   margin-bottom: var(--spacing-4);
 }
 
-/* 表格容器样式 */
 .table-container {
-  background: var(--color-bg-base);
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .bank-table {
-  background: var(--color-bg-base);
+  width: 100%;
+  min-width: 800px;
 }
 
-/* 上传弹窗样式 */
-.upload-form {
-  padding: var(--spacing-2) 0;
-}
-
-/* 合并弹窗样式 */
-.merge-form {
+.merge-form,
+.upload-form,
+.question-type-form {
   padding: var(--spacing-2) 0;
 }
 
@@ -637,93 +726,74 @@ defineExpose({
   margin-bottom: var(--spacing-4);
 }
 
+.form-section:last-child {
+  margin-bottom: 0;
+}
+
 .form-label {
   display: block;
-  margin-bottom: var(--spacing-1);
-  font-weight: 600;
-  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
 }
 
 .form-hint {
   display: block;
-  margin-bottom: var(--spacing-2);
-  font-size: var(--font-size-xs);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
 }
 
 .bank-list {
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: var(--spacing-2);
 }
 
 .bank-option {
   display: flex;
   align-items: center;
-  padding: var(--spacing-2) var(--spacing-3);
-  border-bottom: 1px solid var(--color-border-soft);
+  padding: var(--spacing-2);
   cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.bank-option:last-child {
-  border-bottom: none;
+  border-radius: 4px;
+  margin-bottom: var(--spacing-1);
+  transition: background-color 0.2s;
 }
 
 .bank-option:hover {
-  background-color: var(--color-bg-soft);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .bank-option.selected {
-  background-color: var(--color-primary-light);
+  background-color: #18a058;
+  color: white;
+}
+
+.bank-option.selected :deep(.n-checkbox-box) {
+  border-color: white;
+  background-color: #18a058;
 }
 
 .bank-info {
   margin-left: var(--spacing-2);
-  flex: 1;
 }
 
 .bank-option-name {
   font-weight: 500;
-  color: var(--color-text-primary);
-  margin-bottom: 2px;
 }
 
 .bank-option-id {
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  opacity: 0.8;
 }
 
-/* 表格样式优化 */
-:deep(.n-data-table-th) {
-  background-color: var(--color-bg-soft);
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-:deep(.n-data-table-td) {
-  vertical-align: middle;
-}
-
-:deep(.n-data-table-tr:hover .n-data-table-td) {
-  background-color: var(--color-bg-soft);
-}
-
-/* 空状态动画 */
-:deep(.n-empty .n-button) {
-  animation: fadeIn 0.3s ease 0.2s backwards;
-  border-radius: var(--border-radius-md);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(var(--spacing-2));
+@media (max-width: 768px) {
+  .bank-container {
+    padding: var(--spacing-xs);
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .top-actions {
+    margin-bottom: var(--spacing-3);
   }
 }
 </style>

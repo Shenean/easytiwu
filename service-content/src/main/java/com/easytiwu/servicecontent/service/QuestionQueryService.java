@@ -82,6 +82,64 @@ public class QuestionQueryService {
         return dtos;
     }
 
+    public List<QuestionDTO> queryQuestionsByType(Long bankId, String questionType) {
+        if (bankId == null || questionType == null || questionType.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        questionType = questionType.trim().toLowerCase(); // 规范化输入
+
+        // 可选：进一步限制合法类型（假设支持的题型如下）
+        Set<String> validTypes = Set.of("single", "multiple", "true_false", "fill_in");
+        if (!validTypes.contains(questionType)) {
+            return Collections.emptyList(); // 或抛异常，视业务而定
+        }
+
+        LambdaQueryWrapper<Question> qw = new LambdaQueryWrapper<>();
+        qw.eq(Question::getBankId, bankId);
+        qw.eq(Question::getType, questionType);
+
+        List<Question> questions = questionMapper.selectList(qw);
+        if (questions.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> qids = questions.stream().map(Question::getId).toList();
+        LambdaQueryWrapper<QuestionOption> ow = new LambdaQueryWrapper<>();
+        ow.in(QuestionOption::getQuestionId, qids);
+        List<QuestionOption> options = optionMapper.selectList(ow);
+        Map<Long, List<QuestionOption>> optionMap = options.stream()
+                .collect(Collectors.groupingBy(QuestionOption::getQuestionId));
+
+        // Map to DTO
+        List<QuestionDTO> dtos = new ArrayList<>(questions.size());
+        for (Question q : questions) {
+            QuestionDTO dto = new QuestionDTO();
+            dto.setId(q.getId());
+            dto.setContent(q.getContent());
+            dto.setType(q.getType());
+            dto.setUserAnswer(q.getUserAnswer());
+            dto.setCorrectAnswer(q.getCorrectAnswer());
+            dto.setAnalysis(q.getAnalysis());
+            dto.setIsCompleted(q.getIsCompleted());
+            dto.setIsCorrect(q.getIsCorrect());
+
+            // options mapping: convert to label/text
+            List<QuestionOption> list = optionMap.getOrDefault(q.getId(), Collections.emptyList());
+            List<QuestionOptionDTO> optDtos = list.stream()
+                    .sorted(Comparator.comparing(QuestionOption::getSortOrder))
+                    .map(opt -> {
+                        QuestionOptionDTO od = new QuestionOptionDTO();
+                        od.setLabel(opt.getSortOrder());
+                        od.setText(opt.getOptionContent());
+                        return od;
+                    })
+                    .toList();
+            dto.setOptions(optDtos);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
     /**
      * 验证用户答案
      * @param questionId 题目ID

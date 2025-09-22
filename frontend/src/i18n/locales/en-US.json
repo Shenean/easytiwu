@@ -24,7 +24,7 @@
     "none": "None",
     "yes": "Yes",
     "no": "No",
-    "noData": "No data available"
+    "noData": "No data"
   },
   "navigation": {
     "bank": "Question Banks",
@@ -36,28 +36,28 @@
     "closeMenu": "Close Navigation Menu",
     "menu": "Menu"
   },
-
   "bank": {
-    "title": "Question Bank List",
+    "title": "Question Banks",
     "noData": "No question bank data",
     "refresh": "Refresh Data",
     "name": "Bank Name",
     "actions": "Actions",
-    "totalQuestions": "Total Questions",
+    "totalQuestions": "Total",
     "completedQuestions": "Completed",
-    "errorQuestions": "Wrong Questions",
-    "startPractice": "Start Practice",
-    "errorCollection": "Wrong Question Set",
+    "errorQuestions": "Wrong",
+    "startPractice": "Practice All",
+    "questionTypePractice": "Practice by Type",
+    "errorCollection": "Wrong Questions",
     "delete": "Delete",
     "confirmDelete": "Confirm Delete",
-    "deleteConfirmMessage": "Are you sure you want to delete question bank \"{name}\"? This action cannot be undone.",
-    "deleteSuccess": "Delete successful",
-    "deleteFailed": "Delete failed",
-    "practiceBank": "Practice bank {name}",
-    "viewWrongSet": "View wrong question set {name}",
+    "deleteConfirmMessage": "Are you sure you want to delete the question bank \"{name}\"? This action cannot be undone.",
+    "deleteSuccess": "Deleted successfully",
+    "deleteFailed": "Failed to delete",
+    "practiceBank": "Practice Bank {name}",
+    "viewWrongSet": "View Wrong Set {name}",
     "id": "ID",
     "merge": "Merge",
-    "mergeTitle": "Merge Question Banks",
+    "mergeTitle": "Merge Banks",
     "confirmMerge": "Confirm Merge",
     "selectBanks": "Select Banks",
     "selectBanksHint": "Please select 1-2 banks to merge",
@@ -65,17 +65,20 @@
     "selectBanksError": "Please select 1-2 banks",
     "selectTwoBanksError": "Please select 2 banks to merge",
     "newBankName": "New Bank Name",
-    "newBankNamePlaceholder": "Please enter the name for the merged bank",
+    "newBankNamePlaceholder": "Please enter the merged bank name",
     "description": "Description",
     "descriptionPlaceholder": "Please enter bank description (optional)",
     "nameRequired": "Bank name is required",
     "nameTooShort": "Bank name must be at least 2 characters",
-    "mergeSuccess": "Banks merged successfully",
+    "mergeSuccess": "Bank merged successfully",
     "mergeFailed": "Failed to merge banks",
     "upload": "Upload",
     "file": "File",
     "uploadText": "Click or drag file to this area to upload",
-    "uploadHint": "Supports .docx, .pdf, .txt formats, file size not exceeding 20MB"
+    "uploadHint": "Supports .docx, .pdf, .txt formats, file size not exceeding 20MB",
+    "formValidationError": "Form validation failed, please check the input",
+    "selectQuestionType": "Select Question Type",
+    "selectQuestionTypeError": "Please select a question type"
   },
   "statistics": {
     "title": "Statistics",
@@ -85,7 +88,7 @@
     "totalQuestions": "Total Questions",
     "completed": "Completed",
     "accuracy": "Accuracy",
-    "noData": "No statistics data available",
+    "noData": "No statistics data",
     "refresh": "Refresh Data",
     "questionType": "Question Type",
     "completionRate": "Completion Rate",
@@ -126,22 +129,22 @@
     "switchToLight": "Switch to Light",
     "switchToDark": "Switch to Dark",
     "switchedTo": "Switched to {theme}",
-    "themeChanged": "Theme Changed",
-    "languageChanged": "Language Changed",
+    "themeChanged": "Theme changed",
+    "languageChanged": "Language changed",
     "language": {
       "title": "Language Settings",
       "chinese": "中文",
       "english": "English",
       "switchTo": "Switch to {language}",
       "switched": "Switched to {language}",
-      "description": "Switch the application display language, supports Chinese and English"
+      "description": "Switch the application display language, supporting Chinese and English"
     },
     "other": "Other Settings",
     "moreFeatures": "More features coming soon",
     "followSystem": "Follow System"
   },
   "answerCard": {
-    "title": "Answer Card"
+    "title": "Answer Sheet"
   },
   "questionAnswer": {
     "correct": "Correct",
@@ -175,6 +178,7 @@
     "bankId": "Bank ID",
     "wrongQuestions": "Wrong Questions Practice",
     "allPractice": "All Practice",
+    "questionTypePractice": "Practice by Type",
     "currentBank": "Current Bank: {bankName} - {practiceType}, Total {count} questions",
     "fetchQuestionsFailed": "Failed to fetch questions",
     "questionNotFound": "Question not found",
@@ -237,8 +241,7 @@
     }
   },
   "validation": {
-    "required": "This field is required",
-    "bankNameRequired": "Question bank name is required",
+    "bankNameRequired": "Bank name is required",
     "bankNameMaxLength": "Maximum 15 characters",
     "descriptionMaxLength": "Maximum 30 characters",
     "fileRequired": "Please upload a file",

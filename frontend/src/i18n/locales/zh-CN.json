@@ -47,6 +47,7 @@
     "completedQuestions": "已完成",
     "errorQuestions": "错题数",
     "startPractice": "开始练习",
+    "questionTypePractice": "题型练习",
     "errorCollection": "错题集",
     "delete": "删除",
     "confirmDelete": "确认删除",
@@ -75,7 +76,10 @@
     "upload": "上传",
     "file": "文件",
     "uploadText": "点击或者拖动文件到该区域来上传",
-    "uploadHint": "支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB"
+    "uploadHint": "支持 .docx、.pdf、.txt 格式，文件大小不超过 20MB",
+    "formValidationError": "表单验证失败，请检查输入内容",
+    "selectQuestionType": "选择题型",
+    "selectQuestionTypeError": "请选择题型"
   },
   "statistics": {
     "title": "数据统计",
@@ -90,6 +94,7 @@
     "questionType": "题型",
     "completionRate": "完成率",
     "typeStatistics": "题型统计",
+
     "questionTypes": {
       "single": "单选题",
       "fillBlank": "填空题",
@@ -177,6 +182,7 @@
     "bankId": "题库ID",
     "wrongQuestions": "错题练习",
     "allPractice": "全部练习",
+    "questionTypePractice": "题型练习",
     "currentBank": "当前题库：{bankName} - {practiceType}，共 {count} 题",
     "fetchQuestionsFailed": "获取题目失败",
     "questionNotFound": "题目不存在",

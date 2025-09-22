@@ -222,8 +222,20 @@ async function fetchQuestions() {
       return;
     }
 
-
-    const response = await contentAPI.getQuestions(bankId, type);
+    let response;
+    if (type === "question-type") {
+      // 题型练习需要额外传递题型参数
+      const questionType = route.query.questionType as string;
+      if (!questionType) {
+        message.error("题型参数错误，请重新进入");
+        return;
+      }
+      
+      // 调用新的API接口获取指定题型的题目
+      response = await contentAPI.getQuestions(bankId, `type:${questionType}`);
+    } else {
+      response = await contentAPI.getQuestions(bankId, type);
+    }
 
     if (response?.data && Array.isArray(response.data)) {
       questionList.value = response.data.map((item: QuestionApiData) => ({
@@ -245,14 +257,20 @@ async function fetchQuestions() {
             : t("content.noBankQuestions")
         );
       } else {
-
         const bankName =
           (route.query.bankName as string) ||
           `${t("content.bankId")}: ${bankId}`;
-        const practiceType =
-          type === "wrong"
+          
+        let practiceType;
+        if (type === "question-type") {
+          const questionType = route.query.questionType as string;
+          practiceType = getQuestionTypeDisplayName(questionType);
+        } else {
+          practiceType = type === "wrong"
             ? t("content.wrongQuestions")
             : t("content.allPractice");
+        }
+        
         message.success(
           t("content.currentBank", {
             bankName,
@@ -280,6 +298,18 @@ async function fetchQuestions() {
   } finally {
     loading.value = false;
   }
+}
+
+// 获取题型显示名称
+function getQuestionTypeDisplayName(type: string): string {
+  const typeMap: Record<string, string> = {
+    single: t("statistics.questionTypes.single"),
+    fill_blank: t("statistics.questionTypes.fillBlank"),
+    true_false: t("statistics.questionTypes.trueFalse"),
+    multiple: t("statistics.questionTypes.multiple"),
+    short_answer: t("statistics.questionTypes.shortAnswer"),
+  };
+  return typeMap[type] || type;
 }
 
 
@@ -441,131 +471,3 @@ watch(currentQuestion, () => {
   initLocalAnswer();
 });
 </script>
-
-<style scoped>
-.content-layout {
-  display: flex;
-  gap: 24px;
-  padding: 0 16px;
-  align-items: flex-start;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  flex: 1;
-}
-
-.sidebar {
-  position: sticky;
-  top: 80px;
-  width: 400px;
-  height: calc(100vh - 80px);
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-
-.question-card,
-.answer-card {
-  margin-bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
-
-}
-
-
-.answer-card {
-  margin-top: 0;
-
-}
-
-.question-stem {
-  font-size: var(--font-size-base);
-  line-height: 1.6;
-  color: var(--color-text-primary);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-
-.question-divider {
-  margin: var(--spacing-5) 0;
-  border-color: var(--color-border-secondary);
-}
-
-
-.content-layout {
-  padding-bottom: var(--spacing-20);
-}
-
-
-.mb-4 {
-  margin-bottom: var(--spacing-md);
-}
-
-
-.loading-container,
-.empty-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
-  width: 100%;
-
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-xs);
-}
-
-
-:deep(.n-card) {
-  border-radius: var(--card-border-radius);
-  box-shadow: var(--card-unified-shadow);
-  border: none;
-  width: var(--card-standard-width);
-  max-width: var(--card-content-max-width);
-  margin: 0 auto;
-  box-sizing: border-box;
-  transition: box-shadow 0.3s ease;
-}
-
-:deep(.n-card:hover) {
-  box-shadow: var(--card-unified-shadow-hover);
-}
-
-:deep(.n-card .n-card-header) {
-  padding: var(--card-padding-desktop) var(--card-padding-desktop) var(--spacing-4);
-  border-bottom: 1px solid var(--color-border-light);
-  font-weight: 600;
-}
-
-:deep(.n-card .n-card-content) {
-  padding: var(--card-padding-desktop);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.bottom-actions {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--n-color);
-  border-top: 1px solid var(--n-border-color);
-  padding: var(--spacing-4);
-  z-index: 100;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.action-buttons {
-  display: flex;
-  gap: var(--spacing-3);
-  justify-content: center;
-  align-items: center;
-  max-width: 600px;
-  margin: 0 auto;
-}
-</style>

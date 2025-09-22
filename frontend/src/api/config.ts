@@ -60,6 +60,14 @@ export const contentAPI = {
   getContentList: () => api.get("/content/list"),
   getContentDetail: (id: string) => api.get(`/content/${id}`),
   getQuestions: (bankId: number, type: string) => {
+    // 如果type以"type:"开头，则使用新的题型练习接口
+    if (type.startsWith("type:")) {
+      const questionType = type.substring(5); // 移除"type:"前缀
+      return api.post("/content/questions-by-type", { 
+        bankId, 
+        questionType 
+      });
+    }
     return api.post("/content/questions", { bankId, type });
   },
   verifyAnswer: (questionId: number, userAnswer: string) => {
