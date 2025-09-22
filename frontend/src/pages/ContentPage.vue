@@ -230,7 +230,7 @@ async function fetchQuestions() {
         message.error("题型参数错误，请重新进入");
         return;
       }
-      
+
       // 调用新的API接口获取指定题型的题目
       response = await contentAPI.getQuestions(bankId, `type:${questionType}`);
     } else {
@@ -260,7 +260,7 @@ async function fetchQuestions() {
         const bankName =
           (route.query.bankName as string) ||
           `${t("content.bankId")}: ${bankId}`;
-          
+
         let practiceType;
         if (type === "question-type") {
           const questionType = route.query.questionType as string;
@@ -270,7 +270,7 @@ async function fetchQuestions() {
             ? t("content.wrongQuestions")
             : t("content.allPractice");
         }
-        
+
         message.success(
           t("content.currentBank", {
             bankName,
@@ -460,8 +460,6 @@ function nextQuestion() {
 }
 
 
-
-
 onMounted(() => {
   fetchQuestions();
 });
@@ -471,3 +469,125 @@ watch(currentQuestion, () => {
   initLocalAnswer();
 });
 </script>
+
+<style scoped>
+.content-page {
+  padding: var(--spacing-sm);
+  min-height: 100vh;
+}
+
+.loading-container {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-layout {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  min-height: calc(100vh - 200px);
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 380px);
+}
+
+.sidebar {
+  width: 360px;
+  flex-shrink: 0;
+}
+
+.question-card {
+  margin-bottom: var(--spacing-4);
+}
+
+.question-stem {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-3);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.question-divider {
+  margin: var(--spacing-3) 0;
+}
+
+.answer-card {
+  margin-top: var(--spacing-4);
+}
+
+.answer-card .mb-4 {
+  margin-bottom: var(--spacing-3);
+}
+
+.bottom-actions {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-bg-base);
+  padding: var(--spacing-3) 0;
+  border-top: 1px solid var(--color-border);
+  z-index: 10;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1200px) {
+  .content-layout {
+    flex-direction: column;
+  }
+
+  .main-content {
+    max-width: 100%;
+  }
+
+  .sidebar {
+    width: 100%;
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-page {
+    padding: var(--spacing-xs);
+  }
+
+  .content-layout {
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .action-buttons {
+    gap: var(--spacing-2);
+    padding: 0 var(--spacing-2);
+  }
+
+  .action-buttons .n-button {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-stem {
+    font-size: var(--font-size-sm);
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons .n-button {
+    width: 100%;
+  }
+}
+</style>
