@@ -92,7 +92,6 @@ public class QuestionBankServiceImpl implements QuestionBankService {
      * @return 新题库ID
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Long mergeAndCreateNewBank(Long bankId1, Long bankId2, String name, String description) {
         // 参数校验
         if (bankId1 == null || bankId2 == null || bankId1 <= 0 || bankId2 <= 0) {
@@ -104,7 +103,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 
         log.info("开始合并题库，bankId1: {}, bankId2: {}, 新题库名: {}", bankId1, bankId2, name);
 
-        // 检查两个源题库是否存在
+        // 检查两个源题库是否存在（只读操作，无需事务）
         QuestionBank bank1 = questionBankMapper.selectById(bankId1);
         QuestionBank bank2 = questionBankMapper.selectById(bankId2);
         if (bank1 == null) {
@@ -114,6 +113,21 @@ public class QuestionBankServiceImpl implements QuestionBankService {
             throw BusinessException.of(ErrorCode.NOT_FOUND, "题库2不存在，ID: " + bankId2);
         }
 
+        // 执行需要事务的操作
+        return doMergeInTransaction(bankId1, bankId2, name, description);
+    }
+
+    /**
+     * 在事务中执行合并操作
+     *
+     * @param bankId1     第一个题库ID
+     * @param bankId2     第二个题库ID
+     * @param name        新题库名称
+     * @param description 新题库描述
+     * @return 新题库ID
+     */
+    @Transactional(rollbackFor = Exception.class)
+    protected Long doMergeInTransaction(Long bankId1, Long bankId2, String name, String description) {
         // 创建新题库
         QuestionBank newBank = new QuestionBank();
         newBank.setName(name);
