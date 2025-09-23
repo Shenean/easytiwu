@@ -112,8 +112,9 @@
 
     <!-- 题型练习选择弹窗 -->
     <n-modal v-model:show="showQuestionTypeModal" preset="dialog" :title="t('bank.questionTypePractice')"
-      :positive-text="t('common.confirm')" :negative-text="t('message.cancel')" @positive-click="handleQuestionTypeSubmit"
-      @negative-click="resetQuestionTypeForm" style="width: 90%; max-width: 500px">
+      :positive-text="t('common.confirm')" :negative-text="t('message.cancel')"
+      @positive-click="handleQuestionTypeSubmit" @negative-click="resetQuestionTypeForm"
+      style="width: 90%; max-width: 500px">
       <div class="question-type-form">
         <n-form ref="questionTypeFormRef" :model="questionTypeForm">
           <n-form-item :label="t('bank.selectQuestionType')">
@@ -664,19 +665,19 @@ async function handleQuestionTypeSubmit() {
   try {
     const targetBank = banks.value.find((b) => b.id === currentBankId.value);
     const bankName = targetBank?.name || `ID: ${currentBankId.value}`;
-    
+
     router.push({
       name: "content",
-      params: { 
-        bankId: currentBankId.value.toString(), 
+      params: {
+        bankId: currentBankId.value.toString(),
         type: "question-type"
       },
-      query: { 
+      query: {
         bankName: bankName,
         questionType: questionTypeForm.value.questionType
       },
     });
-    
+
     showQuestionTypeModal.value = false;
     resetQuestionTypeForm();
     return true;
