@@ -44,6 +44,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <!-- 添加Actuator依赖用于监控和健康检查 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        
+        <!-- 通用异常处理模块 -->
+        <dependency>
+            <groupId>com.easytiwu</groupId>
+            <artifactId>common-exception</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
