@@ -3,6 +3,7 @@ package com.easytiwu.servicebank.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.exception.BusinessException;
+import com.easytiwu.servicebank.dto.QuestionBankDTO;
 import com.easytiwu.servicebank.entity.Question;
 import com.easytiwu.servicebank.entity.QuestionBank;
 import com.easytiwu.servicebank.entity.QuestionOption;
@@ -34,7 +35,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
     private final QuestionOptionMapper questionOptionMapper;
 
     @Override
-    public List<QuestionBank> getAllQuestionBanks() {
+    public List<QuestionBankDTO> getAllQuestionBanks() {
         log.info("开始查询所有题库");
 
         QueryWrapper<QuestionBank> wrapper = new QueryWrapper<>();
@@ -44,8 +45,9 @@ public class QuestionBankServiceImpl implements QuestionBankService {
         );
 
         List<QuestionBank> questionBanks = questionBankMapper.selectList(wrapper);
-        log.info("查询到 {} 个题库", questionBanks.size());
-        return questionBanks;
+        List<QuestionBankDTO> dtos = questionBanks.stream().map(this::convertToDTO).collect(Collectors.toList());
+        log.info("查询到 {} 个题库", dtos.size());
+        return dtos;
     }
 
     @Override
@@ -210,5 +212,22 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 
         log.info("题库合并完成，新题库ID: {}，共复制题目 {} 条", newBankId, newQuestions.size());
         return newBankId;
+    }
+    
+    /**
+     * 将QuestionBank实体转换为QuestionBankDTO
+     *
+     * @param questionBank 题库实体
+     * @return 题库DTO
+     */
+    private QuestionBankDTO convertToDTO(QuestionBank questionBank) {
+        QuestionBankDTO dto = new QuestionBankDTO();
+        dto.setId(questionBank.getId());
+        dto.setName(questionBank.getName());
+        dto.setDescription(questionBank.getDescription());
+        dto.setTotalCount(questionBank.getTotalCount());
+        dto.setCompletedCount(questionBank.getCompletedCount());
+        dto.setWrongCount(questionBank.getWrongCount());
+        return dto;
     }
 }

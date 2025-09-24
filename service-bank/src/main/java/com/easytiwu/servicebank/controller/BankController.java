@@ -3,7 +3,7 @@ package com.easytiwu.servicebank.controller;
 import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.result.Result;
 import com.easytiwu.servicebank.dto.MergeBankRequest;
-import com.easytiwu.servicebank.entity.QuestionBank;
+import com.easytiwu.servicebank.dto.QuestionBankDTO;
 import com.easytiwu.servicebank.service.QuestionBankService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -42,10 +42,10 @@ public class BankController {
      * @return 题库列表
      */
     @GetMapping
-    public Result<List<QuestionBank>> getAllQuestionBanks() {
+    public Result<List<QuestionBankDTO>> getAllQuestionBanks() {
         try {
             log.info("接收到查询所有题库的请求");
-            List<QuestionBank> questionBanks = questionBankService.getAllQuestionBanks();
+            List<QuestionBankDTO> questionBanks = questionBankService.getAllQuestionBanks();
             
             if (questionBanks == null || questionBanks.isEmpty()) {
                 log.warn("查询结果为空");
@@ -102,7 +102,6 @@ public class BankController {
             return Result.success(newBankId);
         } catch (Exception e) {
             log.error("合并题库时发生异常", e);
-            // BusinessException 会被统一异常处理器捕获，此处可直接抛出
             throw e;
         }
     }

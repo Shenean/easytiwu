@@ -1,6 +1,6 @@
 package com.easytiwu.servicebank.service;
 
-import com.easytiwu.servicebank.entity.QuestionBank;
+import com.easytiwu.servicebank.dto.QuestionBankDTO;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface QuestionBankService {
      *
      * @return 题库列表
      */
-    List<QuestionBank> getAllQuestionBanks();
+    List<QuestionBankDTO> getAllQuestionBanks();
 
     /**
      * 根据ID删除题库
@@ -29,9 +29,9 @@ public interface QuestionBankService {
     /**
      * 合并两个题库，创建新题库并复制题目和选项
      *
-     * @param bankId1     第一个题库ID（必须大于0）
-     * @param bankId2     第二个题库ID（必须大于0）
-     * @param name        新题库名称（不可为空）
+     * @param bankId1     第一个题库ID
+     * @param bankId2     第二个题库ID
+     * @param name        新题库名称
      * @param description 新题库描述（可选）
      * @return 新创建题库的ID
      * @throws com.easytiwu.commonexception.exception.BusinessException 参数非法或题库不存在时抛出
