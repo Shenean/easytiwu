@@ -27,6 +27,12 @@
             </exclusions>
         </dependency>
         
+        <!-- 添加负载均衡器依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        
         <!-- 使用 Log4j2 日志框架 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
