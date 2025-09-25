@@ -27,10 +27,17 @@
  * ```
  */
 
-import type {MenuOption} from "naive-ui";
+// 通用菜单项类型定义
+interface MenuOption {
+  label: string | (() => string);
+  key: string;
+  icon?: () => any;
+  children?: MenuOption[];
+}
+
 import {h} from "vue";
 import i18n from "../i18n";
-import {LibraryOutline, SettingsOutline, StatsChartOutline,} from "@vicons/ionicons5";
+import {BookIcon, ChartIcon, SettingIcon} from "tdesign-icons-vue-next";
 
 /**
  * 菜单项元信息接口
@@ -122,30 +129,18 @@ export type ExtendedMenuOption = MenuOption & {
  */
 export const mainMenuOptions: ExtendedMenuOption[] = [
   {
-    /**
-     * 题库菜单项
-     * 提供题库管理功能，包括题库查看、编辑、删除等操作
-     */
     label: () => i18n.global.t("navigation.bank"),
     key: "bank",
-    icon: () => h(LibraryOutline),
+    icon: () => h(BookIcon, { size: "18px" }),
   },
   {
-    /**
-     * 统计菜单项
-     * 提供数据统计和分析功能，展示答题情况、正确率等统计信息
-     */
     label: () => i18n.global.t("navigation.statistics"),
     key: "statistics",
-    icon: () => h(StatsChartOutline),
+    icon: () => h(ChartIcon, { size: "18px" }),
   },
   {
-    /**
-     * 设置菜单项
-     * 提供应用设置功能，包括主题切换、语言设置、个人偏好等
-     */
     label: () => i18n.global.t("navigation.settings"),
     key: "settings",
-    icon: () => h(SettingsOutline),
+    icon: () => h(SettingIcon, { size: "18px" }),
   },
 ];

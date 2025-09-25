@@ -1,124 +1,89 @@
 <template>
-  <n-layout-header bordered class="navbar" tag="header">
-    <div class="navbar-container">
-      <router-link to="/" class="logo" :aria-label="t('navigation.backToHome')">
-        <img src="/EasyTiwu.png" alt="EasyTiwu" class="logo-img" draggable="false" />
-      </router-link>
-
-      <n-menu :value="currentRouteName" mode="horizontal" :options="menuOptions" @update:value="handleNavigate"
-        class="desktop-nav" :disabled-keys="[currentRouteName]" />
-    </div>
-  </n-layout-header>
+  <div>
+    <t-header class="navbar">
+      <t-space class="navbar-content" align="center">
+        <div class="logo">
+          <img src="/EasyTiwu.png" alt="EasyTiwu" />
+        </div>
+        <t-head-menu
+          :value="currentRouteName"
+          theme="light"
+          @change="handleNavigate"
+        >
+          <t-menu-item value="bank">
+            <template #icon>
+              <BookIcon />
+            </template>
+            {{ t("navigation.bank") }}
+          </t-menu-item>
+          <t-menu-item value="statistics">
+            <template #icon>
+              <ChartIcon />
+            </template>
+            {{ t("navigation.statistics") }}
+          </t-menu-item>
+          <t-menu-item value="settings">
+            <template #icon>
+              <SettingIcon />
+            </template>
+            {{ t("navigation.settings") }}
+          </t-menu-item>
+        </t-head-menu>
+      </t-space>
+    </t-header>
+    <t-divider />
+  </div>
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
-import {NLayoutHeader, NMenu} from "naive-ui";
+import {ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {mainMenuOptions} from "../config/menuOptions";
 import {useI18n} from "vue-i18n";
+import {BookIcon, ChartIcon, SettingIcon} from "tdesign-icons-vue-next";
 
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 
-const currentRouteName = computed(() => route.name?.toString() || "upload");
+const currentRouteName = ref(route.name?.toString() || "bank");
 
-const menuOptions = computed(() => {
-  return mainMenuOptions.filter((option) => !option.meta?.hidden);
-});
+watch(
+  () => route.name,
+  (newName) => {
+    currentRouteName.value = newName?.toString() || "bank";
+  }
+);
 
-const handleNavigate = (key: string) => {
-  if (key === currentRouteName.value) return;
-  router.push({ name: key }).catch((err) => {
-    if (err.name !== "NavigationDuplicated") {
-    }
-  });
+const handleNavigate = (active: string) => {
+  const keyStr = active.toString();
+  if (keyStr === currentRouteName.value) return;
+  router
+    .push({ name: keyStr })
+    .then(() => {
+      currentRouteName.value = keyStr;
+    })
+    .catch((err) => {
+      if (err.name !== "NavigationDuplicated") console.error(err);
+    });
 };
 </script>
 
 <style scoped>
-.navbar {
-  padding: 0 var(--spacing-sm);
-  height: var(--nav-height);
-  display: flex;
-  align-items: center;
-  box-shadow: var(--shadow-sm);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  backdrop-filter: blur(var(--spacing-1));
-  -webkit-backdrop-filter: blur(var(--spacing-1));
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.navbar-container {
+/* 保留最小布局调整，避免图标和菜单拥挤 */
+.navbar-content {
   width: 100%;
-  max-width: var(--container-medium-width);
-  margin: 0 auto;
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: var(--spacing-sm);
 }
 
-.logo {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  transition: opacity 0.2s ease;
-}
-
-.logo:hover {
-  opacity: 0.8;
-}
-
-.logo-img {
-  height: var(--spacing-4);
-  width: auto;
+.logo img {
+  height: 32px;
   object-fit: contain;
   user-select: none;
-  transition: filter 0.3s ease;
 }
 
-:global(.dark) .logo-img {
-  filter: brightness(0.9) contrast(1.1);
-}
-
-:deep(.desktop-nav) {
-  background: transparent;
-}
-
-:deep(.desktop-nav .n-menu-item-content) {
-  padding: 0 var(--spacing-xs);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
-  transition: color 0.2s ease;
-}
-
-:deep(.desktop-nav .n-menu-item) {
-  height: var(--nav-height);
-  display: flex;
-  align-items: center;
-  border-radius: var(--border-radius-md);
-  transition: background-color 0.2s ease;
-}
-
-:deep(.desktop-nav .n-menu-item:hover .n-menu-item-content) {
-  color: var(--color-primary-600);
-}
-
-:deep(.desktop-nav .n-menu-item--selected .n-menu-item-content) {
-  color: var(--color-primary-600);
-  font-weight: var(--font-weight-semibold);
-}
-
-:deep(.desktop-nav .n-menu-item--disabled .n-menu-item-content) {
-  color: var(--color-text-disabled);
+@media (max-width: 768px) {
+  .logo img {
+    height: 28px;
+  }
 }
 </style>

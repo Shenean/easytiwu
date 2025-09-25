@@ -1,186 +1,153 @@
 /* ==================== 布局组件样式 ==================== */
 
-/* 内容区域 */
-.content-area {
-  flex: 1;
-  padding: var(--spacing-6);
+/* TDesign 布局组件样式 */
+.tdesign-content-area {
   background: var(--color-background-primary);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
-  margin-bottom: var(--spacing-6);
 }
 
-@media (max-width: 767px) {
-  .content-area {
-    padding: var(--spacing-4);
-    margin-bottom: var(--spacing-4);
+.tdesign-sidebar {
+  background: var(--color-background-secondary);
+  border-right: 1px solid var(--color-border-light);
+  min-height: 400px;
+}
+
+.tdesign-layout-main {
+  flex: 1;
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.tdesign-layout-aside {
+  width: var(--sidebar-width);
+  padding: var(--spacing-3);
+  flex-shrink: 0;
+}
+
+@media (max-width: 1023px) {
+  .tdesign-layout-aside {
+    width: 100%;
+    margin-bottom: var(--spacing-3);
   }
 }
 
-@media (max-width: 639px) {
-  .content-area {
+@media (max-width: 767px) {
+  .tdesign-layout-main {
     padding: var(--spacing-3);
     margin-bottom: var(--spacing-3);
   }
 }
 
-/* 侧边栏 */
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--color-background-secondary);
-  border-right: 1px solid var(--color-border-light);
-  padding: var(--spacing-5);
-  flex-shrink: 0;
-}
-
-@media (max-width: 1023px) {
-  .sidebar {
-    width: 100%;
-    margin-bottom: var(--spacing-4);
-  }
-}
-
-/* ==================== 栅格系统样式 ==================== */
-
-/* 响应式栅格容器 */
-.grid-container {
-  display: grid;
-  gap: var(--spacing-4);
-}
-
-.grid-cols-1 {
-  grid-template-columns: repeat(1, 1fr);
-}
-.grid-cols-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-.grid-cols-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-.grid-cols-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-.grid-cols-5 {
-  grid-template-columns: repeat(5, 1fr);
-}
-.grid-cols-6 {
-  grid-template-columns: repeat(6, 1fr);
-}
-
-/* 响应式栅格 - 基于新的断点系统 */
-/* 超小屏幕 (xs: 0-639px) */
 @media (max-width: 639px) {
-  .xs\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  .xs\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .xs\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .xs\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
+  .tdesign-layout-main {
+    padding: var(--spacing-2);
+    margin-bottom: var(--spacing-2);
   }
 }
 
-/* 小屏幕 (sm: 640-767px) */
-@media (min-width: 640px) and (max-width: 767px) {
-  .sm\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
+/* ==================== TDesign 栅格系统增强 ==================== */
+
+/* TDesign 栅格系统已通过 t-row 和 t-col 组件实现 */
+/* 以下为 TDesign 栅格系统的补充样式 */
+
+/* 栅格容器增强 */
+.t-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* 栅格列增强 */
+.t-col {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+}
+
+/* TDesign 布局组件 */
+.t-layout {
+  min-height: 100vh;
+}
+
+.t-layout--vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.t-layout--horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.t-aside {
+  flex-shrink: 0;
+  background: var(--color-background-secondary);
+}
+
+.t-main {
+  flex: 1;
+  background: var(--color-background-primary);
+}
+
+.t-header {
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.t-footer {
+  background: var(--color-background-secondary);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* 响应式栅格间距调整 - 遵循TDesign官方规范 */
+@media (max-width: 575px) {
+  .t-row {
+    margin-left: calc(8px / -2);
+    margin-right: calc(8px / -2);
   }
-  .sm\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
+  .t-col {
+    padding-left: calc(8px / 2);
+    padding-right: calc(8px / 2);
   }
-  .sm\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .sm\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
+  
+  .t-layout--horizontal {
+    flex-direction: column;
   }
 }
 
-/* 中等屏幕 (md: 768-1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .md\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
+/* 小屏幕 (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .t-row {
+    margin-left: calc(16px / -2);
+    margin-right: calc(16px / -2);
   }
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .md\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
+  .t-col {
+    padding-left: calc(16px / 2);
+    padding-right: calc(16px / 2);
   }
 }
 
-
-
-/* 大屏幕 (lg: 1024-1279px) */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .lg\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
+/* 中等屏幕 (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .t-row {
+    margin-left: calc(24px / -2);
+    margin-right: calc(24px / -2);
   }
-  .lg\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .lg\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .lg\:grid-cols-5 {
-    grid-template-columns: repeat(5, 1fr);
-  }
-  .lg\:grid-cols-6 {
-    grid-template-columns: repeat(6, 1fr);
+  .t-col {
+    padding-left: calc(24px / 2);
+    padding-right: calc(24px / 2);
   }
 }
 
-/* 超大屏幕 (xl: 1280-1535px) */
-@media (min-width: 1280px) and (max-width: 1535px) {
-  .xl\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
+/* 大屏幕及以上 (992px+) */
+@media (min-width: 992px) {
+  .t-row {
+    margin-left: calc(32px / -2);
+    margin-right: calc(32px / -2);
   }
-  .xl\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .xl\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .xl\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .xl\:grid-cols-5 {
-    grid-template-columns: repeat(5, 1fr);
-  }
-  .xl\:grid-cols-6 {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-/* 兼容旧版本的桌面端断点类名 */
-@media (min-width: 1024px) {
-  .desktop\:grid-cols-1 {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  .desktop\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .desktop\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .desktop\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .desktop\:grid-cols-5 {
-    grid-template-columns: repeat(5, 1fr);
-  }
-  .desktop\:grid-cols-6 {
-    grid-template-columns: repeat(6, 1fr);
+  .t-col {
+    padding-left: calc(32px / 2);
+    padding-right: calc(32px / 2);
   }
 }
 
@@ -207,13 +174,13 @@
 .stats-card .stats-value {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
-  color: var(--n-color-primary);
+  color: var(--td-brand-color);
   margin-bottom: var(--spacing-1);
 }
 
 .stats-card .stats-label {
   font-size: var(--font-size-sm);
-  color: var(--n-text-color-2);
+  color: var(--td-text-color-secondary);
 }
 
 .stats-card .stats-change {
@@ -226,11 +193,11 @@
 }
 
 .stats-card .stats-change.positive {
-  color: var(--n-color-success);
+  color: var(--td-success-color);
 }
 
 .stats-card .stats-change.negative {
-  color: var(--n-color-error);
+  color: var(--td-error-color);
 }
 
 /* 统计卡片响应式样式 - 基于新的断点系统 */
@@ -301,7 +268,7 @@
 
 /* 答题卡片 */
 .answer-card {
-  border: var(--border-width-2) solid var(--n-border-color);
+  border: var(--border-width-2) solid var(--td-border-level-1-color);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-2);
   text-align: center;
@@ -316,25 +283,25 @@
 }
 
 .answer-card:hover {
-  border-color: var(--n-color-primary);
+  border-color: var(--td-brand-color);
   box-shadow: var(--shadow-primary);
 }
 
 .answer-card.correct {
-  border-color: var(--n-color-success);
-  color: var(--n-color-success);
+  border-color: var(--td-success-color);
+  color: var(--td-success-color);
   background: var(--color-success-light);
 }
 
 .answer-card.incorrect {
-  border-color: var(--n-color-error);
-  color: var(--n-color-error);
+  border-color: var(--td-error-color);
+  color: var(--td-error-color);
   background: var(--color-error-light);
 }
 
 .answer-card.selected {
-  border-color: var(--n-color-primary);
-  color: var(--n-color-primary);
+  border-color: var(--td-brand-color);
+  color: var(--td-brand-color);
   background: var(--color-primary-light);
 }
 
@@ -367,13 +334,13 @@
 .bank-card .bank-title {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  color: var(--n-text-color);
+  color: var(--td-text-color-primary);
   margin-bottom: var(--spacing-2);
 }
 
 .bank-card .bank-description {
   font-size: var(--font-size-sm);
-  color: var(--n-text-color-2);
+  color: var(--td-text-color-secondary);
   margin-bottom: var(--spacing-3);
   line-height: var(--line-height-normal);
 }
@@ -383,7 +350,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: var(--font-size-xs);
-  color: var(--n-text-color-3);
+  color: var(--td-text-color-placeholder);
 }
 
 @media (max-width: 639px) {
@@ -422,13 +389,13 @@
 .form-section .section-title {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--n-text-color);
+  color: var(--td-text-color-primary);
   margin-bottom: var(--spacing-3);
 }
 
 .form-section .section-description {
   font-size: var(--font-size-sm);
-  color: var(--n-text-color-2);
+  color: var(--td-text-color-secondary);
   margin-bottom: var(--spacing-4);
 }
 
@@ -462,7 +429,7 @@
   gap: var(--spacing-3);
   margin-top: var(--spacing-6);
   padding-top: var(--spacing-4);
-  border-top: var(--border-width-1) solid var(--n-border-color);
+  border-top: var(--border-width-1) solid var(--td-border-level-1-color);
 }
 
 @media (max-width: 639px) {
@@ -477,7 +444,7 @@
 /* 面包屑导航 */
 .breadcrumb {
   padding: var(--spacing-3) 0;
-  border-bottom: var(--border-width-1) solid var(--n-border-color);
+  border-bottom: var(--border-width-1) solid var(--td-border-level-1-color);
   margin-bottom: var(--spacing-5);
 }
 
@@ -498,7 +465,7 @@
 
 .empty-state .empty-icon {
   font-size: var(--font-size-5xl);
-  color: var(--n-text-color-3);
+  color: var(--td-text-color-placeholder);
   margin-bottom: var(--spacing-4);
 }
 
@@ -573,16 +540,16 @@
 
 /* 文本颜色 */
 .text-primary {
-  color: var(--n-color-primary);
+  color: var(--td-brand-color);
 }
 .text-success {
-  color: var(--n-color-success);
+  color: var(--td-success-color);
 }
 .text-warning {
-  color: var(--n-color-warning);
+  color: var(--td-warning-color);
 }
 .text-error {
-  color: var(--n-color-error);
+  color: var(--td-error-color);
 }
 .text-muted {
   color: var(--n-text-color-2);
@@ -595,19 +562,19 @@
 
 /* 边框 */
 .border {
-  border: var(--border-width-1) solid var(--n-border-color);
+  border: var(--border-width-1) solid var(--td-border-level-1-color);
 }
 .border-primary {
-  border: 1px solid var(--n-color-primary);
+  border: 1px solid var(--td-brand-color);
 }
 .border-success {
-  border: 1px solid var(--n-color-success);
+  border: 1px solid var(--td-success-color);
 }
 .border-warning {
-  border: 1px solid var(--n-color-warning);
+  border: 1px solid var(--td-warning-color);
 }
 .border-error {
-  border: 1px solid var(--n-color-error);
+  border: 1px solid var(--td-error-color);
 }
 
 /* 圆角 */
@@ -873,8 +840,6 @@
   line-height: 2;
 }
 
-
-
 /* ==================== 打印样式 ==================== */
 
 @media print {
@@ -892,7 +857,7 @@
 
   .card-standard {
     box-shadow: none;
-    border: var(--border-width-1) solid var(--n-border-color);
+    border: var(--border-width-1) solid var(--td-border-level-1-color);
   }
 }
 

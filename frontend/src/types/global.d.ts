@@ -37,69 +37,12 @@
  * ```
  */
 
-import type {DialogApi, LoadingBarApi, MessageApi, NotificationApi} from 'naive-ui'
-
 /**
- * 扩展 Vue 组件实例的全局属性类型
+ * 全局类型定义文件
  * 
- * 通过模块声明合并的方式，为 Vue 组件实例添加 Naive UI 离散式 API 的类型定义。
- * 这样在组件中使用 this.$message 等全局属性时，TypeScript 能够提供正确的类型检查和智能提示。
- * 
- * @module @vue/runtime-core
- * @interface ComponentCustomProperties
- * 
- * @property {MessageApi} $message - 消息提示 API，用于显示轻量级的消息提示
- * @property {NotificationApi} $notification - 通知 API，用于显示更显眼的通知消息
- * @property {DialogApi} $dialog - 对话框 API，用于显示确认对话框、信息对话框等
- * @property {LoadingBarApi} $loadingBar - 加载条 API，用于显示页面顶部的加载进度条
- * 
- * @example
- * ```typescript
- * // 在 Vue 组件的方法中使用
- * methods: {
- *   async handleSubmit() {
- *     this.$loadingBar.start()
- *     try {
- *       await submitData()
- *       this.$message.success('提交成功！')
- *       this.$loadingBar.finish()
- *     } catch (error) {
- *       this.$message.error('提交失败！')
- *       this.$loadingBar.error()
- *     }
- *   },
- * 
- *   async handleDelete() {
- *     const confirmed = await new Promise(resolve => {
- *       this.$dialog.warning({
- *         title: '确认删除',
- *         content: '此操作不可撤销，确定要删除吗？',
- *         positiveText: '确定',
- *         negativeText: '取消',
- *         onPositiveClick: () => resolve(true),
- *         onNegativeClick: () => resolve(false)
- *       })
- *     })
- *     
- *     if (confirmed) {
- *       // 执行删除操作
- *     }
- *   }
- * }
- * ```
+ * 用于定义项目中使用的全局类型和接口。
+ * 现在项目已迁移到 TDesign，不再需要 Naive UI 相关的类型定义。
  */
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    /** 消息提示 API，用于显示成功、错误、警告等轻量级消息 */
-    $message: MessageApi
-    /** 通知 API，用于显示带标题和内容的通知消息 */
-    $notification: NotificationApi
-    /** 对话框 API，用于显示确认、警告、信息等对话框 */
-    $dialog: DialogApi
-    /** 加载条 API，用于显示页面顶部的加载进度条 */
-    $loadingBar: LoadingBarApi
-  }
-}
 
 /**
  * 确保这个文件被 TypeScript 视为模块

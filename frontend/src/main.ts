@@ -4,30 +4,22 @@ import App from "./App.vue";
 import "vfonts/Lato.css";
 import "vfonts/FiraCode.css";
 import "./styles/index.css";
-import {createDiscreteApi, dateZhCN, zhCN} from "naive-ui";
+import "tdesign-vue-next/es/style/index.css";
+import {DialogPlugin, MessagePlugin, NotifyPlugin} from "tdesign-vue-next";
 import i18n from "./i18n";
+import {initTheme} from "./utils/theme";
 
-const { message, notification, dialog, loadingBar } = createDiscreteApi(
-  ["message", "notification", "dialog", "loadingBar"],
-  {
-    configProviderProps: {
-      theme: null,
-      locale: zhCN,
-      dateLocale: dateZhCN,
-    },
-  }
-);
+initTheme();
 
 const app = createApp(App);
 
-app.config.globalProperties.$message = message;
-app.config.globalProperties.$notification = notification;
-app.config.globalProperties.$dialog = dialog;
-app.config.globalProperties.$loadingBar = loadingBar;
+app.config.globalProperties.$message = MessagePlugin;
+app.config.globalProperties.$notification = NotifyPlugin;
+app.config.globalProperties.$dialog = DialogPlugin;
 
 app.use(router);
 app.use(i18n);
 
 app.mount("#app");
 
-export { message, notification, dialog, loadingBar };
+export { MessagePlugin as message, NotifyPlugin as notification, DialogPlugin as dialog };

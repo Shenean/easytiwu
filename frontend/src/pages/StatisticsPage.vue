@@ -1,76 +1,107 @@
 <template>
-  <PageContainer :title="t('statistics.title')" :show-card="false" container-class="statistics-container">
+  <PageContainer
+    :title="t('statistics.title')"
+    :show-card="false"
+    container-class="statistics-container"
+  >
     <!-- 加载状态 -->
-    <div v-if="loading" class="loading-container" style="
+    <div
+      v-if="loading"
+      class="loading-container"
+      style="
         height: 400px;
         display: flex;
         align-items: center;
         justify-content: center;
-      ">
-      <n-spin size="large">
-        <template #description>
-          {{ t("statistics.loading") }}
-        </template>
-      </n-spin>
+      "
+    >
+      <t-loading size="large" :text="t('statistics.loading')" />
     </div>
 
     <!-- 内容区域 -->
     <template v-if="!loading">
-      <!-- 错误提示 -->
-      <n-alert v-if="error" type="error" :title="error" style="margin-bottom: 16px" />
+      <t-space direction="vertical" size="medium" class="statistics-content">
+        <!-- 错误提示 -->
+        <t-alert v-if="error" theme="error" :message="error" />
 
-      <!-- 统计数据内容 -->
-      <div v-else-if="stats">
-        <!-- 总览统计 -->
-        <n-card class="overview-summary-card" size="small">
-          <n-grid :cols="2" :x-gap="24" :y-gap="24" class="overview-grid">
-            <n-grid-item>
-              <div class="overview-item">
-                <n-statistic :label="t('statistics.bankTotal')" :value="formatNumber(stats.bankTotal)" />
-              </div>
-            </n-grid-item>
-            <n-grid-item>
-              <div class="overview-item">
-                <n-statistic :label="t('statistics.questionTotal')" :value="formatNumber(stats.questionTotal)" />
-              </div>
-            </n-grid-item>
-          </n-grid>
-        </n-card>
+        <!-- 统计数据内容 -->
+        <template v-else-if="stats">
+          <!-- 总览统计 -->
+          <t-card class="overview-summary-card" size="small" :bordered="false">
+            <t-row
+              :gutter="{ xs: 16, sm: 16, md: 24, lg: 24, xl: 32, xxl: 32 }"
+              class="overview-grid"
+            >
+              <t-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" :xxl="12">
+                <div class="overview-item">
+                  <t-space direction="vertical" size="small" align="center">
+                    <div class="statistic-value">
+                      {{ formatNumber(stats.bankTotal) }}
+                    </div>
+                    <div class="statistic-label">
+                      {{ t("statistics.bankTotal") }}
+                    </div>
+                  </t-space>
+                </div>
+              </t-col>
+              <t-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" :xxl="12">
+                <div class="overview-item">
+                  <t-space direction="vertical" size="small" align="center">
+                    <div class="statistic-value">
+                      {{ formatNumber(stats.questionTotal) }}
+                    </div>
+                    <div class="statistic-label">
+                      {{ t("statistics.questionTotal") }}
+                    </div>
+                  </t-space>
+                </div>
+              </t-col>
+            </t-row>
+          </t-card>
 
-        <!-- 题型统计表格 -->
-        <div class="type-stats-section">
-          <n-card class="stats-table-card" size="small">
+          <!-- 题型统计表格 -->
+          <t-card class="stats-table-card" size="small" :bordered="false">
             <template #header>
-              <h3 class="table-title">{{ t('statistics.typeStatistics') }}</h3>
+              <h4 class="table-title">{{ t("statistics.typeStatistics") }}</h4>
             </template>
-            <n-data-table :columns="tableColumns" :data="typeStats" :pagination="false" :bordered="false" size="small"
-              class="stats-table" />
-          </n-card>
-        </div>
-      </div>
+            <t-table
+              :columns="tableColumns"
+              :data="typeStats"
+              :pagination="{ pageSize: 8, showJumper: false, showPageSize: false }"
+              :row-key="'type'"
+              :bordered="false"
+              size="small"
+              class="stats-table"
+            />
+          </t-card>
+        </template>
 
-      <!-- 空状态 -->
-      <n-empty v-else :description="t('statistics.noData')" size="small" />
+        <!-- 空状态 -->
+        <t-empty v-else :description="t('statistics.noData')" size="small" />
+      </t-space>
     </template>
 
     <!-- 刷新按钮 -->
     <template #action>
-      <n-button @click="refreshData" :loading="loading" type="primary" size="small">
+      <t-button
+        @click="refreshData"
+        :loading="loading"
+        theme="primary"
+        size="small"
+      >
         {{ t("statistics.refresh") }}
-      </n-button>
+      </t-button>
     </template>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
 import {computed, h, onMounted, ref} from "vue";
-import type {DataTableColumns} from "naive-ui";
-import {NAlert, NButton, NCard, NDataTable, NEmpty, NGrid, NGridItem, NSpin, NStatistic, NTag} from "naive-ui";
+import type {TableCol} from "tdesign-vue-next";
 import {useI18n} from "vue-i18n";
 
 import {statisticsAPI} from "../api/config";
 import PageContainer from "../components/common/PageContainer.vue";
-
 
 import type {ApiResponse, StatisticsOverview, TypeStats,} from "../types/statistics";
 
@@ -163,55 +194,65 @@ const typeStats = computed(() => {
 });
 
 // 表格列定义
-const tableColumns: DataTableColumns = [
+const tableColumns: TableCol[] = [
   {
-    title: t('statistics.questionType'),
-    key: 'type',
+    title: t("statistics.questionType"),
+    colKey: "type",
     width: 120,
     render: (row: any) => {
       return row.type;
-    }
+    },
   },
   {
-    title: t('statistics.totalQuestions'),
-    key: 'total',
+    title: t("statistics.totalQuestions"),
+    colKey: "total",
     width: 100,
-    align: 'center',
+    align: "center",
     render: (row: any) => {
       return formatNumber(row.total);
-    }
+    },
   },
   {
-    title: t('statistics.completed'),
-    key: 'completed',
+    title: t("statistics.completed"),
+    colKey: "completed",
     width: 100,
-    align: 'center',
+    align: "center",
     render: (row: any) => {
       return formatNumber(row.completed);
-    }
+    },
   },
   {
-    title: t('statistics.completionRate'),
-    key: 'percentage',
+    title: t("statistics.completionRate"),
+    colKey: "percentage",
     width: 120,
-    align: 'center',
+    align: "center",
     render: (row: any) => {
       const percentage = row.percentage;
-      const type = percentage >= 80 ? 'success' : percentage >= 60 ? 'warning' : 'error';
-      return h(NTag, { type, size: 'small' }, { default: () => `${percentage}%` });
-    }
+      const type =
+        percentage >= 80 ? "success" : percentage >= 60 ? "warning" : "error";
+      return h(
+        "t-tag",
+        { theme: type, size: "small" },
+        { default: () => `${percentage}%` }
+      );
+    },
   },
   {
-    title: t('statistics.accuracy'),
-    key: 'accuracy',
+    title: t("statistics.accuracy"),
+    colKey: "accuracy",
     width: 100,
-    align: 'center',
+    align: "center",
     render: (row: any) => {
       const accuracy = row.accuracy;
-      const type = accuracy >= 80 ? 'success' : accuracy >= 60 ? 'warning' : 'error';
-      return h(NTag, { type, size: 'small' }, { default: () => `${accuracy}%` });
-    }
-  }
+      const type =
+        accuracy >= 80 ? "success" : accuracy >= 60 ? "warning" : "error";
+      return h(
+        "t-tag",
+        { theme: type, size: "small" },
+        { default: () => `${accuracy}%` }
+      );
+    },
+  },
 ];
 
 // 获取统计数据
@@ -321,9 +362,11 @@ onMounted(() => {
 /* 总览统计样式 */
 .overview-summary-card {
   margin-bottom: var(--spacing-md);
-  background: linear-gradient(135deg,
-      var(--n-color) 0%,
-      var(--n-color-embedded) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--td-brand-color) 0%,
+    var(--td-brand-color-light) 100%
+  );
   border: none;
   border-radius: var(--card-border-radius);
   box-shadow: var(--card-unified-shadow);
@@ -346,6 +389,10 @@ onMounted(() => {
   padding: var(--spacing-2);
 }
 
+.statistics-content {
+  width: 100%;
+}
+
 /* 题型统计表格区域 */
 .type-stats-section {
   margin-top: 0;
@@ -356,7 +403,7 @@ onMounted(() => {
   border-radius: var(--card-border-radius);
   box-shadow: var(--card-unified-shadow);
   transition: all 0.3s ease;
-  background: var(--n-color);
+  background: var(--td-brand-color);
   width: 100%;
   max-width: var(--card-content-max-width);
   margin: 0 auto;
@@ -368,13 +415,27 @@ onMounted(() => {
 
 .table-title {
   margin: 0;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 600;
-  color: var(--n-text-color-1);
+  color: var(--td-text-color-primary);
 }
 
 .stats-table {
   width: 100%;
+}
+
+/* 自定义统计数字样式 */
+.statistic-value {
+  font-weight: 700;
+  color: var(--td-brand-color);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.statistic-label {
+  color: var(--td-text-color-secondary);
+  font-weight: 600;
+  font-size: 12px;
 }
 
 /* 表格响应式优化 */
@@ -384,64 +445,45 @@ onMounted(() => {
     border-radius: var(--card-border-radius);
   }
 
-  :deep(.n-data-table) {
+  :deep(.t-table) {
     font-size: var(--font-size-sm);
   }
 
-  :deep(.n-data-table .n-data-table-th) {
-    padding: var(--spacing-2) var(--spacing-1);
+  :deep(.t-table .t-table__header th) {
+    padding: var(--spacing-1) var(--spacing-xs);
     font-size: var(--font-size-xs);
   }
 
-  :deep(.n-data-table .n-data-table-td) {
-    padding: var(--spacing-2) var(--spacing-1);
+  :deep(.t-table .t-table__body td) {
+    padding: var(--spacing-1) var(--spacing-xs);
   }
 }
 
-/* 统计数字样式优化 */
-:deep(.n-statistic-value) {
-  font-weight: 700;
-  color: var(--n-primary-color);
-  font-size: var(--font-size-2xl);
-}
-
-:deep(.n-statistic-label) {
-  color: var(--n-text-color-2);
-  font-weight: 600;
-  font-size: var(--font-size-xs);
-  margin-bottom: var(--spacing-1);
-}
-
 /* 卡片内边距 */
-:deep(.overview-summary-card .n-card__content) {
-  padding: var(--card-padding-desktop);
+:deep(.overview-summary-card .t-card__body) {
+  padding: var(--spacing-md);
 }
 
-:deep(.stats-table-card .n-card__content) {
-  padding: var(--card-padding-md);
+:deep(.stats-table-card .t-card__body) {
+  padding: var(--spacing-sm) var(--spacing-md);
 }
 
 /* 表格样式优化 */
-:deep(.n-data-table) {
+:deep(.t-table) {
   border-radius: var(--card-border-radius);
 }
 
-:deep(.n-data-table .n-data-table-th) {
-  background-color: var(--n-color-embedded);
+:deep(.t-table .t-table__header th) {
+  background-color: var(--td-bg-color-container);
   font-weight: 600;
-  color: var(--n-text-color-1);
+  color: var(--td-text-color-primary);
 }
 
-:deep(.n-data-table .n-data-table-td) {
-  border-bottom: 1px solid var(--n-divider-color);
+:deep(.t-table .t-table__body td) {
+  border-bottom: 1px solid var(--td-border-level-1-color);
 }
 
-:deep(.n-data-table .n-data-table-tr:hover .n-data-table-td) {
-  background-color: var(--n-color-hover);
-}
-
-/* 加载状态样式 */
-:deep(.n-spin-content) {
-  min-height: var(--spacing-50);
+:deep(.t-table .t-table__body tr:hover td) {
+  background-color: var(--td-bg-color-container-hover);
 }
 </style>

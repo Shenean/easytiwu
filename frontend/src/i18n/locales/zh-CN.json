@@ -28,6 +28,7 @@
   },
   "navigation": {
     "bank": "题库列表",
+    "content": "内容管理",
     "statistics": "数据统计",
     "settings": "设置",
     "home": "首页",

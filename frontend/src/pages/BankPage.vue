@@ -1,88 +1,182 @@
 <template>
-  <PageContainer :title="t('bank.title')" :show-card="false" container-class="bank-container">
+  <PageContainer
+    :title="t('bank.title')"
+    :show-card="false"
+    container-class="bank-container"
+  >
     <!-- 顶部操作栏 -->
     <div v-if="!loading" class="top-actions">
-      <n-space size="medium">
-        <n-button type="primary" size="medium" @click="showUploadModal = true">
+      <t-space size="small">
+        <t-button theme="primary" size="small" @click="showUploadModal = true">
           {{ t("bank.upload") }}
-        </n-button>
-        <n-button v-if="banks.length > 1" type="primary" size="medium" @click="showMergeModal = true"
-          :disabled="banks.length < 2">
+        </t-button>
+        <t-button
+          v-if="banks.length > 1"
+          theme="primary"
+          size="small"
+          @click="showMergeModal = true"
+          :disabled="banks.length < 2"
+        >
           {{ t("bank.merge") }}
-        </n-button>
-      </n-space>
+        </t-button>
+      </t-space>
     </div>
 
     <!-- 空状态占位 -->
-    <n-empty v-if="!loading && banks.length === 0" :description="t('bank.noData')" size="large">
-      <template #extra>
-        <n-button type="primary" size="small" @click="fetchBanks">
+    <t-empty
+      v-if="!loading && banks.length === 0"
+      :description="t('bank.noData')"
+      size="large"
+    >
+      <template #action>
+        <t-button theme="primary" size="small" @click="fetchBanks">
           {{ t("bank.refresh") }}
-        </n-button>
+        </t-button>
       </template>
-    </n-empty>
+    </t-empty>
 
     <!-- 题库表格 -->
     <div v-else class="table-container">
-      <n-data-table :columns="tableColumns" :data="banks" :loading="loading" :pagination="false" :bordered="true"
-        :single-line="false" size="medium" class="bank-table" />
+      <t-table
+        :columns="tableColumns"
+        :data="banks"
+        :loading="loading"
+        :pagination="{
+          pageSize: 12,
+          showJumper: false,
+          total: banks.length,
+          showTotal: true,
+          showPageSize: false,
+        }"
+        :row-key="'id'"
+        bordered
+        size="small"
+        class="bank-table"
+      >
+        <template #actions="{ row }">
+          <t-space size="small">
+            <t-button
+              theme="primary"
+              size="small"
+              @click="handlePractice(row.id)"
+            >
+              {{ t("bank.startPractice") }}
+            </t-button>
+            <t-dropdown
+              :options="[
+                { content: t('bank.questionTypePractice'), value: 'type', onClick: () => handleQuestionTypePractice(row.id) },
+                { content: t('bank.errorCollection'), value: 'error', onClick: () => handleWrongSet(row.id) },
+                { content: t('bank.delete'), value: 'delete', theme: 'error', onClick: () => confirmDelete(row.id) }
+              ]"
+            >
+              <t-button theme="default" size="small" variant="outline">
+                {{ t("common.more") }}
+                <template #suffix>
+                  <t-icon name="chevron-down" size="14px" />
+                </template>
+              </t-button>
+            </t-dropdown>
+          </t-space>
+        </template>
+      </t-table>
     </div>
 
     <!-- 上传题库弹窗 -->
-    <n-modal v-model:show="showUploadModal" preset="dialog" :title="t('bank.upload')"
-      :positive-text="t('common.submit')" :negative-text="t('message.cancel')" @positive-click="handleUploadSubmit"
-      @negative-click="resetUploadForm" :loading="uploadLoading" style="width: 90%; max-width: 600px">
+    <t-dialog
+      v-model:visible="showUploadModal"
+      :header="t('bank.upload')"
+      :confirm-btn="t('common.submit')"
+      :cancel-btn="t('message.cancel')"
+      @confirm="handleUploadSubmit"
+      @cancel="resetUploadForm"
+      width="600px"
+    >
       <div class="upload-form">
-        <n-form ref="uploadFormRef" :model="uploadForm" :rules="uploadRules" label-placement="left" label-width="80"
-          size="medium">
-          <n-form-item :label="t('bank.name')" path="name">
-            <n-input v-model:value="uploadForm.name" :placeholder="t('bank.newBankNamePlaceholder')" maxlength="15"
-              show-count clearable :aria-label="t('bank.name')" />
-          </n-form-item>
+        <t-form
+          ref="uploadFormRef"
+          :data="uploadForm"
+          :rules="uploadRules"
+          label-align="left"
+          label-width="80px"
+          size="medium"
+        >
+          <t-form-item :label="t('bank.name')" name="name">
+            <t-input
+              v-model="uploadForm.name"
+              :placeholder="t('bank.newBankNamePlaceholder')"
+              :maxlength="15"
+              show-word-limit
+              clearable
+            />
+          </t-form-item>
 
-          <n-form-item :label="t('bank.description')" path="description">
-            <n-input v-model:value="uploadForm.description" :placeholder="t('bank.descriptionPlaceholder')"
-              type="textarea" maxlength="30" show-count clearable autosize :aria-label="t('bank.description')" />
-          </n-form-item>
+          <t-form-item :label="t('bank.description')" name="description">
+            <t-textarea
+              v-model="uploadForm.description"
+              :placeholder="t('bank.descriptionPlaceholder')"
+              :maxlength="30"
+              show-word-limit
+              clearable
+              :autosize="{ minRows: 2, maxRows: 4 }"
+            />
+          </t-form-item>
 
-          <n-form-item :label="t('bank.file')" path="file">
-            <n-upload v-model:file-list="uploadForm.file" :accept="'.docx,.pdf,.txt'" :max="1" :multiple="false"
-              action="#" :custom-request="handleUploadCustomRequest" @before-upload="handleUploadBeforeUpload">
-              <n-upload-dragger>
-                <div style="margin-bottom: var(--spacing-3)">
-                  <n-icon size="48" :depth="3">
-                    <ArchiveIcon />
-                  </n-icon>
+          <t-form-item :label="t('bank.file')" name="file">
+            <t-upload
+              v-model="uploadForm.file"
+              :accept="'.docx,.pdf,.txt'"
+              :max="1"
+              :multiple="false"
+              theme="file-flow"
+              drag
+            >
+              <template #drag-content>
+                <div style="margin-bottom: 12px">
+                  <t-icon name="folder" size="48px" />
                 </div>
-                <n-text style="font-size: var(--font-size-base)">
+                <div style="font-size: 14px">
                   {{ t("bank.uploadText") }}
-                </n-text>
-                <n-p depth="3" style="margin: var(--spacing-2) 0 0 0">
+                </div>
+                <div style="margin: 8px 0 0 0; color: #999">
                   {{ t("bank.uploadHint") }}
-                </n-p>
-              </n-upload-dragger>
-            </n-upload>
-          </n-form-item>
-        </n-form>
+                </div>
+              </template>
+            </t-upload>
+          </t-form-item>
+        </t-form>
       </div>
-    </n-modal>
+    </t-dialog>
 
     <!-- 合并题库弹窗 -->
-    <n-modal v-model:show="showMergeModal" preset="dialog" :title="t('bank.mergeTitle')"
-      :positive-text="t('bank.confirmMerge')" :negative-text="t('message.cancel')" @positive-click="handleMergeSubmit"
-      @negative-click="resetMergeForm" :loading="mergeLoading" style="width: 90%; max-width: 500px">
+    <t-dialog
+      v-model:visible="showMergeModal"
+      :header="t('bank.mergeTitle')"
+      :confirm-btn="t('bank.confirmMerge')"
+      :cancel-btn="t('message.cancel')"
+      @confirm="handleMergeSubmit"
+      @cancel="resetMergeForm"
+      width="500px"
+    >
       <div class="merge-form">
         <!-- 题库选择 -->
         <div class="form-section">
-          <n-text class="form-label">{{ t("bank.selectBanks") }}</n-text>
-          <n-text depth="3" class="form-hint">{{
-            t("bank.selectTwoBanksHint")
-          }}</n-text>
+          <div class="form-label">{{ t("bank.selectBanks") }}</div>
+          <div class="form-hint">{{ t("bank.selectTwoBanksHint") }}</div>
           <div class="bank-list">
-            <div v-for="bank in banks" :key="bank.id" class="bank-option"
-              :class="{ selected: selectedBanks.includes(bank.id) }" @click="toggleBankSelection(bank.id)">
-              <n-checkbox :checked="selectedBanks.includes(bank.id)" :disabled="!selectedBanks.includes(bank.id) && selectedBanks.length >= 2
-                " @update:checked="(checked) => handleBankCheck(bank.id, checked)" />
+            <div
+              v-for="bank in banks"
+              :key="bank.id"
+              class="bank-option"
+              :class="{ selected: selectedBanks.includes(bank.id) }"
+              @click="toggleBankSelection(bank.id)"
+            >
+              <t-checkbox
+                :checked="selectedBanks.includes(bank.id)"
+                @change="() => toggleBankSelection(bank.id)"
+                :disabled="
+                  !selectedBanks.includes(bank.id) && selectedBanks.length >= 2
+                "
+              />
               <div class="bank-info">
                 <div class="bank-option-name">{{ bank.name }}</div>
                 <div class="bank-option-id">ID: {{ bank.id }}</div>
@@ -93,65 +187,64 @@
 
         <!-- 新题库名称 -->
         <div class="form-section">
-          <n-form-item :label="t('bank.newBankName')" :validation-status="nameError ? 'error' : undefined"
-            :feedback="nameError">
-            <n-input v-model:value="mergeForm.name" :placeholder="t('bank.newBankNamePlaceholder')" @blur="validateName"
-              @input="nameError = ''" />
-          </n-form-item>
+          <t-form-item
+            :label="t('bank.newBankName')"
+            :status="nameError ? 'error' : undefined"
+            :help="nameError"
+          >
+            <t-input
+              v-model="mergeForm.name"
+              :placeholder="t('bank.newBankNamePlaceholder')"
+              @blur="validateName"
+              @input="nameError = ''"
+            />
+          </t-form-item>
         </div>
 
         <!-- 描述信息 -->
         <div class="form-section">
-          <n-form-item :label="t('bank.description')">
-            <n-input v-model:value="mergeForm.description" type="textarea"
-              :placeholder="t('bank.descriptionPlaceholder')" :autosize="{ minRows: 3, maxRows: 5 }" />
-          </n-form-item>
+          <t-form-item :label="t('bank.description')">
+            <t-textarea
+              v-model="mergeForm.description"
+              :placeholder="t('bank.descriptionPlaceholder')"
+              :autosize="{ minRows: 3, maxRows: 5 }"
+            />
+          </t-form-item>
         </div>
       </div>
-    </n-modal>
+    </t-dialog>
 
     <!-- 题型练习选择弹窗 -->
-    <n-modal v-model:show="showQuestionTypeModal" preset="dialog" :title="t('bank.questionTypePractice')"
-      :positive-text="t('common.confirm')" :negative-text="t('message.cancel')"
-      @positive-click="handleQuestionTypeSubmit" @negative-click="resetQuestionTypeForm"
-      style="width: 90%; max-width: 500px">
+    <t-dialog
+      v-model:visible="showQuestionTypeModal"
+      :header="t('bank.questionTypePractice')"
+      :confirm-btn="t('common.confirm')"
+      :cancel-btn="t('message.cancel')"
+      @confirm="handleQuestionTypeSubmit"
+      @cancel="resetQuestionTypeForm"
+      width="500px"
+    >
       <div class="question-type-form">
-        <n-form ref="questionTypeFormRef" :model="questionTypeForm">
-          <n-form-item :label="t('bank.selectQuestionType')">
-            <n-select v-model:value="questionTypeForm.questionType" :options="questionTypeOptions" />
-          </n-form-item>
-        </n-form>
+        <t-form ref="questionTypeFormRef" :data="questionTypeForm">
+          <t-form-item :label="t('bank.selectQuestionType')">
+            <t-select
+              v-model="questionTypeForm.questionType"
+              :options="questionTypeOptions"
+            />
+          </t-form-item>
+        </t-form>
       </div>
-    </n-modal>
+    </t-dialog>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
-import {computed, h, onMounted, ref} from "vue";
-import type {DataTableColumns, FormInst, UploadCustomRequestOptions, UploadFileInfo} from "naive-ui";
-import {
-  NButton,
-  NCheckbox,
-  NDataTable,
-  NEmpty,
-  NForm,
-  NFormItem,
-  NIcon,
-  NInput,
-  NModal,
-  NP,
-  NSelect,
-  NSpace,
-  NText,
-  NUpload,
-  NUploadDragger,
-  useDialog,
-  useMessage,
-} from "naive-ui";
+import {computed, onMounted, ref} from "vue";
+import type {FormInstanceFunctions, UploadFile} from "tdesign-vue-next";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
+import {useMessage} from "../utils/message";
 import axios, {AxiosError} from "axios";
-import {ArchiveOutline as ArchiveIcon} from "@vicons/ionicons5";
 
 import PageContainer from "../components/common/PageContainer.vue";
 import type {ApiResponse, QuestionBank} from "@/types/common";
@@ -160,7 +253,6 @@ import {uploadAPI} from "../api/config";
 
 // ================== 状态管理 ==================
 const message = useMessage();
-const dialog = useDialog();
 const router = useRouter();
 const { t } = useI18n();
 const banks = ref<QuestionBank[]>([]);
@@ -170,12 +262,12 @@ const loading = ref(false);
 interface UploadForm {
   name: string;
   description: string;
-  file: UploadFileInfo[];
+  file: UploadFile[];
 }
 
 const showUploadModal = ref(false);
 const uploadLoading = ref(false);
-const uploadFormRef = ref<FormInst | null>(null);
+const uploadFormRef = ref<FormInstanceFunctions | null>(null);
 const uploadForm = ref<UploadForm>({
   name: "",
   description: "",
@@ -184,83 +276,52 @@ const uploadForm = ref<UploadForm>({
 const uploadRules = bankFormRules;
 
 // ================== 表格配置 ==================
-const tableColumns = computed<DataTableColumns<QuestionBank>>(() => [
+const tableColumns = computed(() => [
   {
     title: t("bank.id"),
-    key: "id",
+    colKey: "id",
     width: 80,
     align: "center",
   },
   {
     title: t("bank.name"),
-    key: "name",
+    colKey: "name",
     minWidth: 200,
-    ellipsis: {
-      tooltip: true
-    }
+    ellipsis: true,
   },
   {
     title: t("bank.description"),
-    key: "description",
+    colKey: "description",
     minWidth: 250,
-    ellipsis: {
-      tooltip: true
+    ellipsis: true,
+    cell: ({ row }: { row: any }) => {
+      return row?.description || "-";
     },
-    render(row) {
-      return row.description || "-";
-    }
   },
   {
     title: t("bank.totalQuestions"),
-    key: "totalCount",
+    colKey: "totalCount",
     width: 120,
     align: "center",
   },
   {
     title: t("bank.completedQuestions"),
-    key: "completedCount",
+    colKey: "completedCount",
     width: 120,
     align: "center",
   },
   {
     title: t("bank.errorQuestions"),
-    key: "wrongCount",
+    colKey: "wrongCount",
     width: 120,
     align: "center",
   },
   {
     title: t("bank.actions"),
-    key: "actions",
+    colKey: "actions",
     width: 350,
     align: "center",
-    render(row) {
-      return h(NSpace, { size: "small" }, {
-        default: () => [
-          h(NButton, {
-            type: "primary",
-            size: "small",
-            onClick: () => handlePractice(row.id)
-          }, { default: () => t("bank.startPractice") }),
-          h(NButton, {
-            type: "default",
-            size: "small",
-            onClick: () => handleQuestionTypePractice(row.id)
-          }, { default: () => t("bank.questionTypePractice") }),
-          h(NButton, {
-            type: "default",
-            size: "small",
-            onClick: () => handleWrongSet(row.id)
-          }, { default: () => t("bank.errorCollection") }),
-          h(NButton, {
-            type: "error",
-            size: "small",
-            ghost: true,
-            onClick: () => confirmDelete(row.id)
-          }, { default: () => t("bank.delete") })
-        ]
-      });
-    }
-  }
+  },
 ]);
 
 // ================== 合并功能状态 ==================
@@ -276,18 +337,18 @@ const nameError = ref("");
 // ================== 题型练习状态 ==================
 const showQuestionTypeModal = ref(false);
 const currentBankId = ref<number | null>(null);
-const questionTypeFormRef = ref<FormInst | null>(null);
+const questionTypeFormRef = ref<FormInstanceFunctions | null>(null);
 const questionTypeForm = ref({
-  questionType: ""
+  questionType: "",
 });
 
 // 题型选项
 const questionTypeOptions = computed(() => [
-  { label: t('statistics.questionTypes.single'), value: 'single' },
-  { label: t('statistics.questionTypes.multiple'), value: 'multiple' },
-  { label: t('statistics.questionTypes.fillBlank'), value: 'fill_blank' },
-  { label: t('statistics.questionTypes.trueFalse'), value: 'true_false' },
-  { label: t('statistics.questionTypes.shortAnswer'), value: 'short_answer' }
+  { label: t("statistics.questionTypes.single"), value: "single" },
+  { label: t("statistics.questionTypes.multiple"), value: "multiple" },
+  { label: t("statistics.questionTypes.fillBlank"), value: "fill_blank" },
+  { label: t("statistics.questionTypes.trueFalse"), value: "true_false" },
+  { label: t("statistics.questionTypes.shortAnswer"), value: "short_answer" },
 ]);
 
 // ================== 数据获取 ==================
@@ -308,7 +369,8 @@ async function fetchBanks() {
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t("message.requestFailed")}：${err.response?.data?.message || t("message.unknownError")
+        `${t("message.requestFailed")}：${
+          err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
@@ -352,22 +414,21 @@ function handleWrongSet(id: number) {
   }
 }
 
-function confirmDelete(id: number) {
+async function confirmDelete(id: number) {
   const targetBank = banks.value.find((b) => b.id === id);
   const bankName = targetBank?.name || `ID: ${id}`;
 
-  dialog.warning({
-    title: t("message.confirmDelete"),
-    content: t("message.deleteConfirmContent", { name: bankName }),
-    positiveText: t("bank.delete"),
-    negativeText: t("message.cancel"),
-    onPositiveClick: async () => {
-      await handleDelete(id);
-    },
-    onNegativeClick: () => {
-      message.info(t("message.cancelDelete"));
-    },
-  });
+  try {
+    await message.confirm({
+      header: t("message.confirmDelete"),
+      body: t("message.deleteConfirmContent", { name: bankName }),
+    });
+
+    await handleDelete(id);
+  } catch {
+    // 用户取消删除
+    message.info(t("message.cancelDelete"));
+  }
 }
 
 async function handleDelete(id: number) {
@@ -385,7 +446,8 @@ async function handleDelete(id: number) {
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t("message.deleteFailed")}：${err.response?.data?.message || t("message.unknownError")
+        `${t("message.deleteFailed")}：${
+          err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
@@ -404,24 +466,6 @@ function toggleBankSelection(bankId: number) {
     selectedBanks.value.splice(index, 1);
   } else if (selectedBanks.value.length < 2) {
     selectedBanks.value.push(bankId);
-  }
-}
-
-/**
- * 处理复选框状态变化
- */
-function handleBankCheck(bankId: number, checked: boolean) {
-  if (
-    checked &&
-    !selectedBanks.value.includes(bankId) &&
-    selectedBanks.value.length < 2
-  ) {
-    selectedBanks.value.push(bankId);
-  } else if (!checked) {
-    const index = selectedBanks.value.indexOf(bankId);
-    if (index > -1) {
-      selectedBanks.value.splice(index, 1);
-    }
   }
 }
 
@@ -509,7 +553,8 @@ async function handleMergeSubmit() {
   } catch (err) {
     if (err instanceof AxiosError) {
       message.error(
-        `${t("bank.mergeFailed")}：${err.response?.data?.message || t("message.unknownError")
+        `${t("bank.mergeFailed")}：${
+          err.response?.data?.message || t("message.unknownError")
         }`
       );
     } else {
@@ -522,46 +567,6 @@ async function handleMergeSubmit() {
 }
 
 // ================== 上传功能处理 ==================
-/**
- * 上传前校验文件
- */
-function handleUploadBeforeUpload(data: {
-  file: UploadFileInfo;
-  fileList: UploadFileInfo[];
-}) {
-  const file = data.file;
-  const fileName = file.file?.name || file.name || "未知文件";
-
-  // 文件类型校验
-  const allowedTypes = [".docx", ".pdf", ".txt"];
-  const fileExtension = fileName
-    .toLowerCase()
-    .substring(fileName.lastIndexOf("."));
-  if (!allowedTypes.includes(fileExtension)) {
-    message.error(
-      `不支持的文件格式，请选择 ${allowedTypes.join("、")} 格式的文件`
-    );
-    return false;
-  }
-
-  // 文件大小校验（20MB）
-  const maxSize = 20 * 1024 * 1024;
-  if (file.file && file.file.size > maxSize) {
-    message.error("文件大小不能超过 20MB");
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * 自定义上传请求（阻止默认上传行为）
- */
-function handleUploadCustomRequest(options: UploadCustomRequestOptions) {
-  // 阻止默认上传，文件将在表单提交时统一处理
-  options.onFinish();
-}
-
 /**
  * 重置上传表单
  */
@@ -582,12 +587,14 @@ async function handleUploadSubmit() {
   }
 
   return new Promise<boolean>((resolve) => {
-    uploadFormRef.value!.validate(async (errors) => {
-      if (errors) {
+    uploadFormRef.value!.validate().then(async (errors) => {
+      if (errors !== true) {
         const firstError =
           Object.values(errors)
             .flat()
-            .find((err) => err.message)?.message || "请检查表单输入";
+            .find(
+              (err: any) => err && typeof err === "object" && "message" in err
+            )?.message || "请检查表单输入";
         message.error(firstError);
         resolve(false);
         return;
@@ -643,7 +650,7 @@ function handleQuestionTypePractice(bankId: number) {
  */
 function resetQuestionTypeForm() {
   questionTypeForm.value = {
-    questionType: ""
+    questionType: "",
   };
   currentBankId.value = null;
 }
@@ -653,12 +660,12 @@ function resetQuestionTypeForm() {
  */
 async function handleQuestionTypeSubmit() {
   if (!questionTypeForm.value.questionType) {
-    message.error(t('bank.selectQuestionTypeError'));
+    message.error(t("bank.selectQuestionTypeError"));
     return false;
   }
 
   if (!currentBankId.value) {
-    message.error(t('message.unknownError'));
+    message.error(t("message.unknownError"));
     return false;
   }
 
@@ -670,11 +677,11 @@ async function handleQuestionTypeSubmit() {
       name: "content",
       params: {
         bankId: currentBankId.value.toString(),
-        type: "question-type"
+        type: "question-type",
       },
       query: {
         bankName: bankName,
-        questionType: questionTypeForm.value.questionType
+        questionType: questionTypeForm.value.questionType,
       },
     });
 
@@ -701,11 +708,11 @@ defineExpose({
 
 <style scoped>
 .bank-container {
-  padding: var(--spacing-sm);
+  padding: var(--spacing-xs);
 }
 
 .top-actions {
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-3);
 }
 
 .table-container {
@@ -724,7 +731,7 @@ defineExpose({
 }
 
 .form-section {
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-3);
 }
 
 .form-section:last-child {
@@ -770,7 +777,7 @@ defineExpose({
   color: white;
 }
 
-.bank-option.selected :deep(.n-checkbox-box) {
+.bank-option.selected :deep(.t-checkbox__input) {
   border-color: white;
   background-color: #18a058;
 }
@@ -794,7 +801,11 @@ defineExpose({
   }
 
   .top-actions {
-    margin-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .bank-table {
+    min-width: 600px;
   }
 }
 </style>

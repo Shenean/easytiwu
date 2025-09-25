@@ -28,6 +28,7 @@
   },
   "navigation": {
     "bank": "Question Banks",
+    "content": "Content Management",
     "statistics": "Statistics",
     "settings": "Settings",
     "home": "Home",

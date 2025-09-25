@@ -1,86 +1,122 @@
 <template>
   <PageContainer :show-card="false" container-class="content-page">
-
-    <div v-if="loading" class="loading-container" style="
+    <div
+      v-if="loading"
+      class="loading-container"
+      style="
         height: 300px;
         display: flex;
         align-items: center;
         justify-content: center;
-      ">
-      <n-spin size="large">
-        <template #description>
-          {{ t("content.loadingQuestions") }}
-        </template>
-      </n-spin>
+      "
+    >
+      <t-loading size="large" :text="t('content.loadingQuestions')" />
     </div>
 
-
-    <n-empty v-else-if="questionList.length === 0" :description="t('content.noQuestions')" size="large">
-      <template #extra>
-        <n-button @click="router.go(-1)">
+    <t-empty
+      v-else-if="questionList.length === 0"
+      :description="t('content.noQuestions')"
+      size="large"
+    >
+      <template #action>
+        <t-button @click="router.go(-1)">
           {{ t("content.goBack") }}
-        </n-button>
+        </t-button>
       </template>
-    </n-empty>
-
+    </t-empty>
 
     <template v-else>
-
       <div class="content-layout">
-
         <div class="main-content">
+          <t-card
+            :title="
+              t('content.questionNumber', { number: currentQuestionIndex + 1 })
+            "
+            size="small"
+            class="question-card"
+          >
+            <div
+              class="question-stem"
+              v-html="sanitizeHtml(currentQuestion?.content || '')"
+            ></div>
 
-          <n-card :title="t('content.questionNumber', { number: currentQuestionIndex + 1 })
-            " size="small" class="question-card">
+            <t-divider class="question-divider" />
 
-            <div class="question-stem" v-html="sanitizeHtml(currentQuestion?.content || '')"></div>
+            <QuestionAnswer
+              :question="currentQuestion!"
+              v-model="localAnswer"
+            />
+          </t-card>
 
-
-            <n-divider class="question-divider" />
-
-
-            <QuestionAnswer :question="currentQuestion!" v-model="localAnswer" />
-          </n-card>
-
-
-          <n-card v-if="showAnswer" :title="t('content.answerAndAnalysis')" size="small" class="answer-card">
-            <n-alert type="success" :title="t('content.correctAnswer')" :show-icon="false" class="mb-4">
+          <t-card
+            v-if="showAnswer"
+            :title="t('content.answerAndAnalysis')"
+            size="small"
+            class="answer-card"
+          >
+            <t-alert
+              theme="success"
+              :title="t('content.correctAnswer')"
+              class="mb-4"
+            >
               {{ displayCorrectAnswer }}
-            </n-alert>
-            <n-alert v-if="currentQuestion?.analysis" type="info" :title="t('content.analysis')" :show-icon="false">
+            </t-alert>
+            <t-alert
+              v-if="currentQuestion?.analysis"
+              theme="info"
+              :title="t('content.analysis')"
+            >
               {{ currentQuestion.analysis }}
-            </n-alert>
-          </n-card>
+            </t-alert>
+          </t-card>
         </div>
 
-
         <div class="sidebar">
-          <AnswerCard :questions="questionList" :current-question-id="currentQuestion?.id"
-            @question-click="jumpToQuestion" />
+          <AnswerCard
+            :questions="questionList"
+            :current-question-id="currentQuestion?.id"
+            @question-click="jumpToQuestion"
+          />
         </div>
       </div>
 
+      <t-divider />
 
       <div class="bottom-actions">
         <div class="action-buttons">
-          <n-button :disabled="!(currentQuestionIndex > 0) || submitting" @click="prevQuestion" size="large"
-            type="default">
+          <t-button
+            :disabled="!(currentQuestionIndex > 0) || submitting"
+            @click="prevQuestion"
+            size="large"
+            variant="outline"
+          >
             {{ t("questionActions.previous") }}
-          </n-button>
+          </t-button>
 
-          <n-button :disabled="!(currentQuestionIndex < questionList.length - 1) || submitting
-            " @click="nextQuestion" size="large" type="default">
+          <t-button
+            :disabled="
+              !(currentQuestionIndex < questionList.length - 1) || submitting
+            "
+            @click="nextQuestion"
+            size="large"
+            variant="outline"
+          >
             {{ t("questionActions.next") }}
-          </n-button>
+          </t-button>
 
-          <n-button type="primary" size="large" @click="submitAnswer" :disabled="!canSubmit || submitting"
-            :loading="submitting">
+          <t-button
+            theme="primary"
+            size="large"
+            @click="submitAnswer"
+            :disabled="!canSubmit || submitting"
+            :loading="submitting"
+          >
             {{
               submitting
                 ? t("questionActions.submitting")
                 : t("questionActions.submit")
             }}
-          </n-button>
+          </t-button>
         </div>
       </div>
     </template>
@@ -89,7 +125,7 @@
 
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from "vue";
-import {NAlert, NButton, NCard, NDivider, NEmpty, NSpin, useMessage} from "naive-ui";
+import {useMessage} from "../utils/message";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {AxiosError} from "axios";
@@ -101,15 +137,12 @@ import QuestionAnswer from "../components/common/QuestionAnswer.vue";
 
 import PageContainer from "../components/common/PageContainer.vue";
 
-
-import type {AnswerValue, AnswerVerificationResponse, Question} from '@/types/common';
-
+import type {AnswerValue, AnswerVerificationResponse, Question,} from "@/types/common";
 
 interface RouteParams {
   bankId: string;
   type: string;
 }
-
 
 interface QuestionApiData {
   id: number;
@@ -123,7 +156,6 @@ interface QuestionApiData {
   isCorrect?: number | null;
 }
 
-
 interface ContentAPI {
   getQuestions: (
     bankId: number,
@@ -135,30 +167,25 @@ interface ContentAPI {
   ) => Promise<{ data: AnswerVerificationResponse }>;
 }
 
-
 const questionList = ref<Question[]>([]);
 const loading = ref(false);
-const message = useMessage();
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
+const message = useMessage();
 const currentQuestionIndex = ref(0);
 const isSubmitted = ref(false);
 const submitting = ref(false);
 
-
 const localAnswer = ref<AnswerValue>(null);
-
 
 const currentQuestion = computed(
   () => questionList.value[currentQuestionIndex.value]
 );
 
-
 const showAnswer = computed(() => {
   return !!currentQuestion.value && currentQuestion.value.isCompleted === 1;
 });
-
 
 const displayCorrectAnswer = computed(() => {
   const q = currentQuestion.value;
@@ -178,7 +205,6 @@ const displayCorrectAnswer = computed(() => {
   return ans || t("content.none");
 });
 
-
 const canSubmit = computed(() => {
   const q = currentQuestion.value;
   if (!q) return false;
@@ -191,15 +217,13 @@ const canSubmit = computed(() => {
     : val !== null && val !== undefined && String(val) !== "";
 });
 
-
 const sanitizeHtml = (html: string): string => {
   return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'span', 'div'],
-    ALLOWED_ATTR: ['class', 'style'],
-    FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input']
+    ALLOWED_TAGS: ["p", "br", "strong", "em", "u", "span", "div"],
+    ALLOWED_ATTR: ["class", "style"],
+    FORBID_TAGS: ["script", "object", "embed", "form", "input"],
   });
 };
-
 
 async function fetchQuestions() {
   try {
@@ -212,7 +236,6 @@ async function fetchQuestions() {
       message.error("参数错误，请重新进入");
       return;
     }
-
 
     if (
       !contentAPI ||
@@ -266,9 +289,10 @@ async function fetchQuestions() {
           const questionType = route.query.questionType as string;
           practiceType = getQuestionTypeDisplayName(questionType);
         } else {
-          practiceType = type === "wrong"
-            ? t("content.wrongQuestions")
-            : t("content.allPractice");
+          practiceType =
+            type === "wrong"
+              ? t("content.wrongQuestions")
+              : t("content.allPractice");
         }
 
         message.success(
@@ -287,7 +311,8 @@ async function fetchQuestions() {
   } catch (error) {
     if (error instanceof AxiosError) {
       message.error(
-        `${t("content.fetchQuestionsFailed")}: ${error.response?.data?.message || error.message
+        `${t("content.fetchQuestionsFailed")}: ${
+          error.response?.data?.message || error.message
         }`
       );
     } else {
@@ -311,7 +336,6 @@ function getQuestionTypeDisplayName(type: string): string {
   };
   return typeMap[type] || type;
 }
-
 
 function initLocalAnswer() {
   const q = currentQuestion.value;
@@ -339,7 +363,6 @@ function initLocalAnswer() {
     localAnswer.value = ua;
   }
 }
-
 
 async function submitAnswer() {
   if (!canSubmit.value || !currentQuestion.value) {
@@ -372,13 +395,11 @@ async function submitAnswer() {
       return;
     }
 
-
     const response = await contentAPI.verifyAnswer(
       currentQuestion.value.id,
       answerToSave
     );
     const result: AnswerVerificationResponse = response.data;
-
 
     const qIndex = currentQuestionIndex.value;
     const q = questionList.value[qIndex];
@@ -389,15 +410,10 @@ async function submitAnswer() {
     q.isCorrect = result.isCorrect ? 1 : 0;
 
     if (result.isCorrect) {
-      message.success(result.message || t("content.answerCorrect"), {
-        duration: 3000,
-      });
+      message.success(result.message || t("content.answerCorrect"));
     } else {
-      message.error(result.message || t("content.answerWrong"), {
-        duration: 3000,
-      });
+      message.error(result.message || t("content.answerWrong"));
     }
-
 
     questionList.value = [...questionList.value];
   } catch (error) {
@@ -434,7 +450,6 @@ async function submitAnswer() {
   }
 }
 
-
 function jumpToQuestion(id: number) {
   const index = questionList.value.findIndex((q) => q.id === id);
   if (index !== -1) {
@@ -459,11 +474,9 @@ function nextQuestion() {
   }
 }
 
-
 onMounted(() => {
   fetchQuestions();
 });
-
 
 watch(currentQuestion, () => {
   initLocalAnswer();
@@ -530,7 +543,6 @@ watch(currentQuestion, () => {
   bottom: 0;
   background: var(--color-bg-base);
   padding: var(--spacing-3) 0;
-  border-top: 1px solid var(--color-border);
   z-index: 10;
 }
 
@@ -571,7 +583,7 @@ watch(currentQuestion, () => {
     padding: 0 var(--spacing-2);
   }
 
-  .action-buttons .n-button {
+  .action-buttons .t-button {
     flex: 1;
     min-width: 80px;
   }
@@ -586,7 +598,7 @@ watch(currentQuestion, () => {
     flex-direction: column;
   }
 
-  .action-buttons .n-button {
+  .action-buttons .t-button {
     width: 100%;
   }
 }

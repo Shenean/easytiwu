@@ -1,60 +1,72 @@
 <template>
-  <PageContainer :title="t('settings.title')" :show-card="false" container-class="settings-container">
-    <div class="setting-section">
-      <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-header">
-            <n-icon size="20" class="setting-icon">
-              <SettingsOutline />
-            </n-icon>
-            <h3 class="setting-title">{{ t("settings.theme.title") }}</h3>
+  <PageContainer
+    :title="t('settings.title')"
+    :show-card="false"
+    container-class="settings-container"
+  >
+    <t-space direction="vertical" size="medium">
+      <div class="setting-section">
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-header">
+              <t-icon name="setting" size="20px" class="setting-icon" />
+              <h3 class="setting-title">{{ t("settings.theme.title") }}</h3>
+            </div>
+          </div>
+
+          <div class="theme-toggle-container">
+            <t-select
+              v-model="currentTheme"
+              :options="themeOptions"
+              @change="setTheme"
+              size="small"
+              style="width: 100px"
+            />
           </div>
         </div>
-
-        <div class="theme-toggle-container">
-          <n-select v-model:value="currentTheme" :options="themeOptions" @update:value="setTheme" size="small"
-            style="width: 120px" />
-        </div>
       </div>
-    </div>
 
-    <div class="setting-section">
-      <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-header">
-            <n-icon size="20" class="setting-icon">
-              <Language />
-            </n-icon>
-            <h3 class="setting-title">{{ t("settings.language.title") }}</h3>
+      <t-divider />
+
+      <div class="setting-section">
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-header">
+              <t-icon name="translate" size="20px" class="setting-icon" />
+              <h3 class="setting-title">{{ t("settings.language.title") }}</h3>
+            </div>
+          </div>
+          <div class="language-toggle-container">
+            <t-select
+              v-model="currentLanguage"
+              :options="languageOptions"
+              @change="setLanguage"
+              size="small"
+              style="width: 100px"
+            />
           </div>
         </div>
-        <div class="language-toggle-container">
-          <n-select v-model:value="currentLanguage" :options="languageOptions" @update:value="setLanguage" size="small"
-            style="width: 120px" />
-        </div>
       </div>
-    </div>
 
-    <div class="setting-section small">
-      <div class="setting-header">
-        <n-icon size="20" class="setting-icon">
-          <SettingsOutline />
-        </n-icon>
-        <h3 class="setting-title">{{ t("settings.other") }}</h3>
+      <t-divider />
+
+      <div class="setting-section">
+        <div class="setting-header">
+          <t-icon name="setting" size="20px" class="setting-icon" />
+          <h3 class="setting-title">{{ t("settings.other") }}</h3>
+        </div>
+        <div class="setting-description">{{ t("settings.moreFeatures") }}</div>
       </div>
-      <div class="setting-description">{{ t("settings.moreFeatures") }}</div>
-    </div>
+    </t-space>
   </PageContainer>
 </template>
 
 <script setup lang="ts">
 import {inject, onMounted, onUnmounted, ref} from "vue";
-import {NIcon, NSelect} from "naive-ui";
 import {useMessage} from "../utils/message";
 import {useI18n} from "vue-i18n";
-import {getCurrentLocale, getFullLocale, getSimpleLocale, setLocale} from "../i18n";
+import {getCurrentLocale, getFullLocale, getSimpleLocale, setLocale,} from "../i18n";
 import PageContainer from "../components/common/PageContainer.vue";
-import {Language, SettingsOutline} from "@vicons/ionicons5";
 
 type Theme = "light" | "dark" | "system";
 type Language = "zh" | "en";
@@ -67,29 +79,29 @@ const currentLanguage = ref<Language>("zh");
 // 语言选项
 const languageOptions = [
   {
-    label: t('settings.language.chinese'),
-    value: 'zh' as Language
+    label: t("settings.language.chinese"),
+    value: "zh" as Language,
   },
   {
-    label: t('settings.language.english'),
-    value: 'en' as Language
-  }
+    label: t("settings.language.english"),
+    value: "en" as Language,
+  },
 ];
 
 // 主题选项
 const themeOptions = [
   {
-    label: t('settings.theme.light'),
-    value: 'light' as Theme
+    label: t("settings.theme.light"),
+    value: "light" as Theme,
   },
   {
-    label: t('settings.theme.dark'),
-    value: 'dark' as Theme
+    label: t("settings.theme.dark"),
+    value: "dark" as Theme,
   },
   {
-    label: t('settings.theme.system'),
-    value: 'system' as Theme
-  }
+    label: t("settings.theme.system"),
+    value: "system" as Theme,
+  },
 ];
 
 const setGlobalTheme = inject<(theme: Theme) => void>("setGlobalTheme");
@@ -113,11 +125,17 @@ onMounted(() => {
     const { locale } = customEvent.detail;
     currentLanguage.value = getSimpleLocale(locale);
   };
-  window.addEventListener('locale-changed', localeChangeHandler as EventListener);
+  window.addEventListener(
+    "locale-changed",
+    localeChangeHandler as EventListener
+  );
 
   // 清理事件监听器
   onUnmounted(() => {
-    window.removeEventListener('locale-changed', localeChangeHandler as EventListener);
+    window.removeEventListener(
+      "locale-changed",
+      localeChangeHandler as EventListener
+    );
   });
 });
 
@@ -140,8 +158,8 @@ function setLanguage(language: Language) {
   setLocale(fullLocale);
 
   const languageTexts = {
-    zh: t('settings.language.chinese'),
-    en: t('settings.language.english'),
+    zh: t("settings.language.chinese"),
+    en: t("settings.language.english"),
   };
   message.success(
     t("settings.language.switched", { language: languageTexts[language] })
@@ -153,7 +171,7 @@ function setLanguage(language: Language) {
 .settings-container {
   max-width: var(--container-max-width-sm);
   margin: 0 auto;
-  padding: var(--spacing-5);
+  padding: var(--spacing-3);
   width: 100%;
   box-sizing: border-box;
 }
@@ -167,13 +185,7 @@ function setLanguage(language: Language) {
 }
 
 .setting-section {
-  padding: var(--spacing-4) var(--spacing-5);
-  border-bottom: 1px dashed var(--n-border-color);
-}
-
-.setting-section.small {
-  border-bottom: none;
-  padding-bottom: var(--spacing-3);
+  padding: var(--spacing-1) 0;
 }
 
 /* 设置行布局 */
@@ -181,7 +193,7 @@ function setLanguage(language: Language) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-5);
+  gap: var(--spacing-3);
 }
 
 .setting-info {
@@ -191,8 +203,8 @@ function setLanguage(language: Language) {
 .setting-header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
-  margin-bottom: var(--spacing-1);
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-xs);
 }
 
 .setting-icon {
@@ -203,11 +215,11 @@ function setLanguage(language: Language) {
   margin: 0;
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--n-text-color);
+  color: var(--td-text-color-primary);
 }
 
 .setting-description {
-  color: var(--n-text-color-2);
+  color: var(--td-text-color-secondary);
   font-size: var(--font-size-xs);
   margin: 0;
 }

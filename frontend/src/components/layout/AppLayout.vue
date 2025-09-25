@@ -1,93 +1,81 @@
 <template>
-  <n-layout class="app-layout" :style="layoutStyles">
-
-    <n-layout-header class="app-header" bordered>
+  <t-layout class="app-layout" :style="layoutStyles">
+    <t-header class="app-header">
       <slot name="header">
         <NavigationBar />
       </slot>
-    </n-layout-header>
+    </t-header>
 
-
-    <n-layout-content class="app-content" :style="contentStyles">
-      <div class="content-container" :class="containerClass">
+    <t-content class="app-content" :style="contentStyles">
+      <div :class="containerClass">
         <slot />
       </div>
-    </n-layout-content>
+    </t-content>
 
-
-    <n-layout-footer v-if="$slots.footer" class="app-footer" bordered>
-      <slot name="footer" />
-    </n-layout-footer>
-  </n-layout>
+    <template v-if="$slots.footer">
+      <t-divider style="margin: 0;" />
+      <t-footer class="app-footer">
+        <slot name="footer" />
+      </t-footer>
+    </template>
+  </t-layout>
 </template>
 
 <script setup lang="ts">
-import {computed} from 'vue'
-import {NLayout, NLayoutContent, NLayoutFooter, NLayoutHeader} from 'naive-ui'
-import NavigationBar from '../NavigationBar.vue'
+import {computed} from "vue";
+import NavigationBar from "../NavigationBar.vue";
 
 interface Props {
-
-  containerSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
-
-  contentPadding?: 'none' | 'sm' | 'md' | 'lg'
-
-
-  containerClass?: string
+  containerSize?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
+  contentPadding?: "none" | "sm" | "md" | "lg";
+  containerClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  containerSize: 'xl',
-  contentPadding: 'md',
+  containerSize: "xl",
+  contentPadding: "sm",
 
-  containerClass: ''
-})
-
+  containerClass: "",
+});
 
 const layoutStyles = computed(() => ({
-  minHeight: '100vh',
-}))
-
+  minHeight: "100vh",
+}));
 
 const contentStyles = computed(() => {
   const paddingMap = {
-    none: '0',
-    sm: 'var(--spacing-2)',
-    md: 'var(--spacing-3)',
-    lg: 'var(--spacing-4)'
-  }
+    none: "0",
+    sm: "var(--spacing-2)",
+    md: "var(--spacing-3)",
+    lg: "var(--spacing-4)",
+  };
 
   return {
     padding: paddingMap[props.contentPadding],
     paddingTop: `calc(var(--nav-height) + ${paddingMap[props.contentPadding]})`,
-    marginTop: '0'
-  }
-})
-
+    marginTop: "0",
+  };
+});
 
 const containerClass = computed(() => {
-  const classes = []
+  const classes = ["tdesign-container"];
 
-
-  if (props.containerSize !== 'full') {
-    classes.push(`container-${props.containerSize}`)
+  if (props.containerSize !== "full") {
+    classes.push(`container-${props.containerSize}`);
   }
-
-
-
 
   if (props.containerClass) {
-    classes.push(props.containerClass)
+    classes.push(props.containerClass);
   }
 
-  return classes.join(' ')
-})
+  return classes.join(" ");
+});
 </script>
 
 <style scoped>
 .app-layout {
   min-height: 100vh;
-  background-color: var(--app-bg-color, var(--n-body-color));
+  background-color: var(--app-bg-color, var(--td-bg-color-page));
 }
 
 .app-header {
@@ -97,7 +85,7 @@ const containerClass = computed(() => {
   right: 0;
   z-index: 1000;
   height: var(--nav-height);
-  background-color: var(--n-card-color);
+  background-color: var(--td-bg-color-container);
   backdrop-filter: blur(var(--spacing-1));
   -webkit-backdrop-filter: blur(var(--spacing-1));
   box-shadow: var(--shadow-sm);
@@ -108,37 +96,35 @@ const containerClass = computed(() => {
   transition: padding 0.3s ease;
 }
 
-.content-container {
+.tdesign-container {
   width: 100%;
   margin: 0 auto;
+  padding-left: var(--td-comp-paddingLR-l, 12px);
+  padding-right: var(--td-comp-paddingLR-l, 12px);
   transition: max-width 0.3s ease, padding 0.3s ease;
 }
 
-
-.content-container.container-sm {
-  max-width: var(--container-max-width-sm);
+.tdesign-container.container-sm {
+  max-width: var(--breakpoint-sm, 576px);
 }
 
-.content-container.container-md {
-  max-width: var(--container-max-width-md);
+.tdesign-container.container-md {
+  max-width: var(--breakpoint-md, 768px);
 }
 
-.content-container.container-lg {
-  max-width: var(--container-max-width-lg);
+.tdesign-container.container-lg {
+  max-width: var(--breakpoint-lg, 992px);
 }
 
-.content-container.container-xl {
-  max-width: var(--container-max-width-xl);
+.tdesign-container.container-xl {
+  max-width: var(--breakpoint-xl, 1200px);
 }
 
-.content-container.container-2xl {
-  max-width: var(--container-max-width-2xl);
+.tdesign-container.container-2xl {
+  max-width: var(--breakpoint-xxl, 1400px);
 }
-
-
 
 .app-footer {
-  background-color: var(--n-card-color);
-  border-top: var(--border-width-1) solid var(--color-border);
+  background-color: var(--td-bg-color-container);
 }
 </style>

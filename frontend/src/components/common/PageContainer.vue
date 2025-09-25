@@ -1,14 +1,17 @@
 <template>
   <div class="page-container" :class="containerClass">
-    <!-- 页面标题 -->
-    <div v-if="title" class="page-header">
-      <h1 class="page-title">{{ title }}</h1>
-    </div>
+    <t-space direction="vertical" :size="spacing" class="page-content">
+      <!-- 页面标题 -->
+      <div v-if="title" class="page-header">
+        <h1 class="page-title">{{ title }}</h1>
+        <t-divider v-if="showTitleDivider" />
+      </div>
 
-    <!-- 简化的内容包装器 -->
-    <component :is="wrapperComponent" v-bind="wrapperProps" :class="wrapperClass" :style="wrapperStyle">
-      <slot />
-    </component>
+      <!-- 简化的内容包装器 -->
+      <component :is="wrapperComponent" v-bind="wrapperProps" :class="wrapperClass" :style="wrapperStyle">
+        <slot />
+      </component>
+    </t-space>
   </div>
 </template>
 
@@ -26,6 +29,8 @@ interface Props {
   xGap?: number
   yGap?: number
   responsive?: 'self' | 'screen'
+  spacing?: 'small' | 'medium' | 'large' | number
+  showTitleDivider?: boolean
   containerClass?: string
   cardClass?: string
   contentClass?: string
@@ -34,7 +39,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   showCard: true,
-  size: 'large',
+  size: 'medium',
   bordered: true,
   segmented: true,
   useGrid: false,
@@ -42,6 +47,8 @@ const props = withDefaults(defineProps<Props>(), {
   xGap: 16,
   yGap: 16,
   responsive: 'self',
+  spacing: 'medium',
+  showTitleDivider: false,
   containerClass: '',
   cardClass: '',
   contentClass: ''
@@ -50,10 +57,10 @@ const props = withDefaults(defineProps<Props>(), {
 // 计算包装器组件类型
 const wrapperComponent = computed(() => {
   if (props.showCard) {
-    return 'n-card'
+    return 't-card'
   }
   if (props.useGrid) {
-    return 'n-grid'
+    return 't-row'
   }
   return 'div'
 })
@@ -65,16 +72,13 @@ const wrapperProps = computed(() => {
       title: props.title,
       size: props.size,
       bordered: props.bordered,
-      segmented: props.segmented
+      headerBordered: typeof props.segmented === 'object' ? props.segmented.content : props.segmented
     }
   }
 
   if (props.useGrid) {
     return {
-      cols: props.cols,
-      xGap: props.xGap,
-      yGap: props.yGap,
-      responsive: props.responsive
+      gutter: [props.xGap, props.yGap]
     }
   }
 
@@ -98,24 +102,23 @@ const wrapperStyle = computed(() => ({}))
   width: 100%;
 }
 
+.page-content {
+  width: 100%;
+}
+
 .page-header {
-  margin-bottom: var(--spacing-lg);
-  padding: 0 var(--spacing-sm);
+  padding: 0;
 }
 
 .page-title {
   font-size: var(--font-size-xl);
   font-weight: 600;
-  color: var(--n-text-color);
+  color: var(--td-text-color-primary);
   margin: 0;
   line-height: 1.4;
 }
 
 @media (max-width: 639px) {
-  .page-header {
-    padding: 0 var(--spacing-xs);
-  }
-
   .page-title {
     font-size: var(--font-size-lg);
   }
