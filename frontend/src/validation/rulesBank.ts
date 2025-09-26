@@ -33,7 +33,7 @@ export const bankFormRules: Record<string, FormRule[]> = {
           return {
             result: false,
             message: t("validation.fileRequired"),
-            type: "error" as const
+            type: "error" as const,
           };
         }
         return true;

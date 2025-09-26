@@ -28,10 +28,15 @@
             </template>
             {{ t("navigation.settings") }}
           </t-menu-item>
+          <t-menu-item value="login">
+            <template #icon>
+              <UserIcon />
+            </template>
+            {{ t("navigation.login") }}
+          </t-menu-item>
         </t-head-menu>
       </t-space>
     </t-header>
-    <t-divider />
   </div>
 </template>
 
@@ -39,7 +44,8 @@
 import {ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
-import {BookIcon, ChartIcon, SettingIcon} from "tdesign-icons-vue-next";
+import {BookIcon, ChartIcon, SettingIcon, UserIcon} from "tdesign-icons-vue-next";
+import type {MenuValue} from "tdesign-vue-next";
 
 const route = useRoute();
 const router = useRouter();
@@ -54,7 +60,7 @@ watch(
   }
 );
 
-const handleNavigate = (active: string) => {
+const handleNavigate = (active: MenuValue) => {
   const keyStr = active.toString();
   if (keyStr === currentRouteName.value) return;
   router
@@ -69,7 +75,6 @@ const handleNavigate = (active: string) => {
 </script>
 
 <style scoped>
-/* 保留最小布局调整，避免图标和菜单拥挤 */
 .navbar-content {
   width: 100%;
   justify-content: space-between;

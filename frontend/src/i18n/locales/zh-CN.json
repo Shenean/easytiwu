@@ -24,18 +24,63 @@
     "none": "无",
     "yes": "是",
     "no": "否",
-    "noData": "暂无数据"
+    "noData": "暂无数据",
+    "noDescription": "暂无描述"
   },
   "navigation": {
     "bank": "题库列表",
     "content": "内容管理",
     "statistics": "数据统计",
     "settings": "设置",
+    "login": "登录",
     "home": "首页",
     "backToHome": "返回首页",
     "openMenu": "打开导航菜单",
     "closeMenu": "关闭导航菜单",
     "menu": "菜单"
+  },
+  "auth": {
+    "login": {
+      "title": "用户登录",
+      "subtitle": "欢迎使用 EasyTiwu 系统",
+      "emailPlaceholder": "请输入邮箱地址",
+      "passwordPlaceholder": "请输入密码",
+      "rememberMe": "记住我",
+      "submit": "登录",
+      "noAccount": "还没有账号？",
+      "registerNow": "立即注册",
+      "emailRequired": "请输入邮箱地址",
+      "emailInvalid": "邮箱格式不正确",
+      "passwordRequired": "请输入密码",
+      "passwordMinLength": "密码长度不能少于6个字符",
+      "passwordMaxLength": "密码长度不能超过32个字符",
+      "success": "登录成功",
+      "failed": "登录失败，请检查邮箱和密码"
+    },
+    "register": {
+      "title": "用户注册",
+      "subtitle": "创建您的 EasyTiwu 账户",
+      "usernamePlaceholder": "请输入用户名",
+      "emailPlaceholder": "请输入邮箱地址",
+      "passwordPlaceholder": "请输入密码",
+      "confirmPasswordPlaceholder": "请再次输入密码",
+      "submit": "注册",
+      "hasAccount": "已有账号？",
+      "loginNow": "立即登录",
+      "usernameRequired": "请输入用户名",
+      "usernameMinLength": "用户名长度不能少于2个字符",
+      "usernameMaxLength": "用户名长度不能超过32个字符",
+      "emailRequired": "请输入邮箱地址",
+      "emailInvalid": "邮箱格式不正确",
+      "emailMaxLength": "邮箱长度不能超过64个字符",
+      "passwordRequired": "请输入密码",
+      "passwordMinLength": "密码长度不能少于6个字符",
+      "passwordMaxLength": "密码长度不能超过32个字符",
+      "confirmPasswordRequired": "请再次输入密码",
+      "passwordMismatch": "两次输入的密码不一致",
+      "success": "注册成功",
+      "failed": "注册失败，请稍后重试"
+    }
   },
 
   "bank": {
@@ -144,7 +189,9 @@
     },
     "other": "其他设置",
     "moreFeatures": "更多功能即将推出",
-    "followSystem": "跟随系统"
+    "followSystem": "跟随系统",
+    "appearance": "外观设置",
+    "appearanceDescription": "自定义应用程序的外观和显示效果"
   },
   "answerCard": {
     "title": "答题卡"

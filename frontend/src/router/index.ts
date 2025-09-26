@@ -3,9 +3,13 @@ import BankPage from "../pages/BankPage.vue";
 import ContentPage from "../pages/ContentPage.vue";
 import StatisticsPage from "../pages/StatisticsPage.vue";
 import SettingsPage from "../pages/SettingsPage.vue";
+import LoginPage from "../pages/LoginPage.vue";
+import RegisterPage from "../pages/RegisterPage.vue";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", redirect: "/bank" },
+  { path: "/login", name: "login", component: LoginPage },
+  { path: "/register", name: "register", component: RegisterPage },
   { path: "/bank", name: "bank", component: BankPage },
   {
     path: "/content/:bankId/:type",

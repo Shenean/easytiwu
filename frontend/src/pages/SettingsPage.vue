@@ -4,60 +4,79 @@
     :show-card="false"
     container-class="settings-container"
   >
-    <t-space direction="vertical" size="medium">
-      <div class="setting-section">
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-header">
-              <t-icon name="setting" size="20px" class="setting-icon" />
-              <h3 class="setting-title">{{ t("settings.theme.title") }}</h3>
+    <div class="settings-grid">
+      <!-- 外观设置卡片 -->
+      <t-card class="setting-card" :bordered="true" hover-shadow>
+        <template #header>
+          <div class="card-header">
+            <t-icon name="palette" size="24px" class="card-icon" />
+            <h3 class="card-title">{{ t("settings.appearance") }}</h3>
+          </div>
+        </template>
+        
+        <t-space direction="vertical" size="large">
+          <!-- 主题设置 -->
+          <div class="setting-item">
+            <div class="setting-item-header">
+              <div class="setting-item-info">
+                <t-icon name="setting" size="18px" class="setting-item-icon" />
+                <div class="setting-item-content">
+                  <h4 class="setting-item-title">{{ t("settings.theme.title") }}</h4>
+                  <p class="setting-item-description">{{ t("settings.theme.description") }}</p>
+                </div>
+              </div>
+              <div class="setting-item-control">
+                <t-select
+                  v-model="currentTheme"
+                  :options="themeOptions"
+                  @change="setTheme"
+                  size="medium"
+                  style="width: 120px"
+                />
+              </div>
             </div>
           </div>
 
-          <div class="theme-toggle-container">
-            <t-select
-              v-model="currentTheme"
-              :options="themeOptions"
-              @change="setTheme"
-              size="small"
-              style="width: 100px"
-            />
-          </div>
-        </div>
-      </div>
-
-      <t-divider />
-
-      <div class="setting-section">
-        <div class="setting-row">
-          <div class="setting-info">
-            <div class="setting-header">
-              <t-icon name="translate" size="20px" class="setting-icon" />
-              <h3 class="setting-title">{{ t("settings.language.title") }}</h3>
+          <!-- 语言设置 -->
+          <div class="setting-item">
+            <div class="setting-item-header">
+              <div class="setting-item-info">
+                <t-icon name="translate" size="18px" class="setting-item-icon" />
+                <div class="setting-item-content">
+                  <h4 class="setting-item-title">{{ t("settings.language.title") }}</h4>
+                  <p class="setting-item-description">{{ t("settings.language.description") }}</p>
+                </div>
+              </div>
+              <div class="setting-item-control">
+                <t-select
+                  v-model="currentLanguage"
+                  :options="languageOptions"
+                  @change="setLanguage"
+                  size="medium"
+                  style="width: 120px"
+                />
+              </div>
             </div>
           </div>
-          <div class="language-toggle-container">
-            <t-select
-              v-model="currentLanguage"
-              :options="languageOptions"
-              @change="setLanguage"
-              size="small"
-              style="width: 100px"
-            />
+        </t-space>
+      </t-card>
+
+      <!-- 其他设置卡片 -->
+      <t-card class="setting-card" :bordered="true" hover-shadow>
+        <template #header>
+          <div class="card-header">
+            <t-icon name="tools" size="24px" class="card-icon" />
+            <h3 class="card-title">{{ t("settings.other") }}</h3>
           </div>
+        </template>
+        
+        <div class="coming-soon">
+          <t-icon name="time" size="48px" class="coming-soon-icon" />
+          <h4 class="coming-soon-title">{{ t("settings.comingSoon") }}</h4>
+          <p class="coming-soon-description">{{ t("settings.moreFeatures") }}</p>
         </div>
-      </div>
-
-      <t-divider />
-
-      <div class="setting-section">
-        <div class="setting-header">
-          <t-icon name="setting" size="20px" class="setting-icon" />
-          <h3 class="setting-title">{{ t("settings.other") }}</h3>
-        </div>
-        <div class="setting-description">{{ t("settings.moreFeatures") }}</div>
-      </div>
-    </t-space>
+      </t-card>
+    </div>
   </PageContainer>
 </template>
 
@@ -169,68 +188,177 @@ function setLanguage(language: Language) {
 
 <style scoped>
 .settings-container {
-  max-width: var(--container-max-width-sm);
+  max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-3);
+  padding: 24px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.settings-card {
-  border-radius: var(--card-border-radius-desktop);
-  box-shadow: var(--card-shadow-medium);
-  border: 1px solid var(--color-black-05);
-  width: 100%;
-  box-sizing: border-box;
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
 }
 
-.setting-section {
-  padding: var(--spacing-1) 0;
+.setting-card {
+  background: var(--td-bg-color-container);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  border: 1px solid var(--td-border-level-1-color);
+  overflow: hidden;
 }
 
-/* 设置行布局 */
-.setting-row {
+.setting-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--td-border-level-1-color);
+  background: var(--td-bg-color-container-hover);
+}
+
+.card-icon {
+  color: var(--td-brand-color);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--td-text-color-primary);
+  margin: 0;
+}
+
+.setting-item {
+  padding: 20px 24px;
+}
+
+.setting-item-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-3);
+  gap: 16px;
 }
 
-.setting-info {
+.setting-item-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   flex: 1;
 }
 
-.setting-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  margin-bottom: var(--spacing-xs);
+.setting-item-icon {
+  color: var(--td-brand-color);
+  margin-top: 2px;
 }
 
-.setting-icon {
-  color: var(--color-primary);
+.setting-item-content {
+  flex: 1;
 }
 
-.setting-title {
-  margin: 0;
-  font-size: var(--font-size-base);
-  font-weight: 600;
+.setting-item-title {
+  font-size: 16px;
+  font-weight: 500;
   color: var(--td-text-color-primary);
+  margin: 0 0 4px 0;
 }
 
-.setting-description {
+.setting-item-description {
+  font-size: 14px;
   color: var(--td-text-color-secondary);
-  font-size: var(--font-size-xs);
+  line-height: 1.5;
   margin: 0;
 }
 
-/* 主题切换按钮 */
-.theme-toggle-container {
+.setting-item-control {
   flex-shrink: 0;
 }
 
-/* 语言切换容器 */
-.language-toggle-container {
-  flex-shrink: 0;
+.coming-soon {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--td-text-color-placeholder);
 }
-</style>
+
+.coming-soon-icon {
+  color: var(--td-text-color-placeholder);
+  margin-bottom: 16px;
+}
+
+.coming-soon-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--td-text-color-secondary);
+  margin: 0 0 8px 0;
+}
+
+.coming-soon-description {
+  font-size: 14px;
+  color: var(--td-text-color-placeholder);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 16px;
+  }
+  
+  .settings-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .card-header {
+    padding: 16px 20px;
+  }
+  
+  .setting-item {
+    padding: 16px 20px;
+  }
+  
+  .setting-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .setting-item-control {
+    width: 100%;
+  }
+  
+  .coming-soon {
+    padding: 30px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 12px;
+  }
+  
+  .settings-grid {
+    gap: 12px;
+  }
+  
+  .setting-card {
+    border-radius: 8px;
+  }
+  
+  .card-header {
+    padding: 12px 16px;
+  }
+  
+  .setting-item {
+    padding: 12px 16px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
+}</style>

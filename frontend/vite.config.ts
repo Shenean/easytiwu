@@ -37,33 +37,49 @@ export default defineConfig({
         target: "http://localhost:8080",
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path,
         configure: (proxy) => {
-          // 错误处理
-          proxy.on("error", (err, _req, res) => {
-            console.error("Proxy Error:", err);
+          proxy.on("error", (err, req, res) => {
+            const timestamp = new Date().toISOString();
+            console.error(`[${timestamp}] Proxy Error:`, {
+              url: req.url,
+              method: req.method,
+              error: err.message,
+            });
 
             if ("writeHead" in res && !res.headersSent) {
               res.writeHead(500, {
                 "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
               });
               res.end(
                 JSON.stringify({
-                  error: "Proxy Error",
-                  message: err.message,
+                  success: false,
+                  error: "代理服务器错误",
+                  message: "无法连接到后端服务",
                   code: "PROXY_ERROR",
+                  timestamp,
                 })
               );
             }
           });
 
-          // 请求转发前钩子
-          proxy.on("proxyReq", (_proxyReq, req, _res) => {
-            console.log("→ Forwarding Request:", req.method, req.url);
+          proxy.on("proxyReq", (proxyReq, req, _res) => {
+            const timestamp = new Date().toISOString();
+            console.log(`[${timestamp}] → 转发请求:`, {
+              method: req.method,
+              url: req.url,
+              headers: proxyReq.getHeaders(),
+            });
           });
 
-          // 收到响应后钩子
           proxy.on("proxyRes", (proxyRes, req, _res) => {
-            console.log("← Received Response:", proxyRes.statusCode, req.url);
+            const timestamp = new Date().toISOString();
+            console.log(`[${timestamp}] ← 收到响应:`, {
+              status: proxyRes.statusCode,
+              url: req.url,
+              method: req.method,
+            });
           });
         },
       },

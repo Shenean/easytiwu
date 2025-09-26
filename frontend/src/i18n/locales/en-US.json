@@ -24,18 +24,63 @@
     "none": "None",
     "yes": "Yes",
     "no": "No",
-    "noData": "No data"
+    "noData": "No data",
+    "noDescription": "No description"
   },
   "navigation": {
     "bank": "Question Banks",
     "content": "Content Management",
     "statistics": "Statistics",
     "settings": "Settings",
+    "login": "Login",
     "home": "Home",
     "backToHome": "Back to Home",
     "openMenu": "Open Navigation Menu",
     "closeMenu": "Close Navigation Menu",
     "menu": "Menu"
+  },
+  "auth": {
+    "login": {
+      "title": "User Login",
+      "subtitle": "Welcome to EasyTiwu System",
+      "emailPlaceholder": "Please enter your email",
+      "passwordPlaceholder": "Please enter your password",
+      "rememberMe": "Remember me",
+      "submit": "Login",
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register Now",
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Please enter a valid email",
+      "passwordRequired": "Please enter your password",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMaxLength": "Password must be no more than 32 characters",
+      "success": "Login successful",
+      "failed": "Login failed, please check your email and password"
+    },
+    "register": {
+      "title": "User Registration",
+      "subtitle": "Create your EasyTiwu account",
+      "usernamePlaceholder": "Please enter your username",
+      "emailPlaceholder": "Please enter your email",
+      "passwordPlaceholder": "Please enter your password",
+      "confirmPasswordPlaceholder": "Please confirm your password",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "loginNow": "Login Now",
+      "usernameRequired": "Please enter your username",
+      "usernameMinLength": "Username must be at least 2 characters",
+      "usernameMaxLength": "Username must be no more than 32 characters",
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Please enter a valid email",
+      "emailMaxLength": "Email must be no more than 64 characters",
+      "passwordRequired": "Please enter your password",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMaxLength": "Password must be no more than 32 characters",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "success": "Registration successful",
+      "failed": "Registration failed, please try again later"
+    }
   },
   "bank": {
     "title": "Question Banks",
@@ -142,7 +187,9 @@
     },
     "other": "Other Settings",
     "moreFeatures": "More features coming soon",
-    "followSystem": "Follow System"
+    "followSystem": "Follow System",
+    "appearance": "Appearance Settings",
+    "appearanceDescription": "Customize the appearance and display effects of the application"
   },
   "answerCard": {
     "title": "Answer Sheet"

@@ -54,7 +54,7 @@
         class="bank-table"
       >
         <template #actions="{ row }">
-          <t-space size="small">
+          <t-space size="small" class="action-buttons">
             <t-button
               theme="primary"
               size="small"
@@ -62,20 +62,30 @@
             >
               {{ t("bank.startPractice") }}
             </t-button>
-            <t-dropdown
-              :options="[
-                { content: t('bank.questionTypePractice'), value: 'type', onClick: () => handleQuestionTypePractice(row.id) },
-                { content: t('bank.errorCollection'), value: 'error', onClick: () => handleWrongSet(row.id) },
-                { content: t('bank.delete'), value: 'delete', theme: 'error', onClick: () => confirmDelete(row.id) }
-              ]"
+            <t-button
+              theme="default"
+              size="small"
+              variant="outline"
+              @click="handleQuestionTypePractice(row.id)"
             >
-              <t-button theme="default" size="small" variant="outline">
-                {{ t("common.more") }}
-                <template #suffix>
-                  <t-icon name="chevron-down" size="14px" />
-                </template>
-              </t-button>
-            </t-dropdown>
+              {{ t("bank.questionTypePractice") }}
+            </t-button>
+            <t-button
+              theme="warning"
+              size="small"
+              variant="outline"
+              @click="handleWrongSet(row.id)"
+            >
+              {{ t("bank.errorCollection") }}
+            </t-button>
+            <t-button
+              theme="danger"
+              size="small"
+              variant="outline"
+              @click="confirmDelete(row.id)"
+            >
+              {{ t("bank.delete") }}
+            </t-button>
           </t-space>
         </template>
       </t-table>
@@ -97,7 +107,7 @@
           :data="uploadForm"
           :rules="uploadRules"
           label-align="left"
-          label-width="80px"
+          label-width="100px"
           size="medium"
         >
           <t-form-item :label="t('bank.name')" name="name">
@@ -179,7 +189,9 @@
               />
               <div class="bank-info">
                 <div class="bank-option-name">{{ bank.name }}</div>
-                <div class="bank-option-id">ID: {{ bank.id }}</div>
+                <div class="bank-option-desc">
+                  {{ bank.description || t("common.noDescription") }}
+                </div>
               </div>
             </div>
           </div>
@@ -244,12 +256,12 @@ import type {FormInstanceFunctions, UploadFile} from "tdesign-vue-next";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 import {useMessage} from "../utils/message";
-import axios, {AxiosError} from "axios";
+import {AxiosError} from "axios";
 
 import PageContainer from "../components/common/PageContainer.vue";
-import type {ApiResponse, QuestionBank} from "@/types/common";
+import type {QuestionBank} from "@/types/common";
 import {bankFormRules} from "../validation/rulesBank";
-import {uploadAPI} from "../api/config";
+import {bankAPI, uploadAPI} from "../api/config";
 
 // ================== 状态管理 ==================
 const message = useMessage();
@@ -278,12 +290,6 @@ const uploadRules = bankFormRules;
 // ================== 表格配置 ==================
 const tableColumns = computed(() => [
   {
-    title: t("bank.id"),
-    colKey: "id",
-    width: 80,
-    align: "center",
-  },
-  {
     title: t("bank.name"),
     colKey: "name",
     minWidth: 200,
@@ -295,31 +301,31 @@ const tableColumns = computed(() => [
     minWidth: 250,
     ellipsis: true,
     cell: ({ row }: { row: any }) => {
-      return row?.description || "-";
+      return row?.description || "";
     },
   },
   {
     title: t("bank.totalQuestions"),
     colKey: "totalCount",
-    width: 120,
+    width: 110,
     align: "center",
   },
   {
     title: t("bank.completedQuestions"),
     colKey: "completedCount",
-    width: 120,
+    width: 110,
     align: "center",
   },
   {
     title: t("bank.errorQuestions"),
     colKey: "wrongCount",
-    width: 120,
+    width: 110,
     align: "center",
   },
   {
     title: t("bank.actions"),
     colKey: "actions",
-    width: 350,
+    width: 480,
     align: "center",
   },
 ]);
@@ -352,15 +358,11 @@ const questionTypeOptions = computed(() => [
 ]);
 
 // ================== 数据获取 ==================
-/**
- * 获取题库数据
- */
 async function fetchBanks() {
   loading.value = true;
   try {
-    const res = await axios.get<ApiResponse<QuestionBank[]>>("/api/bank");
+    const res = await bankAPI.getBankList();
 
-    // 检查响应格式并正确处理数据
     if (res.data.code === 200) {
       banks.value = res.data.data || [];
     } else {
@@ -393,7 +395,6 @@ function handlePractice(id: number) {
       params: { bankId: id.toString(), type: "all" },
       query: { bankName: bankName },
     });
-    // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
     message.error(t("message.routeJumpFailed"));
   }
@@ -408,7 +409,6 @@ function handleWrongSet(id: number) {
       params: { bankId: id.toString(), type: "wrong" },
       query: { bankName: bankName },
     });
-    // 移除这里的成功提示，将在ContentPage中统一显示
   } catch (error) {
     message.error(t("message.routeJumpFailed"));
   }
@@ -426,19 +426,16 @@ async function confirmDelete(id: number) {
 
     await handleDelete(id);
   } catch {
-    // 用户取消删除
     message.info(t("message.cancelDelete"));
   }
 }
 
 async function handleDelete(id: number) {
   try {
-    const res = await axios.delete<ApiResponse<void>>(`/api/bank/${id}`);
+    const res = await bankAPI.deleteBank(id);
 
-    // 检查响应格式
     if (res.data.code === 200) {
       message.success(t("message.deleteSuccess"));
-      // 优化：前端移除，避免重新拉取全部数据
       banks.value = banks.value.filter((b) => b.id !== id);
     } else {
       message.error(res.data.message || t("message.deleteFailed"));
@@ -457,9 +454,6 @@ async function handleDelete(id: number) {
 }
 
 // ================== 合并功能处理 ==================
-/**
- * 切换题库选择状态
- */
 function toggleBankSelection(bankId: number) {
   const index = selectedBanks.value.indexOf(bankId);
   if (index > -1) {
@@ -469,9 +463,6 @@ function toggleBankSelection(bankId: number) {
   }
 }
 
-/**
- * 验证题库名称
- */
 function validateName() {
   if (!mergeForm.value.name.trim()) {
     nameError.value = t("bank.nameRequired");
@@ -485,19 +476,14 @@ function validateName() {
   return true;
 }
 
-/**
- * 验证表单
- */
 function validateMergeForm() {
   let isValid = true;
 
-  // 验证题库选择 - 必须选择2个
   if (selectedBanks.value.length !== 2) {
     message.error(t("bank.selectTwoBanksError"));
     isValid = false;
   }
 
-  // 验证名称
   if (!validateName()) {
     isValid = false;
   }
@@ -505,9 +491,6 @@ function validateMergeForm() {
   return isValid;
 }
 
-/**
- * 重置合并表单
- */
 function resetMergeForm() {
   selectedBanks.value = [];
   mergeForm.value = {
@@ -517,9 +500,6 @@ function resetMergeForm() {
   nameError.value = "";
 }
 
-/**
- * 处理合并提交
- */
 async function handleMergeSubmit() {
   if (!validateMergeForm()) {
     return false;
@@ -534,16 +514,12 @@ async function handleMergeSubmit() {
       description: mergeForm.value.description.trim(),
     };
 
-    const res = await axios.post<ApiResponse<QuestionBank>>(
-      "/api/bank/merge",
-      requestData
-    );
+    const res = await bankAPI.mergeBank(requestData);
 
     if (res.data.code === 200) {
       message.success(t("bank.mergeSuccess"));
       showMergeModal.value = false;
       resetMergeForm();
-      // 刷新题库列表
       await fetchBanks();
       return true;
     } else {
@@ -567,9 +543,6 @@ async function handleMergeSubmit() {
 }
 
 // ================== 上传功能处理 ==================
-/**
- * 重置上传表单
- */
 function resetUploadForm() {
   uploadForm.value = {
     name: "",
@@ -578,9 +551,6 @@ function resetUploadForm() {
   };
 }
 
-/**
- * 处理上传提交
- */
 async function handleUploadSubmit() {
   if (!uploadFormRef.value) {
     return false;
@@ -618,7 +588,6 @@ async function handleUploadSubmit() {
         message.success("上传成功 🎉");
         showUploadModal.value = false;
         resetUploadForm();
-        // 刷新题库列表
         await fetchBanks();
         resolve(true);
       } catch (err: unknown) {
@@ -637,17 +606,11 @@ async function handleUploadSubmit() {
 }
 
 // ================== 题型练习功能处理 ==================
-/**
- * 处理题型练习
- */
 function handleQuestionTypePractice(bankId: number) {
   currentBankId.value = bankId;
   showQuestionTypeModal.value = true;
 }
 
-/**
- * 重置题型练习表单
- */
 function resetQuestionTypeForm() {
   questionTypeForm.value = {
     questionType: "",
@@ -655,9 +618,6 @@ function resetQuestionTypeForm() {
   currentBankId.value = null;
 }
 
-/**
- * 处理题型练习提交
- */
 async function handleQuestionTypeSubmit() {
   if (!questionTypeForm.value.questionType) {
     message.error(t("bank.selectQuestionTypeError"));
@@ -721,7 +681,14 @@ defineExpose({
 
 .bank-table {
   width: 100%;
-  min-width: 800px;
+  min-width: 1000px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
 }
 
 .merge-form,
@@ -748,6 +715,7 @@ defineExpose({
   display: block;
   margin-bottom: var(--spacing-3);
   font-size: var(--font-size-sm);
+  color: #666;
 }
 
 .bank-list {
@@ -760,7 +728,7 @@ defineExpose({
 
 .bank-option {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: var(--spacing-2);
   cursor: pointer;
   border-radius: 4px;
@@ -773,26 +741,28 @@ defineExpose({
 }
 
 .bank-option.selected {
-  background-color: #18a058;
-  color: white;
+  background-color: #e6f7ee;
+  border: 1px solid #18a058;
 }
 
-.bank-option.selected :deep(.t-checkbox__input) {
-  border-color: white;
-  background-color: #18a058;
+.bank-option.selected .bank-option-name {
+  color: #18a058;
+  font-weight: 600;
 }
 
 .bank-info {
   margin-left: var(--spacing-2);
+  flex: 1;
 }
 
 .bank-option-name {
   font-weight: 500;
 }
 
-.bank-option-id {
-  font-size: var(--font-size-xs);
-  opacity: 0.8;
+.bank-option-desc {
+  font-size: var(--font-size-sm);
+  color: #666;
+  margin-top: 4px;
 }
 
 @media (max-width: 768px) {
@@ -805,7 +775,22 @@ defineExpose({
   }
 
   .bank-table {
-    min-width: 600px;
+    min-width: 900px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .bank-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bank-info {
+    margin-left: 0;
+    margin-top: 8px;
   }
 }
 </style>

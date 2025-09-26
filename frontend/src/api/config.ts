@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: "",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export default api;
 
 export const uploadAPI = {
   uploadFile: (formData: FormData) => {
-    return api.post("/upload", formData, {
+    return api.post("/api/v1/upload/upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -52,30 +52,34 @@ export const uploadAPI = {
 };
 
 export const bankAPI = {
-  getBankList: () => api.get("/bank/list"),
-  getBankDetail: (id: string) => api.get(`/bank/${id}`),
+  getBankList: () => api.get("/api/v1/banks"),
+  getBankDetail: (id: string) => api.get(`/api/v1/banks/${id}`),
+  deleteBank: (id: number) => api.delete(`/api/v1/banks/${id}`),
+  mergeBank: (data: {
+    bankId1: number;
+    bankId2: number;
+    name: string;
+    description: string;
+  }) => api.post("/api/v1/banks/merge", data),
 };
 
 export const contentAPI = {
-  getContentList: () => api.get("/content/list"),
-  getContentDetail: (id: string) => api.get(`/content/${id}`),
+  getContentList: () => api.get("/api/v1/content/list"),
+  getContentDetail: (id: string) => api.get(`/api/v1/content/${id}`),
   getQuestions: (bankId: number, type: string) => {
     // 如果type以"type:"开头，则使用新的题型练习接口
     if (type.startsWith("type:")) {
       const questionType = type.substring(5); // 移除"type:"前缀
-      return api.post("/content/questions-by-type", { 
-        bankId, 
-        questionType 
-      });
+      return api.get(`/api/v1/content/questions-by-type?bankId=${bankId}&questionType=${questionType}`);
     }
-    return api.post("/content/questions", { bankId, type });
+    return api.get(`/api/v1/content/questions?bankId=${bankId}&type=${type}`);
   },
   verifyAnswer: (questionId: number, userAnswer: string) => {
-    return api.post("/content/verify-answer", { questionId, userAnswer });
+    return api.post("/api/v1/content/verify-answer", { questionId, userAnswer });
   },
 };
 
 export const statisticsAPI = {
-  getOverview: () => api.get("/statistics/overview"),
-  healthCheck: () => api.get("/statistics/health"),
+  getOverview: () => api.get("/api/v1/statistics/overview"),
+  healthCheck: () => api.get("/api/v1/statistics/health"),
 };

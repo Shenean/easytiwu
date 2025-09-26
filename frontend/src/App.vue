@@ -1,6 +1,11 @@
 <template>
   <t-config-provider :global-config="tdesignConfig">
-    <AppLayout container-size="xl" content-padding="md">
+    <AppLayout 
+      container-size="xl" 
+      content-padding="md"
+      :show-header="showLayoutElements"
+      :show-footer="showLayoutElements"
+    >
       <router-view />
     </AppLayout>
   </t-config-provider>
@@ -8,12 +13,20 @@
 
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted} from "vue";
+import {useRoute} from "vue-router";
 import {useThemeProvider} from "./composables/useTheme";
 import AppLayout from "./components/layout/AppLayout.vue";
+
+const route = useRoute();
 
 const { provideTheme } = useThemeProvider();
 
 provideTheme();
+
+const showLayoutElements = computed(() => {
+  const authRoutes = ['login', 'register'];
+  return !authRoutes.includes(route.name as string);
+});
 
 const tdesignConfig = computed(() => {
   return {
