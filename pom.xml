@@ -27,6 +27,7 @@
         <module>service-content</module>
         <module>service-statistics</module>
         <module>starter-db</module>
+        <module>service-auth</module>
     </modules>
 
     <properties>
