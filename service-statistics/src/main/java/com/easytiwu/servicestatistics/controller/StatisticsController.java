@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author sheny
  */
 @RestController
-@RequestMapping("/statistics")
+@RequestMapping("/api/v1/statistics")
 @Validated
 @Slf4j
 @RequiredArgsConstructor

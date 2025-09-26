@@ -6,10 +6,7 @@ import com.easytiwu.servicecontent.dto.QuestionDTO;
 import com.easytiwu.servicecontent.service.AnswerVerificationServiceInterface;
 import com.easytiwu.servicecontent.service.QuestionQueryServiceInterface;
 import lombok.Data;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,35 +14,35 @@ import java.util.List;
  * @author sheny
  */
 @RestController
-@RequestMapping({"/api/content", "/content"})
+@RequestMapping("/api/v1/content")
 public class ContentController {
 
     private final QuestionQueryServiceInterface questionQueryService;
     private final AnswerVerificationServiceInterface answerVerificationService;
 
     public ContentController(QuestionQueryServiceInterface questionQueryService,
-                             AnswerVerificationServiceInterface answerVerificationService) {
+            AnswerVerificationServiceInterface answerVerificationService) {
         this.questionQueryService = questionQueryService;
         this.answerVerificationService = answerVerificationService;
     }
 
-    @PostMapping("/questions")
-    public List<QuestionDTO> getQuestions(@RequestBody QuestionQueryRequest req) {
-        if (req.getBankId() == null) {
+    @GetMapping("/questions")
+    public List<QuestionDTO> getQuestions(@RequestParam Long bankId, @RequestParam(required = false) String type) {
+        if (bankId == null) {
             throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 bankId 不能为空");
         }
-        return questionQueryService.queryQuestions(req.getBankId(), req.getType());
+        return questionQueryService.queryQuestions(bankId, type);
     }
 
-    @PostMapping("/questions-by-type")
-    public List<QuestionDTO> getQuestionsByType(@RequestBody QuestionQueryByTypeRequest req) {
-        if (req.getBankId() == null) {
+    @GetMapping("/questions-by-type")
+    public List<QuestionDTO> getQuestionsByType(@RequestParam Long bankId, @RequestParam String questionType) {
+        if (bankId == null) {
             throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 bankId 不能为空");
         }
-        if (req.getQuestionType() == null || req.getQuestionType().trim().isEmpty()) {
+        if (questionType == null || questionType.trim().isEmpty()) {
             throw new BusinessException(ErrorCode.PARAM_MISSING, "参数 questionType 不能为空");
         }
-        return questionQueryService.queryQuestionsByType(req.getBankId(), req.getQuestionType());
+        return questionQueryService.queryQuestionsByType(bankId, questionType);
     }
 
     @PostMapping("/verify-answer")

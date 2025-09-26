@@ -1,5 +1,5 @@
 server:
-  port: 8080   # Gateway端口
+  port: 8080 # Gateway端口
 
 spring:
   application:
@@ -8,59 +8,67 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: service-upload
-          uri: http://localhost:8084   # 上传服务端口
+        - id: service-auth
+          uri: http://localhost:8085 # 认证服务端口
           predicates:
-            - Path=/api/upload/**
+            - Path=/api/v1/auth/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=0
+
+        - id: service-upload
+          uri: http://localhost:8084 # 上传服务端口
+          predicates:
+            - Path=/api/v1/upload/**
+          filters:
+            - StripPrefix=0
 
         - id: service-bank
-          uri: http://localhost:8081   # 题库服务端口
+          uri: http://localhost:8081 # 题库服务端口
           predicates:
-            - Path=/api/bank/**
+            - Path=/api/v1/banks/**
           filters:
-            - StripPrefix=1
-            
+            - StripPrefix=0
+
         - id: service-content
-          uri: http://localhost:8082   # 内容服务端口
+          uri: http://localhost:8082 # 内容服务端口
           predicates:
-            - Path=/api/content/**
+            - Path=/api/v1/content/**
           filters:
-            - StripPrefix=1
-            
+            - StripPrefix=0
+
         - id: service-statistics
           uri: http://localhost:8083
           predicates:
-            - Path=/api/statistics/**
+            - Path=/api/v1/statistics/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=0
 
       # 全局跨域配置
       globalcors:
         cors-configurations:
-          '[/**]':
+          "[/**]":
             # 允许的请求来源
-            allowedOrigins: 
+            allowedOrigins:
               - "http://localhost:3000"
               - "http://127.0.0.1:3000"
               - "http://0.0.0.0:3000"
               - "http://192.168.18.110:3000"
+              - "http://localhost:3002"
             # 允许的HTTP方法
-            allowedMethods: 
+            allowedMethods:
               - "GET"
               - "POST"
               - "PUT"
               - "DELETE"
               - "OPTIONS"
             # 允许的请求头
-            allowedHeaders: 
+            allowedHeaders:
               - "*"
             # 是否允许发送Cookie等凭证信息
             allowCredentials: true
             # 预检请求的有效期（秒）
             maxAge: 3600
-            
+
       # 默认过滤器
       default-filters:
         - name: Logging
@@ -73,9 +81,11 @@ spring:
               maxBackoff: 500ms
               factor: 2
               basedOnPreviousValue: false
-            
+
 # 服务配置
 service:
+  auth:
+    url: http://localhost:8085
   upload:
     url: http://localhost:8084
   bank:
@@ -94,7 +104,7 @@ management:
   endpoint:
     health:
       show-details: always
-      
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG

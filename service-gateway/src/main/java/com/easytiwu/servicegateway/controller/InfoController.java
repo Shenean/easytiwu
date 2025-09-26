@@ -1,5 +1,6 @@
 package com.easytiwu.servicegateway.controller;
 
+import com.easytiwu.commonexception.result.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 public class InfoController {
 
     @GetMapping("/info")
-    public Map<String, Object> info() {
+    public Result<Map<String, Object>> info() {
         Map<String, Object> info = new HashMap<>();
         info.put("service", "service-gateway");
         info.put("description", "EasyTiwu 网关服务");
@@ -24,6 +25,6 @@ public class InfoController {
         contact.put("author", "EasyTiwu Team");
         info.put("contact", contact);
         
-        return info;
+        return Result.success(info);
     }
 }

@@ -2,23 +2,23 @@ package com.easytiwu.serviceupload.controller;
 
 import com.easytiwu.commonexception.enums.ErrorCode;
 import com.easytiwu.commonexception.result.Result;
+import com.easytiwu.serviceupload.service.DataImportService;
 import com.easytiwu.serviceupload.service.FileParsingService;
 import com.easytiwu.serviceupload.service.LargeModelService;
-import com.easytiwu.serviceupload.service.DataImportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * @author sheny
  */
 @RestController
-@RequestMapping("")
+@RequestMapping("/api/v1/upload")
 public class FileUploadController {
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 

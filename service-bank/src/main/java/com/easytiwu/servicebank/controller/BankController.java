@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/bank")
+@RequestMapping("/api/v1/banks")
 public class BankController {
 
     private final QuestionBankService questionBankService;
